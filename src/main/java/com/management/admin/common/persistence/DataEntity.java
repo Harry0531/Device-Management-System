@@ -1,6 +1,7 @@
 package com.management.admin.common.persistence;
 
-import team.abc.ssm.common.utils.IdGen;
+import com.management.admin.common.utils.IdGen;
+//todo 鉴于不需要认证身份，还有必要用吗？
 import team.abc.ssm.common.utils.UserUtils;
 
 import javax.persistence.Column;
@@ -25,6 +26,8 @@ public class DataEntity<T> {
     private Date modifyDate;        // 最后修改日期
     @Column(name = "del_flag")
     private boolean delFlag;        // 是否被删除
+    @Column(name = "remarks")
+    private String remarks;         //备注
 
     @Transient
     private Page<T> page; // 分页对象
@@ -82,6 +85,7 @@ public class DataEntity<T> {
         this.delFlag = delFlag;
     }
 
+    //todo 需要user吗？
     public String getCreateUserId() {
         return createUserId;
     }
