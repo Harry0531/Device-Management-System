@@ -1,8 +1,6 @@
 package com.management.admin.common.persistence;
 
-import team.abc.ssm.common.utils.IdGen;
-import team.abc.ssm.common.utils.UserUtils;
-
+import com.management.admin.common.utils.IdGen;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
@@ -66,13 +64,6 @@ public class DataEntity<T> {
         this.page = page;
     }
 
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
-    }
 
     public boolean isDelFlag() {
         return delFlag;
@@ -82,21 +73,7 @@ public class DataEntity<T> {
         this.delFlag = delFlag;
     }
 
-    public String getCreateUserId() {
-        return createUserId;
-    }
 
-    public void setCreateUserId(String createUserId) {
-        this.createUserId = createUserId;
-    }
-
-    public String getModifyUserId() {
-        return modifyUserId;
-    }
-
-    public void setModifyUserId(String modifyUserId) {
-        this.modifyUserId = modifyUserId;
-    }
 
     public Date getCreateDate() {
         return createDate;
