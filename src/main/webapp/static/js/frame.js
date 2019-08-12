@@ -1,0 +1,120 @@
+let urls = [
+    ['单位管理', 'management/deptManagement.html'],
+    ['字典项管理', 'management/dictManagement.html'],
+    ['文件模板管理', 'management/fileManagement.html'],
+    ['涉密计算机', 'computer/confidentialComputer.html'],
+    ['非涉密中间机', 'computer/nonConfidentialIntermediary.html'],
+    ['非涉密计算机', 'computer/nonConfidentialComputer.html'],
+    ['报废计算机', 'computer/scrappedComputer.html'],
+    ['涉密信息设备', 'informationDevice/confidentialInfoDevice.html'],
+    ['非涉密信息设备', 'informationDevice/nonConfidentialInfoDevice.html'],
+    ['报废信息设备', 'informationDevice/scrappedInfoDevice.html'],
+    ['涉密存储介质', 'storage/confidentialStorage.html'],
+    ['非涉密存储介质', 'storage/nonConfidentialStorage.html'],
+    ['报废涉密存储介质', 'storage/scrappedStorage.html'],
+    ['安全保密产品', 'securityProduct/securityProducts.html'],
+    ['报废安全保密产品', 'securityProduct/scrappedSecurityProducts.html'],
+    ['USB Key', 'usb/usb.html'],
+    ['报废USB Key', 'usb/scrappedUSB.html']
+];
+
+let app = new Vue({
+    el: '#app',
+    data: {
+        default_openeds_array:[
+            'management'
+        ],
+        tabList: [
+            {
+                url: '../index.html',
+                title: '首页',
+                name: 'tab0',
+                loading: true, // tab页进入加载状态
+            }
+        ],
+        activeTabName: 'tab0',
+        tabNameCount: 1, // 只增不减
+        fullScreenLoading: false
+    },
+    methods: {
+        // 点击左边功能栏的功能页时触发
+        onClickFunctionBar(key) {
+            this.addTab(urls[key][0], urls[key][1]);
+        },
+        /**
+         * 添加一个新的标签页，如果已经存在url相同的标签页，则激活那个标签页并重新加载tab中的iframe
+         * @param title tab的名字
+         * @param url 内容页的地址
+         * @returns 返回当前激活的tabName(即新添加的tab)(删除时使用该参数)
+         */
+        addTab: function (title, url) {
+            let exist = false;
+            let index = -1;
+            // 判断是否已经有url相同的标签页被打开
+            for (let i = 0; i < this.tabList.length; i++) {
+                if (this.tabList[i].url === url) {
+                    exist = true;
+                    index = i;
+                    break;
+                }
+            }
+            // 标签页已被打开，则不再添加新的标签页，而是设置目标标签页为active
+            if (exist === true) {
+                this.activeTabName = this.tabList[index].name;
+                this.tabList[index].loading = true; // tab页进入加载状态
+                this.refreshTab(this.activeTabName);
+            } else {
+                let newTabName = 'tab' + this.tabNameCount;
+                this.tabNameCount += 1;
+                this.tabList.push({
+                    title: title,
+                    url: url,
+                    name: newTabName,
+                    loading: true // tab页进入加载状态
+                });
+                this.activeTabName = newTabName;
+            }
+            return this.activeTabName;
+        },
+        // 删除标签页
+        removeTab: function (targetName) {
+            if (targetName === 'tab0') {
+                console.log("首页不能删除!");
+                return;
+            }
+            let tabs = this.tabList;
+            let activeName = this.activeTabName;
+            if (activeName === targetName) {
+                this.tabList.forEach((tab, index) => {
+                    if (tab.name === targetName) {
+                        let nextTab = tabs[index + 1] || tabs[index - 1];
+                        if (nextTab)
+                            activeName = nextTab.name;
+                    }
+                })
+            }
+            this.activeTabName = activeName;
+            this.tabList = tabs.filter(tab => tab.name !== targetName);
+        },
+        // 刷新指定tab的iframe
+        refreshTab: function (iframeId) {
+            document.getElementById(iframeId).contentWindow.location.reload(true);
+        },
+        // 通用方法1：消息提示
+        showMessage: function (message, type = 'success') {
+            this.$message({
+                message: message,
+                type: type
+            });
+        },
+        // 通用方法2：确认框
+        showConfirm: function (yesFunction, noFunction = () => {
+        }, title = '警告', content = '请确认当前的操作', type = 'warning') {
+            this.$confirm(content, title, {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: type
+            }).then(yesFunction, noFunction);
+        }
+    }
+});
