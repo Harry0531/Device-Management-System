@@ -13,11 +13,17 @@ public class SystemPath {
         return root.substring(6, root.length() - 16);
     }
 
+    /**
+     * @return 臨時文件路徑
+     */
+    public static String getTemporaryPath(){
+        return "/src/main/webapp/file/template/";
+    }
 
     /**
      * @return excel导入模板存储路径
      */
     public static String getExcelTemplatePath(){
-        return "/src/main/webapp/template";
+        return "/src/main/webapp/file/template/";
     }
 }

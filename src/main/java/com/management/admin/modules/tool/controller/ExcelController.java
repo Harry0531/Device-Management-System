@@ -1,45 +1,36 @@
 package com.management.admin.modules.tool.controller;
 
-import com.management.admin.common.utils.FileUtils;
-import com.management.admin.common.utils.SystemPath;
-import com.management.admin.common.web.BaseApi;
+import com.management.admin.modules.tool.entity.ExcelTemplate;
 import com.management.admin.modules.tool.service.ExcelService;
-import com.sun.org.apache.xpath.internal.operations.Mult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 
 /**
-      * @Description EXCEL模板上傳
+      * @Description  excel模板設置
       * @author wh
-      * @date 2019/8/11 20:18
+      * @date 2019/8/11 21:26
       */
-@Controller
-@RequestMapping("/api/tool/excel")
-public class ExcelController extends BaseApi {
+@RequestMapping("api/tool/excel")
+public class ExcelController {
 
     @Autowired
     ExcelService excelService;
 
-
-    @RequestMapping(value="test")
-    public Object test(){
-        return "1";
-    }
-
-
-    @RequestMapping(value ="uploadTemFile",method = RequestMethod.POST)
-    public Object uploadTemFile(
-            @RequestParam MultipartFile file,
+    @RequestMapping(value="insertOrUpdate",method = RequestMethod.POST)
+    @ResponseBody
+    public  Object insertOrUpdate(
+            @RequestBody ExcelTemplate excelTemplate,
             HttpServletRequest request
-            )throws  Exception{
-        return FileUtils.saveUploadFileToTempDir(file);
+    )throws Exception{
+        if (excelTemplate.getId() == null){
+
+        }
+        return null;
     }
 
 }
