@@ -33,6 +33,11 @@
         )
     </insert>
 
+    <select id="selectDictTypeList" resultType="com.management.admin.modules.sys.entity.DictType">
+      select type_name as "typeName",`id`,`create_time`,`modify_time`,`del_flag`
+      from data_dictionary_type
+    </select>
+
     <select id="selectSearchCount" parameterType="com.management.admin.modules.sys.entity.Dict" resultType="int">
         select count(*) from data_dictionary a
         <where>
@@ -44,7 +49,6 @@
             </if>
         </where>
     </select>
-
 
     <select id="selectDictListByPage" parameterType="com.management.admin.modules.sys.entity.Dict"
             resultMap="dictBean">
@@ -64,5 +68,30 @@
         </where>
         limit #{page.pageStart}, #{page.pageSize}
     </select>
+
+
+    <insert id="insertDict" parameterType="com.management.admin.modules.sys.entity.Dict" >
+        insert into data_dictionary (
+        `id`,
+        `type_id`,
+        `dic_property`,
+        `dic_value`,
+        `father`,
+        `remark`,
+        `create_time`,
+        `modify_time`,
+        `del_flag`
+        )values (
+          #{id},
+          #{typeId},
+          #{dicProperty},
+          #{dicValue},
+          #{fatherId},
+          #{remark},
+          #{createTime},
+          #{modifyTime},
+          #{delFlag}
+        )
+    </insert>
 
 </mapper>

@@ -4,9 +4,11 @@ var app = new Vue({
         fullScreenLoading: false,
         urls: {
             getDictList: 'http://localhost:8444/api/sys/dict/selectDictListByPage',
+            getDictType:'http://localhost:8444/api/sys/dict/getDictTypeList',
+            insertDict:'http://localhost:8444/api/sys/dict/insertOrUpdateDict',
+
             deleteListByIds:'/api/doc/fund/deleteByIds',
             deleteAll:'/api/doc/fund/deleteAll'
-
         },
         table: {
             loading: false,
@@ -17,22 +19,40 @@ var app = new Vue({
                 pageIndex: 1,
                 pageSize: 10,
                 pageSizes: [5, 10, 20, 40],
-                total: 0,
-                typeId:''
-            }
+                total: 0
+            },
+            typeId:''
         },
+        dictType:[],
+        dialog:{
+            typeId:"",
+            typeName:"",
+            dicProperty:"",
+            dicValue:"",
+            fatherId:"",
+        }
     },
     methods: {
+        //刷新表格数据
         refreshTable: function () {
             let app = this;
             app.table.loading = true;
             let data = {
-                page: app.table.props
+                page: app.table.props,
+                typeId:app.table.typeId
             };
+            console.log(data);
             ajaxPostJSON(this.urls.getDictList, data, function (d) {
                 app.table.loading = false;
                 app.table.data = d.data.resultList;
                 app.table.props.total = d.data.total;
+            })
+        },
+        //得到数据字典类型
+        getDictTypeData:function(){
+            let app= this;
+            ajaxGet(app.urls.getDictType,null,function (d) {
+                app.dictType=d.data;
             })
         },
         // 处理pageSize变化
@@ -97,6 +117,7 @@ var app = new Vue({
 
     },
     mounted: function(){
+        this.getDictTypeData();
         this.refreshTable();
     }
 });

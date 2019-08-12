@@ -1,6 +1,7 @@
 package com.management.admin.modules.sys.controller;
 
 import com.management.admin.common.persistence.Page;
+import com.management.admin.common.utils.SystemPath;
 import com.management.admin.common.web.BaseApi;
 import com.management.admin.common.web.MsgType;
 import com.management.admin.modules.sys.entity.Dict;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
+import  java.util.List;
 
 /**
       * @Description 字典管理api
@@ -34,8 +36,19 @@ public class DictController  extends BaseApi {
             return retMsg.Set(MsgType.ERROR);
     }
 
+    @RequestMapping(value= "getDictTypeList",method = RequestMethod.GET)
+    @ResponseBody
+    public  Object getDictTypeList()throws Exception{
+        try {
+            List<DictType> data = dictService.selectDictTypeList();
+            return retMsg.Set(MsgType.SUCCESS,data);
+        }catch (Exception e){
+            e.printStackTrace();
+            return retMsg.Set(MsgType.ERROR);
+        }
+    }
 
-    @RequestMapping(value ="selectDictListByPage")
+    @RequestMapping(value ="selectDictListByPage",method = RequestMethod.POST)
     @ResponseBody
     public Object selectDictListByPage(@RequestBody Dict dict)throws  Exception{
             try{
@@ -47,6 +60,18 @@ public class DictController  extends BaseApi {
                 e.printStackTrace();
                 return  retMsg.Set(MsgType.ERROR);
             }
+    }
+
+    @RequestMapping(value = "insertOrUpdateDict",method = RequestMethod.POST)
+    @ResponseBody
+    public  Object insertOrUpdateDict(@RequestBody Dict dict)throws Exception{
+            if(dict.getTypeId()==null ||dict.getTypeId() == ""){
+                if(dictService.insertDict(dict)) {
+                    return retMsg.Set(MsgType.SUCCESS);
+                }else
+                    return retMsg.Set(MsgType.ERROR);
+            }
+            return null;
     }
 
 }

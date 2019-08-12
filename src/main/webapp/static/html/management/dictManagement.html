@@ -22,16 +22,16 @@
                 <span>批量删除</span>
             </el-button>
             <el-button size="small" type="danger" @click="deleteAll"  style="margin-left: 10px;">全部删除</el-button>
-        </span>
-        <span style="float: right;margin-right: 10px;">
-            <el-option>
-
-            </el-option>
-
+            <el-button size="small" type="success" @click="insertDict" style="margin-left: 10px;">新增字典</el-button>
         </span>
 
         <span style="float: right;margin-right: 10px;">
-            <el-input size="small" placeholder="请输入项目名称" suffix-icon="el-icon-search"
+            <el-select v-model="table.typeId" size="small" @change="refreshTable();" clearable
+                       filterable placeholder="选择字典类型">
+                <el-option v-for="item in dictType" :key="item.id" :label="item.typeName"
+                           :value="item.id"></el-option>
+            </el-select>
+            <el-input size="small" placeholder="请输入键值搜索相关字典项" suffix-icon="el-icon-search"
                       style="width: 250px;margin-right: 10px;" v-model="table.props.searchKey"
                       @keyup.enter.native="table.props.pageIndex=1;refreshTable()">
             </el-input>
@@ -40,6 +40,8 @@
                 <span>搜索</span>
             </el-button>
         </span>
+
+
     </div>
 
     <el-table :data="table.data" height="calc(100% - 116px)" v-loading="table.loading"

@@ -8,5 +8,5 @@ import lombok.Data;
         */
 @Data
 public class DictType extends DataEntity<DictType> {
-    String  typeName;
+   public String  typeName;
 }
