@@ -42,10 +42,13 @@
         select count(*) from data_dictionary a
         <where>
             <if test="page.searchKey != '' and page.searchKey != null">
-                and a.property like concat('%', #{page.searchKey}, '%')
+                and a.dic_property like concat('%', #{page.searchKey}, '%')
             </if>
             <if test="typeId != '' and typeId != null">
                 and a.type_id = #{typeId}
+            </if>
+            <if test="1 == 1">
+                and a.del_flag=0
             </if>
         </where>
     </select>
@@ -65,7 +68,11 @@
             <if test="typeId != '' and typeId != null">
                 and a.type_id = #{typeId}
             </if>
+            <if test="1 == 1">
+                and a.del_flag=0
+            </if>
         </where>
+        ORDER BY a.`modify_time` DESC
         limit #{page.pageStart}, #{page.pageSize}
     </select>
 
@@ -94,4 +101,22 @@
         )
     </insert>
 
+    <update id="deleteDictByIds" parameterType="com.management.admin.modules.sys.entity.Dict">
+        update data_dictionary set del_flag=1 where id in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <update id="updateDict" parameterType="com.management.admin.modules.sys.entity.Dict">
+        update  data_dictionary
+        set `type_id`      = #{typeId},
+            `dic_property` = #{dicProperty},
+            `dic_value`    = #{dicValue},
+            `father`       = #{fatherId},
+            `create_time`  = #{createTime},
+            `modify_time`  = #{modifyTime},
+            `del_flag`     = #{delFlag}
+        where id =#{id}
+    </update>
 </mapper>

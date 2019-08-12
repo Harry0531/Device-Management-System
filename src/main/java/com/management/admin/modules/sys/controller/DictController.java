@@ -65,11 +65,30 @@ public class DictController  extends BaseApi {
     @RequestMapping(value = "insertOrUpdateDict",method = RequestMethod.POST)
     @ResponseBody
     public  Object insertOrUpdateDict(@RequestBody Dict dict)throws Exception{
+        if(dict.getId().equals("")||dict.getId()==null){
+            if(dictService.insertDict(dict))
+                return retMsg.Set(MsgType.SUCCESS);
+            else return retMsg.Set(MsgType.ERROR);
+        }else{
+            if(dictService.updateDict(dict))
+                return retMsg.Set(MsgType.SUCCESS);
+            else return retMsg.Set(MsgType.ERROR);
+        }
 
-        dictService.insertDict(dict);
-        return retMsg.Set(MsgType.SUCCESS);
+    }
 
-
+    @RequestMapping(value="deleteDictByIds",method = RequestMethod.POST)
+    @ResponseBody
+    public  Object deleteDictByIds(@RequestBody List<Dict> dicts)throws Exception{
+        try{
+            if(dictService.deleteDictByIds(dicts)){
+                return retMsg.Set(MsgType.SUCCESS);
+            }else
+                return retMsg.Set(MsgType.ERROR);
+        }catch (Exception e){
+            e.printStackTrace();
+            return retMsg.Set(MsgType.ERROR);
+        }
     }
 
 }

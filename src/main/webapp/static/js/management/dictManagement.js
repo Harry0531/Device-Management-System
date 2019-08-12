@@ -6,9 +6,8 @@ var app = new Vue({
             getDictList: 'http://localhost:8444/api/sys/dict/selectDictListByPage',
             getDictType:'http://localhost:8444/api/sys/dict/getDictTypeList',
             insertDict:'http://localhost:8444/api/sys/dict/insertOrUpdateDict',
+            deleteListByIds:'http://localhost:8444/api/sys/dict/deleteDictByIds',
 
-            deleteListByIds:'/api/doc/fund/deleteByIds',
-            deleteAll:'/api/doc/fund/deleteAll'
         },
         table: {
             loading: false,
@@ -28,6 +27,7 @@ var app = new Vue({
             visible:false,
             loading:false,
             data:{
+                id:"",
                 typeId:"",
                 typeName:"",
                 dicProperty:"",
@@ -83,10 +83,13 @@ var app = new Vue({
         },
         deleteByIds: function(fundList){
             if (fundList.length === 0) {
-                window.parent.app.showMessage('提示：未选中任何项', 'warning');
+                app.$message({
+                    message: "未选中任何项",
+                    type:"danger"
+                });
                 return;
             }
-            window.parent.app.$confirm('确认删除选中的项', '警告', {
+            app.$confirm('确认删除选中的项', '警告', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
@@ -95,34 +98,25 @@ var app = new Vue({
                 let app = this;
                 app.table.loading = true;
                 ajaxPostJSON(this.urls.deleteListByIds, data, function (d) {
-                    window.parent.app.showMessage('删除成功！', 'success');
+                    app.$message({
+                        message: "删除成功",
+                        type:"success"
+                    });
                     app.refreshTable();
                 })
             }).catch(() => {
-                window.parent.app.showMessage('已取消删除', 'warning');
+                app.$message({
+                    message: "取消删除",
+                    type:"danger"
+                });
             });
-        },
-        deleteAll:function () {
-            window.parent.app.$confirm('确认全部删除？','警告',{
-                confirmButtonText:'确定',
-                cancelButtonText: "取消",
-                type:'warning'
-            }).then(()=>{
-                let app = this;
-                ajaxPostJSON(this.urls.deleteAll,null,function (v) {
-                    window.parent.app.showMessage("删除成功","success");
-                    app.refreshTable();
-                })
-            }).catch(()=>{
-                window.parent.app.showMessage('已取消删除', 'warning');
-            })
         },
         handleSelectTypeChange:function (v) {
             var app=this;
             app.dialog.data.typeName=  v["typeName"];
             app.dialog.data.typeId= v["id"]
         },
-        insertDict: function () {
+        insertOrUpdateDict: function () {
             let app = this;
             app.dialog.loading = true;
             let data = {
@@ -130,7 +124,8 @@ var app = new Vue({
                 typeName:app.dialog.data.typeName,
                 dicProperty:app.dialog.data.dicProperty,
                 dicValue:app.dialog.data.dicValue,
-                fatherId:""
+                fatherId:"",
+                id:app.dialog.data.id
             };
             ajaxPostJSON(this.urls.insertDict, data, function (d) {
                 app.dialog.loading = false;
@@ -141,6 +136,31 @@ var app = new Vue({
                 })
                 app.refreshTable();
             })
+        },
+        resetDialogData:function () {
+            var app=this;
+            app.dialog={
+                visible:false,
+                loading:false,
+                data:{
+                    id:"",
+                    typeId:"",
+                    typeName:"",
+                    dicProperty:"",
+                    dicValue:"",
+                    fatherId:""
+                }
+            }
+        },
+        updateDialog:function (v) {
+            var app=this;
+            app.dialog.data.id=v["id"];
+            app.dialog.data.typeId=v["typeId"];
+            app.dialog.data.typeName=v["typeName"];
+            app.dialog.data.dicProperty=v["dicProperty"];
+            app.dialog.data.dicValue=v["dicValue"];
+            app.dialog.data.fatherId=v["fatherId"];
+            app.dialog.visible=true;
         }
 
     },

@@ -15,8 +15,11 @@ public interface DictDao {
 
     //关于字典操作
     List<Dict> selectDictListByPage(Dict dict);
-
     int selectSearchCount(Dict dict);
 
     int insertDict(Dict dict);
+
+    int deleteDictByIds(List<Dict> dicts);
+
+    int updateDict(Dict dict);
 }

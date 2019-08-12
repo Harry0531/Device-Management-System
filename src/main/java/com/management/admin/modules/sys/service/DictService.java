@@ -21,8 +21,6 @@ public class DictService {
         return dictDao.selectDictTypeList();
     }
 
-
-
     //关于字典操作
     public List<Dict> selectDictListByPage(Dict dict){
         return dictDao.selectDictListByPage(dict);
@@ -34,5 +32,12 @@ public class DictService {
     public  boolean insertDict(Dict dict){
         dict.preInsert();
         return dictDao.insertDict(dict) == 1;
+    }
+    public boolean deleteDictByIds(List<Dict> dicts){
+        return dicts.size()==0 || dictDao.deleteDictByIds(dicts)==dicts.size();
+    }
+    public  boolean updateDict(Dict dict){
+        dict.preUpdate();
+        return dictDao.updateDict(dict) == 1;
     }
 }
