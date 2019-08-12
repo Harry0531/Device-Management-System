@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface ColumnMapFieldDao {
 
-    int insertList(List<ColumnMapField> list);
+//    int insertList(List<ColumnMapField> list);
 }

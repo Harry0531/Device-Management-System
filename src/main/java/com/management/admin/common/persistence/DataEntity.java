@@ -18,9 +18,9 @@ public class DataEntity<T> {
     @Column(name = "id")
     private String id;
     @Column(name = "create_time")
-    private Date createDate;        // 创建日期
+    private Date createTime;        // 创建日期
     @Column(name = "modify_time")
-    private Date modifyDate;        // 最后修改日期
+    private Date modifyTime;        // 最后修改日期
     @Column(name = "del_flag")
     private boolean delFlag;        // 是否被删除
 
@@ -36,8 +36,8 @@ public class DataEntity<T> {
      */
     public void preInsert() {
         id = IdGen.uuid();
-        createDate = new Date();
-        modifyDate = createDate;
+        createTime = new Date();
+        modifyTime = createTime;
         delFlag = false;
     }
 
@@ -45,7 +45,7 @@ public class DataEntity<T> {
      * 更新之前手动调用
      */
     public void preUpdate() {
-        modifyDate = new Date();
+        modifyTime = new Date();
     }
 
     public String getId() {
@@ -76,18 +76,18 @@ public class DataEntity<T> {
 
 
     public Date getCreateDate() {
-        return createDate;
+        return createTime;
     }
 
     public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+        this.createTime = createDate;
     }
 
     public Date getModifyDate() {
-        return modifyDate;
+        return modifyTime;
     }
 
     public void setModifyDate(Date modifyDate) {
-        this.modifyDate = modifyDate;
+        this.modifyTime = modifyDate;
     }
 }

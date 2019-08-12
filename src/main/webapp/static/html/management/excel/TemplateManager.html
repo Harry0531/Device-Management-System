@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../../plugins/elementui/index.css">
+    <link rel="stylesheet" href="../../../css/management/excel/TemplateManager.css">
+
+
+</head>
+<body>
+    <div id="app" v-cloak v-loading="fullScreenLoading"style="margin-top:5px; ">
+
+        <span class="button-group">
+            <el-button type="success" size="small" @click="insertOrUpdateDialog.visible=true">新增模版</el-button>
+            <el-button type="danger" size="small">删除模版</el-button>
+        </span>
+
+
+
+        <!--新增模版的dialog-->
+        <el-dialog :title="insertOrUpdateDialog.title" :visible="insertOrUpdateDialog.visible">
+            <iframe v-if="insertOrUpdateDialog.visible" src="addTemplateDialog.html" frameborder="false"></iframe>
+        </el-dialog>
+    </div>
+</body>
+<script src="../../../plugins/vue/vue.js"></script>
+<script src="../../../plugins/jquery/jquery-3.3.1.min.js"></script>
+<script src="../../../plugins/elementui/index.js"></script>
+<script src="../../../js/management/excel/TemplateManager.js"></script>
+
+</html>

@@ -4,5 +4,5 @@ import com.management.admin.modules.tool.entity.ExcelTemplate;
 
 public interface ExcelTemplateDao {
 
-    int insertOrUpdate(ExcelTemplate excelTemplate);
+//    int insertOrUpdate(ExcelTemplate excelTemplate);
 }

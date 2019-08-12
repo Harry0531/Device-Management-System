@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.management.admin.modules.sys.dao.DictDao">
+    <insert id="insertDictType" parameterType="com.management.admin.modules.sys.entity.DictType" >
+        insert into data_dictionary_type (
+        `id`,
+        `type_name`,
+        `create_time`,
+        `modify_time`,
+        `del_flag`
+        )values (
+          #{id},
+          #{typeName},
+          #{createTime},
+          #{modifyTime},
+          #{delFlag}
+        )
+    </insert>
+
+    <select id="selectSearchCount" parameterType="com.management.admin.modules.sys.entity.Dict" resultType="int">
+        select count(*) from sys_dict a
+        <where>
+            <if test="page.searchKey != '' and page.searchKey != null">
+                and (
+                a.name_cn like concat('%', #{page.searchKey}, '%') or
+                a.name_en like concat('%', #{page.searchKey}, '%')
+                )
+            </if>
+            <if test="typeId != '' and typeId != null">
+                and a.type_id = #{typeId}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

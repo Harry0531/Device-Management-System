@@ -7,7 +7,7 @@
 let urls = [
     ['单位管理', 'management/deptManagement.html'],
     ['字典项管理', 'management/dictManagement.html'],
-    ['文件模板管理', 'management/fileManagement.html'],
+    ['文件模板管理', 'management/ExcelManage.html'],
     ['涉密计算机', 'computer/confidentialComputer.html'],
     ['非涉密中间机', 'computer/nonConfidentialIntermediary.html'],
     ['非涉密计算机', 'computer/nonConfidentialComputer.html'],

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>涉密存储介质</title>
+    <link rel="stylesheet" href="../../css/template.css">
+
+    <style>
+        [v-cloak]{
+            display: none;
+        }
+        .el-tabs__header {
+            padding: 0 20px;
+            margin-bottom: 0;
+        }
+        #app{
+            height: 800px;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="app" v-cloak >
+        <el-tabs  v-model="activeTabName" style="height: 100%;overflow-y: hidden" @tab-click="tabClick">
+            <el-tab-pane v-for="tab in tabList" :label="tab.label" :name="tab.name" :lazy="true" style="height: 800px;">
+                <iframe :src="tab.src" :id="tab.name" style="width: 100%;height: 100%;" frameborder="false"></iframe>
+            </el-tab-pane>
+        </el-tabs>
+    </div>
+</body>
+<script src="../../js/template.js"></script>
+<script src="../../js/management/excel/ExcelManage.js"></script>
+</html>
