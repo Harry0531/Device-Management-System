@@ -25,11 +25,15 @@ var app = new Vue({
         },
         dictType:[],
         dialog:{
-            typeId:"",
-            typeName:"",
-            dicProperty:"",
-            dicValue:"",
-            fatherId:"",
+            visible:false,
+            loading:false,
+            data:{
+                typeId:"",
+                typeName:"",
+                dicProperty:"",
+                dicValue:"",
+                fatherId:""
+            }
         }
     },
     methods: {
