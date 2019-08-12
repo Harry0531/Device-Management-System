@@ -22,7 +22,7 @@
                 <span>批量删除</span>
             </el-button>
             <el-button size="small" type="danger" @click="deleteAll"  style="margin-left: 10px;">全部删除</el-button>
-            <el-button size="small" type="success" @click="insertDict" style="margin-left: 10px;">新增字典</el-button>
+            <el-button size="small" type="success" @click="dialog.visible=true" style="margin-left: 10px;">新增字典</el-button>
         </span>
 
         <span style="float: right;margin-right: 10px;">
@@ -43,7 +43,6 @@
 
 
     </div>
-    //中间表格
     <el-table :data="table.data" height="calc(100% - 116px)" v-loading="table.loading"
               style="width: 100%;overflow-y: hidden;margin-top: 15px;" class="scroll-bar"
               @selection-change="onSelectionChange" stripe
@@ -69,7 +68,7 @@
         </el-table-column>
         <el-table-column width="50"></el-table-column>
     </el-table>
-    //分页
+
     <el-pagination style="text-align: center;margin: 8px auto;"
                    @size-change="onPageSizeChange"
                    @current-change="onPageIndexChange"
@@ -79,37 +78,30 @@
                    :total="table.props.total"
                    layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
-    //新增
-    <el-dialog title="添加数据字典" :visible.sync="dialog.visible"
-               @closed="resetForm('form_insertEntity')"
-               @open="dialog.insertEntity.formData.typeId=table.entity.condition.typeId">
+
+    <el-dialog title="添加数据字典" :visible.sync="dialog.visible">
         <el-form label-position="left" label-width="140px" style="padding: 0 100px;"
-                 :model="dialog.data"
                   v-loading="dialog.loading" status-icon>
-            <el-form-item label="字典属性" prop="nameCn">
-                <el-input v-model="dialog.insertEntity.formData.nameCn"></el-input>
+            <el-form-item label="字典属性" >
+                <el-input v-model="dialog.data.dicProperty"></el-input>
             </el-form-item>
-            <el-form-item label="字典值" prop="nameEn">
-                <el-input v-model="dialog.insertEntity.formData.nameEn"></el-input>
+            <el-form-item label="字典值" >
+                <el-input v-model="dialog.data.dicValue"></el-input>
             </el-form-item>
-            <el-form-item label="选择类型" prop="typeId">
-                <el-select v-model="dialog.insertEntity.formData.typeId" clearable>
-                    <el-option v-for="(item, index) in options.dictType" :key="item.id" :label="item.nameCn"
-                               :value="item.id"></el-option>
-                </el-select>
+            <el-form-item label="父字典" >
+                <el-input v-model="dialog.data.fatherId"></el-input>
             </el-form-item>
-            <el-form-item label="选择父键值" prop="parentId">
-                <el-select v-model="dialog.insertEntity.formData.parentId" clearable
-                           @focus="selectParentDictList(dialog.insertEntity)" :loading="options.loading_dict">
-                    <el-option v-for="(item, index) in options.dict" :key="item.id" :label="item.nameCn"
-                               :value="item.id"></el-option>
+            <el-form-item label="选择类型" >
+                <el-select v-model="dialog.data.typeName" clearable @change="handleSelectTypeChange">
+                    <el-option v-for="item in dictType" :key="item.id" :label="item.typeName"
+                               :value="item"></el-option>
                 </el-select>
             </el-form-item>
 
         </el-form>
         <div slot="footer" >
             <el-button size="medium" @click="dialog.visible=false">取 消</el-button>
-            <el-button size="medium" type="primary" @click="insertEntity()" style="margin-left: 10px;">提 交</el-button>
+            <el-button size="medium" type="primary"  style="margin-left: 10px;" @click="insertDict">提 交</el-button>
         </div>
     </el-dialog>
 </div>

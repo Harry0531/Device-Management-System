@@ -65,13 +65,11 @@ public class DictController  extends BaseApi {
     @RequestMapping(value = "insertOrUpdateDict",method = RequestMethod.POST)
     @ResponseBody
     public  Object insertOrUpdateDict(@RequestBody Dict dict)throws Exception{
-            if(dict.getTypeId()==null ||dict.getTypeId() == ""){
-                if(dictService.insertDict(dict)) {
-                    return retMsg.Set(MsgType.SUCCESS);
-                }else
-                    return retMsg.Set(MsgType.ERROR);
-            }
-            return null;
+
+        dictService.insertDict(dict);
+        return retMsg.Set(MsgType.SUCCESS);
+
+
     }
 
 }

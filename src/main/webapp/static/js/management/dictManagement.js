@@ -45,7 +45,6 @@ var app = new Vue({
                 page: app.table.props,
                 typeId:app.table.typeId
             };
-            console.log(data);
             ajaxPostJSON(this.urls.getDictList, data, function (d) {
                 app.table.loading = false;
                 app.table.data = d.data.resultList;
@@ -116,6 +115,31 @@ var app = new Vue({
                 })
             }).catch(()=>{
                 window.parent.app.showMessage('已取消删除', 'warning');
+            })
+        },
+        handleSelectTypeChange:function (v) {
+            var app=this;
+            app.dialog.data.typeName=  v["typeName"];
+            app.dialog.data.typeId= v["id"]
+        },
+        insertDict: function () {
+            let app = this;
+            app.dialog.loading = true;
+            let data = {
+                typeId:app.dialog.data.typeId,
+                typeName:app.dialog.data.typeName,
+                dicProperty:app.dialog.data.dicProperty,
+                dicValue:app.dialog.data.dicValue,
+                fatherId:""
+            };
+            ajaxPostJSON(this.urls.insertDict, data, function (d) {
+                app.dialog.loading = false;
+                app.dialog.visible=false;
+                app.$message({
+                    message:"插入成功",
+                    type:"success"
+                })
+                app.refreshTable();
             })
         }
 
