@@ -1,3 +1,9 @@
+/**
+ * @author zch
+ * @description 整体显示框架，各页面用iframe嵌入el-main
+ * */
+
+//标签名称、url
 let urls = [
     ['单位管理', 'management/deptManagement.html'],
     ['字典项管理', 'management/dictManagement.html'],
@@ -21,7 +27,7 @@ let urls = [
 let app = new Vue({
     el: '#app',
     data: {
-        default_openeds_array:[
+        default_openeds_array: [
             'management'
         ],
         tabList: [
@@ -37,20 +43,14 @@ let app = new Vue({
         fullScreenLoading: false
     },
     methods: {
-        // 点击左边功能栏的功能页时触发
-        onClickFunctionBar(key) {
+        //选中触发
+        onSelect(key) {
             this.addTab(urls[key][0], urls[key][1]);
         },
-        /**
-         * 添加一个新的标签页，如果已经存在url相同的标签页，则激活那个标签页并重新加载tab中的iframe
-         * @param title tab的名字
-         * @param url 内容页的地址
-         * @returns 返回当前激活的tabName(即新添加的tab)(删除时使用该参数)
-         */
         addTab: function (title, url) {
             let exist = false;
             let index = -1;
-            // 判断是否已经有url相同的标签页被打开
+            //判断是否已经有url相同的标签页被打开
             for (let i = 0; i < this.tabList.length; i++) {
                 if (this.tabList[i].url === url) {
                     exist = true;
@@ -58,7 +58,7 @@ let app = new Vue({
                     break;
                 }
             }
-            // 标签页已被打开，则不再添加新的标签页，而是设置目标标签页为active
+            //标签页已被打开，则不再添加新的标签页，而是设置目标标签页为active
             if (exist === true) {
                 this.activeTabName = this.tabList[index].name;
                 this.tabList[index].loading = true; // tab页进入加载状态
@@ -76,7 +76,7 @@ let app = new Vue({
             }
             return this.activeTabName;
         },
-        // 删除标签页
+        //删除标签页
         removeTab: function (targetName) {
             if (targetName === 'tab0') {
                 console.log("首页不能删除!");
@@ -96,25 +96,9 @@ let app = new Vue({
             this.activeTabName = activeName;
             this.tabList = tabs.filter(tab => tab.name !== targetName);
         },
-        // 刷新指定tab的iframe
+        //刷新指定tab的iframe
         refreshTab: function (iframeId) {
             document.getElementById(iframeId).contentWindow.location.reload(true);
-        },
-        // 通用方法1：消息提示
-        showMessage: function (message, type = 'success') {
-            this.$message({
-                message: message,
-                type: type
-            });
-        },
-        // 通用方法2：确认框
-        showConfirm: function (yesFunction, noFunction = () => {
-        }, title = '警告', content = '请确认当前的操作', type = 'warning') {
-            this.$confirm(content, title, {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: type
-            }).then(yesFunction, noFunction);
         }
     }
 });
