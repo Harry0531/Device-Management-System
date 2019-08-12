@@ -6,6 +6,7 @@ import com.management.admin.common.web.MsgType;
 import com.management.admin.modules.sys.entity.Dict;
 import com.management.admin.modules.sys.entity.DictType;
 import com.management.admin.modules.sys.service.DictService;
+import com.management.admin.modules.tool.entity.ExcelTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
@@ -34,7 +35,7 @@ public class DictController  extends BaseApi {
     }
 
 
-    @RequestMapping(value ="selectDictListByPage",method = RequestMethod.GET)
+    @RequestMapping(value ="selectDictListByPage")
     @ResponseBody
     public Object selectDictListByPage(@RequestBody Dict dict)throws  Exception{
             try{
@@ -43,7 +44,8 @@ public class DictController  extends BaseApi {
                 page.setTotal(dictService.selectSearchCount(dict));
                 return retMsg.Set(MsgType.SUCCESS,page);
             }catch (Exception e){
-                return retMsg.Set(MsgType.ERROR);
+                e.printStackTrace();
+                return  retMsg.Set(MsgType.ERROR);
             }
     }
 

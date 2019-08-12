@@ -1,11 +1,12 @@
-app = new Vue({
+var app = new Vue({
     el: '#app',
     data: {
         fullScreenLoading: false,
         urls: {
-            getFundList: '/api/doc/fund/list',
+            getDictList: 'http://localhost:8444/api/sys/dict/selectDictListByPage',
             deleteListByIds:'/api/doc/fund/deleteByIds',
             deleteAll:'/api/doc/fund/deleteAll'
+
         },
         table: {
             loading: false,
@@ -16,11 +17,10 @@ app = new Vue({
                 pageIndex: 1,
                 pageSize: 10,
                 pageSizes: [5, 10, 20, 40],
-                total: 0
+                total: 0,
+                typeId:''
             }
         },
-        dialog: {},
-        options: {}
     },
     methods: {
         refreshTable: function () {
@@ -29,11 +29,11 @@ app = new Vue({
             let data = {
                 page: app.table.props
             };
-            // ajaxPostJSON(this.urls.getFundList, data, function (d) {
-            //     app.table.loading = false;
-            //     app.table.data = d.data.resultList;
-            //     app.table.props.total = d.data.total;
-            // })
+            ajaxPostJSON(this.urls.getDictList, data, function (d) {
+                app.table.loading = false;
+                app.table.data = d.data.resultList;
+                app.table.props.total = d.data.total;
+            })
         },
         // 处理pageSize变化
         onPageSizeChange: function (newSize) {

@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.management.admin.modules.sys.dao.DictDao">
+
+
+    <resultMap id="dictBean" type="com.management.admin.modules.sys.entity.Dict">
+        <id property="id" column="id"/>
+        <result column="type_id" property="typeId"/>
+        <result column="dic_property" property="dicProperty"/>
+        <result column="dic_value" property="dicValue"/>
+        <result column="typeName" property="typeName"/>
+        <result column="fatherName" property="fatherName"/>
+        <result column="remark" property="remark"/>
+        <result column="father" property="fatherId"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="del_flag" property="delFlag"/>
+    </resultMap>
+
     <insert id="insertDictType" parameterType="com.management.admin.modules.sys.entity.DictType" >
         insert into data_dictionary_type (
         `id`,
@@ -18,13 +34,10 @@
     </insert>
 
     <select id="selectSearchCount" parameterType="com.management.admin.modules.sys.entity.Dict" resultType="int">
-        select count(*) from sys_dict a
+        select count(*) from data_dictionary a
         <where>
             <if test="page.searchKey != '' and page.searchKey != null">
-                and (
-                a.name_cn like concat('%', #{page.searchKey}, '%') or
-                a.name_en like concat('%', #{page.searchKey}, '%')
-                )
+                and a.property like concat('%', #{page.searchKey}, '%')
             </if>
             <if test="typeId != '' and typeId != null">
                 and a.type_id = #{typeId}
@@ -32,5 +45,24 @@
         </where>
     </select>
 
+
+    <select id="selectDictListByPage" parameterType="com.management.admin.modules.sys.entity.Dict"
+            resultMap="dictBean">
+        select a.*,
+        b.type_name as typeName,
+        c.dic_value as fatherName
+         from data_dictionary a
+         LEFT JOIN data_dictionary_type b on a.type_id = b.id
+          LEFT JOIN data_dictionary c on a.father=c.id
+        <where>
+            <if test="page.searchKey != '' and page.searchKey != null">
+                and   a.dic_property like concat('%', #{page.searchKey}, '%')
+            </if>
+            <if test="typeId != '' and typeId != null">
+                and a.type_id = #{typeId}
+            </if>
+        </where>
+        limit #{page.pageStart}, #{page.pageSize}
+    </select>
 
 </mapper>
