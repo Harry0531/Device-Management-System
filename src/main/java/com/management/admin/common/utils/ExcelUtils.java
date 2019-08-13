@@ -25,41 +25,40 @@ public class ExcelUtils {
     }
 
     // 通过table中的字段类型获取对应excel类型值
-//    public static Object getCellValueByFieldType(Cell cell, String fieldType) {
-//        Object val = null;
-//        try {
-//            switch (fieldType) {
-//                case "varchar":
-//                    cell.setCellType(HSSFCell.CELL_TYPE_STRING);
-//                    val = cell.getStringCellValue();
-//                    break;
-//                case "int":
-//                    val = (int) cell.getNumericCellValue();
-//                    break;
-//                case "decimal":
-//                    // TODO
-//                    val = cell.getStringCellValue();
-//                    if (!StringUtils.isDigit((String) val)) {
-//                        val = "0";
-//                    }
-//                    break;
-//                case "float":
-//                    val = (float) cell.getNumericCellValue();
-//                    break;
-//                case "double":
-//                    val = cell.getNumericCellValue();
-//                    break;
-//                case "datetime":
-//                case "timestamp":
-//                case "date":
-//                    val = cell.getDateCellValue();
-//                    break;
-//            }
-//        } catch (Exception e) {
-//            // do nothing
-//        }
-//        return val;
-//    }
+    public static Object getCellValueByFieldType(Cell cell, String fieldType) {
+        Object val = null;
+        try {
+            switch (fieldType) {
+                case "varchar":
+                    cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+                    val = cell.getStringCellValue();
+                    break;
+                case "int":
+                    val = (int) cell.getNumericCellValue();
+                    break;
+                case "decimal":
+                    val = cell.getStringCellValue();
+                    if (!StringUtils.isDigit((String) val)) {
+                        val = "0";
+                    }
+                    break;
+                case "float":
+                    val = (float) cell.getNumericCellValue();
+                    break;
+                case "double":
+                    val = cell.getNumericCellValue();
+                    break;
+                case "datetime":
+                case "timestamp":
+                case "date":
+                    val = cell.getDateCellValue();
+                    break;
+            }
+        } catch (Exception e) {
+            // do nothing
+        }
+        return val;
+    }
 
     // 获取excel行中的指定列中的值
     public static Object getCellValue(Cell cell) {

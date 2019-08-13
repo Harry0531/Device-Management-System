@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="../../../plugins/jquery/jquery-3.3.1.min.js"></script>
-    <script src="../../../plugins/elementui/index.js"></script>
-    <script src="../../../plugins/vue/vue.js"></script>
+    <link rel="stylesheet" href="../../../plugins/elementui/index.css">
+
+
 </head>
 <body>
 <div id="app" v-cloak>
@@ -22,14 +22,28 @@
                        @click="downloadExcelTemplate()"></el-button>
         </el-form-item>
         <el-form-item label="上传数据文件">
-            <Upload type="drag" action="/api/tool/file/uploadTempFile" ref="upload"
-                    :before-upload="beforeUpload" :on-success="onUploadSuccess"
-                    :default-file-list="defaultFileList" style="width: 50%" size="small">
-                <div style="padding: 20px 0">
-                    <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-                    <p style="color: darkgray;">点击或者拖拽文件上传</p>
-                </div>
-            </Upload>
+            <!--<el-upload type="drag"   action="http://localhost:8444/api/tool/file/uploadFile" ref="upload"-->
+                    <!--:before-upload="beforeUpload" :on-success="onUploadSuccess"-->
+                    <!--:default-file-list="defaultFileList" style="width: 50%" size="small">-->
+                <!--<div style="padding: 20px 0">-->
+                    <!--<i class="ios-cloud-upload" size="52" style="color: #3399ff"></i>-->
+                    <!--<p style="color: darkgray;">点击或者拖拽文件上传</p>-->
+                <!--</div>-->
+            <!--</el-upload>-->
+
+            <el-upload
+                    style="margin:20px 0 10px 0 "
+                    drag
+                    action="http://localhost:8444/api/tool/file/uploadFile"
+                    :on-success="onUploadSuccess"
+                    :before-upload="beforeUpload"
+                    :default-file-list="defaultFileList"
+                    multiple>
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            </el-upload>
+
+
         </el-form-item>
         <el-form-item>
             <el-button type="success" @click="startImport()" :loading="loading.importing">开始导入</el-button>
@@ -40,4 +54,6 @@
 <script src="../../../plugins/vue/vue.js"></script>
 <script src="../../../plugins/jquery/jquery-3.3.1.min.js"></script>
 <script src="../../../plugins/elementui/index.js"></script>
+<script src="../../../js/utils.js"></script>
+<script src="../../../js/management/excel/ImportData.js"></script>
 </html>

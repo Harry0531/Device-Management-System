@@ -1,12 +1,16 @@
 package com.management.admin.modules.tool.service;
 
 import com.management.admin.common.utils.ExcelUtils;
+import com.management.admin.common.utils.IdGen;
 import com.management.admin.common.utils.SystemPath;
 import com.management.admin.modules.tool.dao.ColumnMapFieldDao;
 import com.management.admin.modules.tool.dao.ExcelTemplateDao;
 import com.management.admin.modules.tool.entity.ColumnMapField;
+import com.management.admin.modules.tool.entity.DynamicInsertParam;
+import com.management.admin.modules.tool.entity.ExcelData;
 import com.management.admin.modules.tool.entity.ExcelTemplate;
 import com.management.admin.modules.tool.entity.tiny.ExcelColumn;
+import com.management.admin.modules.tool.entity.tiny.TableField;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -15,10 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 @Service
 public class ExcelService {
@@ -97,5 +101,112 @@ public class ExcelService {
             excelColumnList.add(excelColumn);
         }
         return excelColumnList;
+    }
+
+    public List<ExcelTemplate> selectAllTemplate(ExcelTemplate conditions) {
+        return excelTemplateDao.selectAllTemplate(conditions);
+    }
+
+    public boolean importExcelToTable(ExcelData excelData) throws IOException {
+        //数据excel名字
+        String dataExcelPath=SystemPath.getRootPath()+SystemPath.getTemporaryPath()+excelData.getExcelDataName();
+
+        //获得模版信息
+        ExcelTemplate excelTemplate = excelTemplateDao.selectById(excelData.getId());
+
+        //获得字段对应列名map信息
+        List<ColumnMapField> columnMapFieldList = excelTemplateDao.selectByTemplateId(excelData.getId());
+
+
+
+//        1.准备数据，来自excel表格之外
+        List<List<Object>> data = new ArrayList<>();
+
+        Sheet sheet = ExcelUtils.getSheet(new File(dataExcelPath),0);//获取excel表格
+        Date now = new Date();//当前时间
+
+//            2.获取数据库字段信息
+        // add info from table field and reorder
+        List<TableField> tableFieldList = getTableFieldList(excelData.getTableName(), false);
+        List<ColumnMapField> columnMapFieldList2 = new ArrayList<>();
+        for (TableField tableField : tableFieldList) {
+            for (ColumnMapField columnMapField : columnMapFieldList) {
+                if (tableField.getFieldName().equals(columnMapField.getTableColumnName())) {
+                    columnMapField.setFieldType(tableField.getFieldType());
+                    columnMapFieldList2.add(columnMapField);
+                    break;
+                }
+            }
+        }
+
+        //数据库字段头序列
+        List<String> fieldList = new ArrayList<>();
+        fieldList.add("id");
+        fieldList.add("create_time");
+        fieldList.add("modify_time");
+        fieldList.add("del_flag");
+        for (ColumnMapField columnMapField : columnMapFieldList2) {
+            fieldList.add(columnMapField.getTableColumnName());
+        }
+
+        DynamicInsertParam dynamicInsertParam = new DynamicInsertParam();
+        //设置插入的数据库表名
+        dynamicInsertParam.setTableName(excelData.getTableName());
+        //设置插入字段
+        dynamicInsertParam.setFieldList(fieldList);
+
+//        3.处理表格数据
+        for(int rowIndex = 1; rowIndex <=sheet.getLastRowNum();rowIndex++){ //忽略第一行
+            Row dataRow = sheet.getRow(rowIndex);   //获取一行的数据
+
+            //对应前面四个固定值
+            List<Object> row = new ArrayList<>();
+            row.add(IdGen.uuid());
+            row.add(now);
+            row.add(now);
+            row.add(0);
+
+            //处理每个map对应关系
+            for(int i=0;i<columnMapFieldList2.size();i++){
+                ColumnMapField columnMapField = columnMapFieldList2.get(i);  //取得单个映射
+                Object cellValue = null;
+                if(columnMapField.getColumnIndex()!= null){   //如果存在映射关系
+                        int tmp=columnMapField.getColumnIndex();
+                        Cell cell =dataRow.getCell(tmp);
+                    cellValue = ExcelUtils.getCellValueByFieldType(cell, columnMapField.getFieldType());
+                }
+                row.add(cellValue);
+            }
+            data.add(row);
+        }//for
+        dynamicInsertParam.setData(data);
+        // 4.进行插入，并返回是否成功
+        return excelTemplateDao.dynamicInsert(dynamicInsertParam) == dynamicInsertParam.getData().size();
+    }
+
+    /**
+     * @param tableName table's name in database
+     * @return all fields' info except 6 automatic field
+     */
+    public List<TableField> getTableFieldList(String tableName, boolean isAll) {
+        List<TableField> tableFieldList = excelTemplateDao.selectFieldListByTableName(tableName);
+        if (isAll)
+            return tableFieldList;
+        return tableFieldList.stream()
+                .filter(columnMapField -> isFieldRetained(columnMapField.getFieldName()))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * @return is field retained
+     */
+    private boolean isFieldRetained(String fieldName) {
+        String[] excludeColumns = new String[]{"id",  "create_date",
+                 "modify_date", "del_flag"};
+        for (String s : excludeColumns) {
+            if (s.equals(fieldName))
+                return false;
+        }
+        return true;
     }
 }

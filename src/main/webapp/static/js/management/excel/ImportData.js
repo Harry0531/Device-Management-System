@@ -8,8 +8,8 @@ let app = new Vue({
         },
         urls: {
             selectAllExcelTemplate: 'http://localhost:8444/api/tool/excel/selectAllTemplate',
-            downloadExcelTemplate: '/api/tool/excelTemplate/downloadExcelTemplate',
-            importExcelToTable: '/api/tool/excelTemplate/importExcelToTable'
+            downloadExcelTemplate: 'http://localhost:8444/api/tool/excel/downloadExcelTemplate',
+            importExcelToTable: 'http://localhost:8444/api/tool/excel/importExcelToTable'
         },
         excelTemplateList: [],
         defaultFileList: [],
@@ -51,7 +51,7 @@ let app = new Vue({
             this.excelTemplateList.forEach(item => {
                 if (flag) return;
                 if (item.id === value) {
-                    this.formData = copy(item);
+                    this.formData = JSON.parse(JSON.stringify(item));
                     flag = true;
                 }
             });
@@ -80,6 +80,7 @@ let app = new Vue({
             this.formData.excelDataName = this.tmpFileName;
             this.loading.importing = true;
             let app = this;
+            console.log(this.formData);
             ajaxPostJSON(this.urls.importExcelToTable, this.formData, function (d) {
                 app.loading.importing = false;
                 window.parent.parent.app.showMessage('导入成功');

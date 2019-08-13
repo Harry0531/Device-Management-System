@@ -1,16 +1,26 @@
 package com.management.admin.modules.tool.controller;
 
 import com.management.admin.common.utils.ExcelUtils;
+import com.management.admin.common.utils.SystemPath;
 import com.management.admin.common.web.BaseApi;
 import com.management.admin.common.web.MsgType;
+import com.management.admin.modules.tool.entity.ExcelData;
 import com.management.admin.modules.tool.entity.ExcelTemplate;
 import com.management.admin.modules.tool.entity.tiny.ExcelColumn;
 import com.management.admin.modules.tool.service.ExcelService;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import  java.util.List;
 
@@ -46,10 +56,45 @@ public class ExcelController extends BaseApi {
     public Object selectAllTemplate(
             @RequestBody ExcelTemplate excelTemplate
             )throws Exception{
-
+        List<ExcelTemplate> excelTemplateList = excelService.selectAllTemplate(excelTemplate);
+        return retMsg.Set(MsgType.SUCCESS, excelTemplateList);
     }
 
+    @RequestMapping(value = "downloadExcelTemplate", method = RequestMethod.GET)
+    public ResponseEntity downloadExcelTemplate(
+            @RequestParam("excelName") String excelName,
+            @RequestParam("downloadName") String downloadName,
+            HttpServletResponse response) throws IOException {
+        File excelTemplate = new File(SystemPath.getRootPath() + SystemPath.getExcelTemplatePath() + excelName);
+        downloadName = new String((downloadName + "." + FilenameUtils.getExtension(excelName)).
+                getBytes("UTF-8"), "iso-8859-1");
+        HttpHeaders headers = new HttpHeaders();
+        byte[] returnFile;
+        try {
+            returnFile = org.apache.commons.io.FileUtils.readFileToByteArray(excelTemplate);
+        } catch (IOException e) {
+            response.sendRedirect("/404");
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", downloadName);
+        return new ResponseEntity<>(returnFile, headers, HttpStatus.OK);
+    }
 
+    /**
+     * @param excelData include template params and data file's name in server
+     * @return isSuccess
+     */
+    @RequestMapping(value = "importExcelToTable", method = RequestMethod.POST)
+    @ResponseBody
+    public Object importExcelToTable(@RequestBody ExcelData excelData) {
+        try {
+            excelService.importExcelToTable(excelData);
+            return retMsg.Set(MsgType.SUCCESS);
+        } catch (IOException e) {
+            return retMsg.Set(MsgType.ERROR);
+        }
+    }
 
     @RequestMapping(value="getTableList",method = RequestMethod.GET)
     @ResponseBody

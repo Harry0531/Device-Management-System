@@ -19,7 +19,7 @@ public class FileUtils {
     public static String saveUploadFileToTempDir(MultipartFile file) throws IOException {
         String fileType = FilenameUtils.getExtension(file.getOriginalFilename());
         String saveName = IdGen.uuid() + "." + fileType;
-        String savePath = SystemPath.getRootPath() + SystemPath.getExcelTemplatePath();
+        String savePath = SystemPath.getRootPath() + SystemPath.getTemporaryPath();
         File tempDir = new File(savePath);
         if (!tempDir.exists()) {
             tempDir.mkdirs();
