@@ -6,7 +6,7 @@ var app = new Vue({
         },
         fullScreenLoading:false,
         insertOrUpdateDialog:{
-            title:"",
+            title:"模版设置",
             visible:false
         }
     },

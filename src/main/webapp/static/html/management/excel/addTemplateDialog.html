@@ -7,12 +7,88 @@
         [v-cloak]{
             display: none;
         }
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body,html{
+            width: 100%;
+            height: 100%;
+        }
+
+        .button-group{
+            position: absolute;
+            bottom: 27px;
+            right: 45px;
+        }
     </style>
+    <link rel="stylesheet" href="../../../plugins/elementui/index.css">
+    <script src="../../../js/utils.js"></script>
 </head>
 <body>
 
-    <div id="app" v-cloak="">
+    <div id="app" v-cloak>
+        <el-steps :active="StepCount" style="margin-right: 20px">
+            <el-step title="1.上传模版文件" icon="el-icon-upload"></el-step>
+            <el-step title="2.列名映射" icon="el-icon-edit"></el-step>
+        </el-steps>
 
+       <div v-if="StepCount==1">
+           <p style="margin: 10px">模版名称</p>
+           <el-input v-model="templateEntity.templateName"></el-input>
+            <p style="margin: 10px">选择表</p>
+           <el-select v-model="templateEntity.tableName" placeholder="请选择">
+               <el-option
+                       v-for="item in TableList"
+                       :key="item"
+                       :label="item"
+                       :value="item">
+               </el-option>
+           </el-select>
+           <el-upload
+                   style="margin:20px 0 10px 0 "
+                   drag
+                   action="http://localhost:8444/api/tool/file/uploadFile"
+                   :on-success="SuccessUpload"
+                   :before-upload="beforeUpload"
+                   multiple>
+               <i class="el-icon-upload"></i>
+               <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+           </el-upload>
+
+       </div>
+        <div v-if="StepCount==2">
+            <el-table :data="ColumnList.mapList" ref="table"  height="360">
+                <el-table-column label="字段名" prop="tableColumnName">
+
+                </el-table-column>
+                <el-table-column label="请选择导入的excel中的列名" prop="ExcelColumnIndex">
+                    <template slot-scope="{row}">
+                        <el-select v-model="row.columnIndex" clearable filterable size="mini"
+                                   @clear="row.columnIndex=-1;row.columnName=null"
+                                   @change="setColumnName($event, row)" >
+                            <el-option v-for="excelColumn in ColumnList.ExcelColumnList" :key="excelColumn.columnIndex"
+                                       :label="excelColumn.columnName" :value="excelColumn.columnIndex"></el-option>
+                            <el-option v-show="false" :key="-1" :value="-1" label="请选择 ……"></el-option>
+                        </el-select>
+                    </template>
+                </el-table-column>
+
+            </el-table>
+
+        </div>
+
+
+        <div class="button-group">
+            <span v-if="StepCount==1">
+            <el-button size="small" type="success" @click="nextStep()" :loading="loading.step1" >下一步</el-button>
+        </span>
+            <span v-if="StepCount==2">
+            <el-button size="small" type="warning" @click="beforeStep()" :loading="loading.step2">上一步</el-button>
+            <el-button size="small" type="success" @click="submit()"
+                       :loading="loading.step2">提&nbsp;&nbsp;&nbsp;交</el-button>
+            </span>
+        </div>
 
     </div>
 </body>

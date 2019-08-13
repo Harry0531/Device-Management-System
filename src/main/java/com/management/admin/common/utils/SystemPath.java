@@ -24,6 +24,6 @@ public class SystemPath {
      * @return excel导入模板存储路径
      */
     public static String getExcelTemplatePath(){
-        return "/src/main/webapp/file/template/";
+        return "/src/main/webapp/file/temporary/";
     }
 }

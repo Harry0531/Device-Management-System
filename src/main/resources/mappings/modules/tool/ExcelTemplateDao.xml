@@ -2,5 +2,61 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.management.admin.modules.tool.dao.ExcelTemplateDao">
 
+    <select id="getTableList" resultType="String">
+        select `table_name` from information_schema.tables where table_schema="securityManager"
+    </select>
+
+    <select id="getTableColumnList" resultType="String">
+        select COLUMN_NAME from information_schema.COLUMNS where table_name = #{param1} and table_schema = 'securityManager'
+    </select>
+
+
+    <insert id="insertOrUpdate" parameterType="com.management.admin.modules.tool.entity.ExcelTemplate">
+        insert excel_template (id,
+                               template_name,
+                               table_name,
+                               excel_name,
+                               create_time,
+                               modify_time,
+                               del_flag)
+        values (#{id},
+                #{templateName},
+                #{tableName},
+                #{filePath},
+                #{createTime},
+                #{modifyTime},
+                #{delFlag})
+        on duplicate key update id             = #{id},
+                                template_name  = #{templateName},
+                                table_name     = #{tableName},
+                                excel_name     = #{filePath},
+                                create_time    = #{createTime},
+                                modify_time    = #{modifyTime},
+                                del_flag       = #{delFlag}
+    </insert>
+
+
+    <insert id="insertList" parameterType="com.management.admin.modules.tool.entity.ColumnMapField">
+        insert excel_template_map
+        (id,
+        template_id,
+        field_name,
+        column_index,
+        column_name,
+        create_time,
+        modify_time,
+        del_flag)
+        values
+        <foreach collection="list" separator="," item="item">
+            (#{item.id},
+            #{item.templateId},
+            #{item.tableColumnName},
+            #{item.columnIndex},
+            #{item.columnName},
+            #{item.createTime},
+            #{item.modifyTime},
+            #{item.delFlag})
+        </foreach>
+    </insert>
 
 </mapper>
