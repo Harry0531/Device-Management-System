@@ -9,19 +9,11 @@
         <result column="table_name" property="tableName"/>
         <result column="create_date" property="createDate"/>
         <result column="modify_date" property="modifyDate"/>
+        <result column="template_type" property="typeId"/>
         <result column="del_flag" property="delFlag"/>
     </resultMap>
 
-    <resultMap id="columnMapFieldBean" type="com.management.admin.modules.tool.entity.ColumnMapField">
-        <id column="id" property="id"/>
-        <result column="template_id" property="templateId"/>
-        <result column="field_name" property="tableColumnName"/>
-        <result column="column_name" property="columnName"/>
-        <result column="column_index" property="columnIndex"/>
-        <result column="create_date" property="createDate"/>
-        <result column="modify_date" property="modifyDate"/>
-        <result column="del_flag" property="delFlag"/>
-    </resultMap>
+
 
 
     <select id="getTableList" resultType="String">
@@ -36,6 +28,7 @@
     <insert id="insertOrUpdate" parameterType="com.management.admin.modules.tool.entity.ExcelTemplate">
         insert excel_template (id,
                                template_name,
+                               template_type,
                                table_name,
                                excel_name,
                                create_time,
@@ -43,6 +36,7 @@
                                del_flag)
         values (#{id},
                 #{templateName},
+                #{typeId},
                 #{tableName},
                 #{filePath},
                 #{createTime},
@@ -58,59 +52,21 @@
     </insert>
 
 
-    <insert id="insertList" parameterType="com.management.admin.modules.tool.entity.ColumnMapField">
-        insert excel_template_map
-        (id,
-        template_id,
-        field_name,
-        column_index,
-        column_name,
-        create_time,
-        modify_time,
-        del_flag)
-        values
-        <foreach collection="list" separator="," item="item">
-            (#{item.id},
-            #{item.templateId},
-            #{item.tableColumnName},
-            #{item.columnIndex},
-            #{item.columnName},
-            #{item.createTime},
-            #{item.modifyTime},
-            #{item.delFlag})
-        </foreach>
-    </insert>
-
 
     <select id="selectAllTemplate" parameterType="com.management.admin.modules.tool.entity.ExcelTemplate" resultMap="excelTemplateBean">
-        select a.* from excel_template a
+        select a.* from excel_template a where del_flag=0
     </select>
 
 
     <select id="selectById" parameterType="string" resultMap="excelTemplateBean">
         select *
         from excel_template
-        where id = #{param1}
+        where id = #{param1} and del_flag=0
     </select>
 
-    <select id="selectByTemplateId" parameterType="string" resultMap="columnMapFieldBean">
-        select *
-        from excel_template_map
-        where template_id = #{param1}
-    </select>
 
-    <insert id="dynamicInsert" parameterType="com.management.admin.modules.tool.entity.DynamicInsertParam">
-        insert into ${tableName}
-        <foreach collection="fieldList" item="field" index="index" open="(" separator="," close=")">
-            ${field}
-        </foreach>
-        values
-        <foreach collection="data" separator="," item="row">
-            <foreach collection="row" open="(" close=")" separator="," item="cell">
-                #{cell}
-            </foreach>
-        </foreach>
-    </insert>
+
+
 
 
 

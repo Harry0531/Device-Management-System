@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="../../../plugins/elementui/index.css">
-
+    <style>
+        [v-cloak]{
+            display: none;
+        }
+    </style>
 
 </head>
 <body>
@@ -22,14 +26,6 @@
                        @click="downloadExcelTemplate()"></el-button>
         </el-form-item>
         <el-form-item label="上传数据文件">
-            <!--<el-upload type="drag"   action="http://localhost:8444/api/tool/file/uploadFile" ref="upload"-->
-                    <!--:before-upload="beforeUpload" :on-success="onUploadSuccess"-->
-                    <!--:default-file-list="defaultFileList" style="width: 50%" size="small">-->
-                <!--<div style="padding: 20px 0">-->
-                    <!--<i class="ios-cloud-upload" size="52" style="color: #3399ff"></i>-->
-                    <!--<p style="color: darkgray;">点击或者拖拽文件上传</p>-->
-                <!--</div>-->
-            <!--</el-upload>-->
 
             <el-upload
                     style="margin:20px 0 10px 0 "

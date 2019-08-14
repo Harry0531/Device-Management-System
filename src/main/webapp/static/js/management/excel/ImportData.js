@@ -5,6 +5,7 @@ let app = new Vue({
             id: '',
             excelName: '',      // excel模板文件的名字(默认存放/WEB-INF/excelTemplate)
             excelDataName: '',  // 存放数据的excel文件的名字(默认存放在/WEB-INF/temp)
+            typeId:''
         },
         urls: {
             selectAllExcelTemplate: 'http://localhost:8444/api/tool/excel/selectAllTemplate',
@@ -31,8 +32,6 @@ let app = new Vue({
         onUploadSuccess: function (res, file) {
             this.tmpFileName = res.data;
             this.defaultFileList[0] = file;
-            this.$refs.upload.fileList.pop();
-            this.$refs.upload.fileList[0] = file;
         },
         // get all templates those has been enabled
         selectExcelTemplateByEnabled: function () {
@@ -83,10 +82,16 @@ let app = new Vue({
             console.log(this.formData);
             ajaxPostJSON(this.urls.importExcelToTable, this.formData, function (d) {
                 app.loading.importing = false;
-                window.parent.parent.app.showMessage('导入成功');
+                app.$message({
+                    message:"导入成功",
+                    type:"success"
+                });
             },function(d){
                 app.loading.importing = false;
-                window.parent.parent.app.showMessage('导入失败', 'error');
+                app.$message({
+                    message:"导入失败",
+                    type:"error"
+                });
             })
         }
     },

@@ -18,7 +18,6 @@ public interface ExcelTemplateDao {
     //插入模版
     void insertOrUpdate(ExcelTemplate excelTemplate);
 
-    void insertList(List<ColumnMapField> lists);
 
     //查询所有模版名称
     List<ExcelTemplate> selectAllTemplate(ExcelTemplate condition);
@@ -26,14 +25,8 @@ public interface ExcelTemplateDao {
     //查询单个模版信息
     ExcelTemplate selectById(String id);
 
-    //根据模版id查询map信息
-    List<ColumnMapField> selectByTemplateId(String templateId);
 
 
 
-    // 获取指定表中的所有列信息
-    List<TableField> selectFieldListByTableName(@Param("tableName") String tableName);
-    //根据Excel数据插入数据库
-    int dynamicInsert(DynamicInsertParam dynamicInsertParam);
 
 }

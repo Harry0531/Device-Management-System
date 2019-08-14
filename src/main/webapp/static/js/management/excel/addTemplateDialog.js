@@ -5,6 +5,7 @@ var app=new Vue({
         TableList:[],
         urls:{
             getTableList:"http://localhost:8444/api/tool/excel/getTableList",
+            getDictType:'http://localhost:8444/api/sys/dict/getDictTypeList',
             uploadFile:"http://localhost:8444/api/tool/file/uploadFile",
             getColumnInTableAndExcel:"http://localhost:8444/api/tool/excel/getColumnInTableAndExcel",
             insertExcelTemplate:"http://localhost:8444/api/tool/excel/insertExcelTemplate"
@@ -14,15 +15,17 @@ var app=new Vue({
             step2:false
         },
         templateEntity:{
-            templateName:"",
-            tableName:"",
-            filePath:""
+            templateName:"",       //模版名
+            tableName:"",       //对应表名
+            filePath:"" ,  //文件名
+            TypeId:""   //对应数据字典类型ID
         },
         ColumnList:{
             ExcelColumnList:[],
             TableColumnList:[],
-            mapList:[]
-        }
+            mapList:[],
+        },
+        dictType:[]
     },
     methods:{
         // 上传模板前调用
@@ -74,6 +77,7 @@ var app=new Vue({
                 templateName:app.templateEntity.templateName,
                 tableName:app.templateEntity.tableName,
                 filePath:app.templateEntity.filePath,
+                typeId:app.templateEntity.typeId,
                 columnMapFieldList:app.ColumnList.mapList
             }
             ajaxPostJSON(app.urls.insertExcelTemplate,data,function (v) {
@@ -103,9 +107,20 @@ var app=new Vue({
             ajaxGet(app.urls.getTableList,null,function (v) {
                 app.TableList=v.data;
             })
-        }
+        },
+        handleSelectTypeChange:function (v) {
+            var app=this;
+            app.templateEntity.typeId= v["id"]
+        },
+        getDictTypeData:function(){
+            let app= this;
+            ajaxGet(app.urls.getDictType,null,function (d) {
+                app.dictType=d.data;
+            })
+        },
     },
     mounted:function () {
         this.getTableList();
+        this.getDictTypeData();
     }
 })

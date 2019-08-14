@@ -6,5 +6,9 @@ import java.util.List;
 
 public interface ColumnMapFieldDao {
 
-//    int insertList(List<ColumnMapField> list);
+    void insertList(List<ColumnMapField> lists);
+
+
+    //根据模版id查询map信息
+    List<ColumnMapField> selectByTemplateId(String templateId);
 }

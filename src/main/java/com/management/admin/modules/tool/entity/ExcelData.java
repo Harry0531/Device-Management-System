@@ -13,6 +13,7 @@ public class ExcelData extends DataEntity<ExcelData> {
     private String tableName;       // 目标表名
     private String filePath;       // excel模板文件的名字(默认存放src/main/webapp/file/template)
     private String excelDataName; //数据excel文件名
+    private String typeId;  //模板所属类型的uuid
 
     private List<ColumnMapField> columnMapFieldList;     // excel列到table字段的映射(以field为基准)
 }

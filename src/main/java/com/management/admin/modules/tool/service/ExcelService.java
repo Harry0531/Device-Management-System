@@ -5,6 +5,7 @@ import com.management.admin.common.utils.IdGen;
 import com.management.admin.common.utils.SystemPath;
 import com.management.admin.modules.tool.dao.ColumnMapFieldDao;
 import com.management.admin.modules.tool.dao.ExcelTemplateDao;
+import com.management.admin.modules.tool.dao.ImportDataDao;
 import com.management.admin.modules.tool.entity.ColumnMapField;
 import com.management.admin.modules.tool.entity.DynamicInsertParam;
 import com.management.admin.modules.tool.entity.ExcelData;
@@ -33,6 +34,9 @@ public class ExcelService {
     @Autowired
     ColumnMapFieldDao columnMapFieldDao;
 
+    @Autowired
+    ImportDataDao importDataDao;
+
     /**
      * @param excelTemplate include all info
      * @return is successful
@@ -59,7 +63,7 @@ public class ExcelService {
             columnMapField.setTemplateId(excelTemplate.getId());
         }
         if (excelTemplate.getColumnMapFieldList().size() > 0)
-            excelTemplateDao.insertList(excelTemplate.getColumnMapFieldList());
+            columnMapFieldDao.insertList(excelTemplate.getColumnMapFieldList());
         return true;
     }
 
@@ -115,7 +119,7 @@ public class ExcelService {
         ExcelTemplate excelTemplate = excelTemplateDao.selectById(excelData.getId());
 
         //获得字段对应列名map信息
-        List<ColumnMapField> columnMapFieldList = excelTemplateDao.selectByTemplateId(excelData.getId());
+        List<ColumnMapField> columnMapFieldList = columnMapFieldDao.selectByTemplateId(excelData.getId());
 
 
 
@@ -149,6 +153,14 @@ public class ExcelService {
             fieldList.add(columnMapField.getTableColumnName());
         }
 
+        //判断字段是否用了数据字典
+        List<Boolean> isDict = new ArrayList<>();
+        for(int i = 0 ; i <fieldList.size();i++){
+            String fieldName=fieldList.get(i);
+            if()
+        }
+
+
         DynamicInsertParam dynamicInsertParam = new DynamicInsertParam();
         //设置插入的数据库表名
         dynamicInsertParam.setTableName(excelData.getTableName());
@@ -181,7 +193,7 @@ public class ExcelService {
         }//for
         dynamicInsertParam.setData(data);
         // 4.进行插入，并返回是否成功
-        return excelTemplateDao.dynamicInsert(dynamicInsertParam) == dynamicInsertParam.getData().size();
+        return importDataDao.dynamicInsert(dynamicInsertParam) == dynamicInsertParam.getData().size();
     }
 
     /**
@@ -189,7 +201,7 @@ public class ExcelService {
      * @return all fields' info except 6 automatic field
      */
     public List<TableField> getTableFieldList(String tableName, boolean isAll) {
-        List<TableField> tableFieldList = excelTemplateDao.selectFieldListByTableName(tableName);
+        List<TableField> tableFieldList = importDataDao.selectFieldListByTableName(tableName);
         if (isAll)
             return tableFieldList;
         return tableFieldList.stream()

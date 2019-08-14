@@ -45,6 +45,13 @@
                        :value="item">
                </el-option>
            </el-select>
+
+           <p style="margin: 10px">选择类型</p>
+           <el-select v-model="templateEntity.TypeId" clearable @change="handleSelectTypeChange">
+               <el-option v-for="item in dictType" :key="item.id" :label="item.typeName"
+                          :value="item"></el-option>
+           </el-select>
+
            <el-upload
                    style="margin:20px 0 10px 0 "
                    drag
