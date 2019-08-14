@@ -1,9 +1,16 @@
-var app = new Vue({
+let app = new Vue({
     el: '#app',
     data: {
         fullScreenLoading: false,
+        selectionType: [
+            {value: 0, label: '学院'},
+            {value: 1, label: '部门/课题组'},
+        ],
         urls: {
-            getSchoolList:'http://localhost:8444/api/sys/dept/getSchoolList',
+            getSchoolList: 'http://localhost:8444/api/sys/dept/getSchoolList',
+            getList: 'http://localhost:8444/api/sys/dept/getList',
+            insertOrUpdateDept: 'http://localhost:8444/api/sys/dept/insertOrUpdateDept',
+            deleteListByIds: 'http://localhost:8444/api/sys/dept/deleteListByIds'
         },
         table: {
             loading: false,
@@ -16,43 +23,42 @@ var app = new Vue({
                 pageSizes: [5, 10, 20, 40],
                 total: 0
             },
-            typeId:''
+            id: ''
         },
-        schoolList:[],
-        dialog:{
-            visible:false,
-            loading:false,
-            data:{
-                id:"",
-                typeId:"",
-                typeName:"",
-                dicProperty:"",
-                dicValue:"",
-                fatherId:""
+        schoolList: [],
+        dialog: {
+            visible: false,
+            loading: false,
+            data: {
+                id: '',
+                dept_name: '',
+                dept_code: '',
+                dept_attach: '',
+                dept_type: '',
+                _dept_type: '',
+                _dept_attach: ''
             }
         }
     },
     methods: {
-        getSchoolList:function(){
-            let app= this;
-            ajaxGet(app.urls.getSchoolList,null,function (d) {
-                console.log(d);
-                app.schoolList=d.data;
+        getSchoolList: function () {
+            let app = this;
+            ajaxGet(app.urls.getSchoolList, null, function (result) {
+                app.schoolList = result.data;
             });
-            console.log(app.schoolList);
         },
-        //刷新表格数据
         refreshTable: function () {
+            console.log("refreshTable");
             let app = this;
             app.table.loading = true;
             let data = {
                 page: app.table.props,
-                typeId:app.table.typeId
+                id: app.table.id
             };
-            ajaxPostJSON(this.urls.getDictList, data, function (d) {
+            ajaxPostJSON(this.urls.getList, data, function (result) {
                 app.table.loading = false;
-                app.table.data = d.data.resultList;
-                app.table.props.total = d.data.total;
+                app.table.data = result.data.resultList;
+                app.table.props.total = result.data.total;
             })
         },
         // 处理pageSize变化
@@ -65,24 +71,47 @@ var app = new Vue({
             this.table.props.pageIndex = newIndex;
             this.refreshTable();
         },
-        //打开修改弹窗
-        openDialog_updateEntity: function (row) {
-            this.dialog.updateEntity.visible = true;
-            this.dialog.updateEntity.formData = copy(row);
-        },
         // 处理选中的行变化
         onSelectionChange: function (val) {
             this.table.selectionList = val;
         },
-        formatYear: function(timestamp){
-            let date = new Date(timestamp);
-            return date.Format("yyyy");
+        insertOrUpdateDept: function () {
+            let app = this;
+            app.dialog.loading = true;
+            let data = {
+                id: app.dialog.data.id,
+                dept_type: app.dialog.data.dept_type,
+                dept_attach: app.dialog.data.dept_attach,
+                dept_name: app.dialog.data.dept_name,
+                dept_code: app.dialog.data.dept_code
+            };
+            if (app.dialog.data.dept_type == 0) {
+                data.dept_attach = 0;
+            }
+            ajaxPostJSON(this.urls.insertOrUpdateDept, data, function (result) {
+                app.dialog.loading = false;
+                app.dialog.visible = false;
+                if (result.code == "success") {
+                    app.$message({
+                        message: "操作成功",
+                        type: "success"
+                    });
+                } else {
+                    let msg = "操作失败" + result.data;
+                    app.$message({
+                        message: msg,
+                        type: "error"
+                    });
+                }
+                app.getSchoolList();
+                app.refreshTable();
+            })
         },
-        deleteByIds: function(fundList){
+        deleteByIds: function (fundList) {
             if (fundList.length === 0) {
                 app.$message({
                     message: "未选中任何项",
-                    type:"danger"
+                    type: "danger"
                 });
                 return;
             }
@@ -97,72 +126,62 @@ var app = new Vue({
                 ajaxPostJSON(this.urls.deleteListByIds, data, function (d) {
                     app.$message({
                         message: "删除成功",
-                        type:"success"
+                        type: "success"
                     });
                     app.refreshTable();
                 })
             }).catch(() => {
                 app.$message({
                     message: "取消删除",
-                    type:"danger"
+                    type: "danger"
                 });
             });
         },
-        handleSelectTypeChange:function (v) {
-            var app=this;
-            app.dialog.data.typeName=  v["typeName"];
-            app.dialog.data.typeId= v["id"]
-        },
-        insertOrUpdateDict: function () {
+        resetDialogData: function () {
             let app = this;
-            app.dialog.loading = true;
-            let data = {
-                typeId:app.dialog.data.typeId,
-                typeName:app.dialog.data.typeName,
-                dicProperty:app.dialog.data.dicProperty,
-                dicValue:app.dialog.data.dicValue,
-                fatherId:"",
-                id:app.dialog.data.id
-            };
-            ajaxPostJSON(this.urls.insertDict, data, function (d) {
-                app.dialog.loading = false;
-                app.dialog.visible=false;
-                app.$message({
-                    message:"插入成功",
-                    type:"success"
-                });
-                app.refreshTable();
-            })
-        },
-        resetDialogData:function () {
-            var app=this;
-            app.dialog={
-                visible:false,
-                loading:false,
-                data:{
-                    id:"",
-                    typeId:"",
-                    typeName:"",
-                    dicProperty:"",
-                    dicValue:"",
-                    fatherId:""
+            app.dialog = {
+                visible: false,
+                loading: false,
+                data: {
+                    id: '',
+                    dept_name: '',
+                    dept_code: '',
+                    dept_attach: '',
+                    dept_type: '',
+                    _dept_type: '',
+                    _dept_attach: ''
                 }
             }
         },
-        updateDialog:function (v) {
-            var app=this;
-            app.dialog.data.id=v["id"];
-            app.dialog.data.typeId=v["typeId"];
-            app.dialog.data.typeName=v["typeName"];
-            app.dialog.data.dicProperty=v["dicProperty"];
-            app.dialog.data.dicValue=v["dicValue"];
-            app.dialog.data.fatherId=v["fatherId"];
-            app.dialog.visible=true;
+        updateDialog: function (v) {
+            let app = this;
+            app.dialog.data.id = v["id"];
+            app.dialog.data.dept_name = v["dept_name"];
+            app.dialog.data.dept_code = v["dept_code"];
+            app.dialog.data.dept_type = v["dept_type"];
+            app.dialog.data._dept_type = v["_dept_type"];
+            app.dialog.data._dept_attach = v["_dept_attach"];
+            console.log(app.dialog.data);
+            app.dialog.data.dept_attach = v["dept_attach"];
+            if (app.dialog.data.dept_attach == '0')
+                app.dialog.data.dept_attach = '';
+            app.dialog.visible = true;
         }
-
     },
-    mounted: function(){
+    mounted: function () {
         this.getSchoolList();
-        //this.refreshTable();
+        this.refreshTable();
+    },
+    computed: {
+        isAttachDisabled: function () {
+            return (this.dialog.data.dept_type === 0)
+                || (this.dialog.data.dept_type == null || this.dialog.data.dept_type === '')
+        },
+        isUpdateDisabled: function () {
+            return !(this.dialog.data.dept_type != null
+                && this.dialog.data.dept_name
+                && this.dialog.data.dept_code
+                && (this.dialog.data.dept_attach || this.isAttachDisabled));
+        }
     }
 });

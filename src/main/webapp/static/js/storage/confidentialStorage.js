@@ -185,9 +185,8 @@ let app = new Vue({
         updateDialog: function (v) {
             let app = this;
             app.getDialogList();
-            console.log("v", v);
+            console.log(v);
             app.dialog.data.id = v["id"];
-            console.log("id", app.dialog.data.id);
             app.dialog.data.department_name = v["department_name"];
             app.dialog.data.subject_name = v["subject_name"];
             app.dialog.data.secret_number = v["secret_number"];
@@ -201,6 +200,7 @@ let app = new Vue({
             app.dialog.data.scope = v["scope"];
             app.dialog.data.enablation_time = v["enablation_time"];
             app.dialog.data.use_situation = v["use_situation"];
+            console.log(app.dialog.data.use_situation);
             app.dialog.data.remarks = v["remarks"];
             app.dialog.data._type = v["_type"];
             app.dialog.data._secret_level = v["_secret_level"];

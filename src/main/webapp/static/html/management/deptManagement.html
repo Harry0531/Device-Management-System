@@ -11,22 +11,20 @@
 <div id="app" v-cloak style="background: white;height: 100%;overflow: hidden;" v-loading="fullScreenLoading">
     <div style="padding: 15px 20px 0 15px;">
         <span class="button-group">
-            <el-button size="small" type="warning" @click="deleteByIds(table.selectionList)"
-                       style="margin-left: 10px;">
-                <span>批量删除</span>
-            </el-button>
             <el-button size="small" type="success" @click="dialog.visible=true"
-                       style="margin-left: 10px;">新增字典</el-button>
+                       style="margin-left: 10px;">新增记录</el-button>
+            <el-button size="small" type="danger" @click="deleteByIds(table.selectionList)"
+                       style="margin-left: 10px;">批量删除</el-button>
         </span>
 
         <span style="float: right;margin-right: 10px;">
-            <el-select v-model="table.typeId" size="small" @change="refreshTable();" clearable
-                       filterable placeholder="选择字典类型">
-                <el-option v-for="item in dictType" :key="item.id" :label="item.typeName"
+            <el-select v-model="table.id" size="small" @change="refreshTable();"
+                       clearable placeholder="选择学院">
+                <el-option v-for="item in schoolList" :key="item.id" :label="item.dept_name"
                            :value="item.id"></el-option>
             </el-select>
-            <el-input size="small" placeholder="请输入字典属性" suffix-icon="el-icon-search"
-                      style="width: 250px;margin-right: 10px;" v-model="table.props.searchKey"
+            <el-input size="small" placeholder="输入单位编号" suffix-icon="el-icon-search"
+                      style="width: 250px;margin-right: 10px;" v-model="table.props.searchKey" clearable
                       @keyup.enter.native="table.props.pageIndex=1;refreshTable()">
             </el-input>
             <el-button size="small" type="primary" style="position:relative;"
@@ -40,11 +38,11 @@
               style="width: 100%;overflow-y: hidden;margin-top: 15px;" class="scroll-bar"
               @selection-change="onSelectionChange" stripe
               width="100%">
-        <el-table-column type="selection" width="100"></el-table-column>
+        <el-table-column type="selection" width="50"></el-table-column>
         <el-table-column label="单位名称" width="200" prop="dept_name" align="center"></el-table-column>
-        <el-table-column label="单位代码" width="300" prop="deot_code" align="center"></el-table-column>
-        <el-table-column label="单位类型" width="250" prop="dept_type" align="center"></el-table-column>
-        <el-table-column label="归属学院" width="300" prop="dept_attach" align="center"></el-table-column>
+        <el-table-column label="单位代码" width="300" prop="dept_code" align="center"></el-table-column>
+        <el-table-column label="单位类型" width="150" prop="_dept_type" align="center"></el-table-column>
+        <el-table-column label="归属学院" width="200" prop="_dept_attach" align="center"></el-table-column>
 
         <el-table-column label="操作" header-align="center" align="center">
             <template slot-scope="scope">
@@ -58,6 +56,7 @@
                 </el-button>
             </template>
         </el-table-column>
+        <el-table-column width="5"></el-table-column>
     </el-table>
 
     <el-pagination style="text-align: center;margin: 8px auto;"
@@ -74,27 +73,29 @@
         <el-form label-position="left" label-width="140px" style="padding: 0 100px;"
                  v-loading="dialog.loading" status-icon>
             <el-form-item label="单位名称">
-                <el-input v-model="dialog.data.dicProperty"></el-input>
+                <el-input v-model="dialog.data.dept_name"></el-input>
             </el-form-item>
             <el-form-item label="单位代码">
-                <el-input v-model="dialog.data.dicValue"></el-input>
+                <el-input v-model="dialog.data.dept_code"></el-input>
             </el-form-item>
             <el-form-item label="选择类型">
-                <el-select v-model="dialog.data.typeName" clearable @change="handleSelectTypeChange">
-                    <el-option v-for="item in dictType" :key="item.id" :label="item.typeName"
-                               :value="item"></el-option>
+                <el-select v-model="dialog.data.dept_type">
+                    <el-option v-for="item in selectionType" :key="item.value" :label="item.label"
+                               :value="item.value"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="所属学院">
-                <el-select v-model="dialog.data.typeName" clearable @change="handleSelectTypeChange">
-                    <el-option v-for="item in dictType" :key="item.id" :label="item.typeName"
-                               :value="item"></el-option>
+                <el-select v-model="dialog.data.dept_attach" :disabled=isAttachDisabled>
+                    <el-option v-for="item in schoolList" :key="item.id" :label="item.dept_name"
+                               :value="item.id"></el-option>
                 </el-select>
             </el-form-item>
         </el-form>
         <div slot="footer">
             <el-button size="medium" @click="dialog.visible=false">取 消</el-button>
-            <el-button size="medium" type="primary" style="margin-left: 10px;" @click="insertOrUpdateDict">提 交
+            <el-button size="medium" type="primary" style="margin-left: 10px;"
+                       @click="insertOrUpdateDept" :disabled=isUpdateDisabled>
+                提 交
             </el-button>
         </div>
     </el-dialog>

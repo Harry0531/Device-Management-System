@@ -12,7 +12,44 @@ public class DeptService {
     @Autowired
     private DeptDao deptDao;
 
-    public List<Dept> getSchoolList(){
+    public List<Dept> getSchoolList() {
         return deptDao.getSchoolList();
+    }
+
+    public List<Dept> selectListByPage(Dept dept) {
+        List<Dept> list = deptDao.selectListByPage(dept);
+        for (Dept d : list) {
+            switch (d.getDept_type()) {
+                case 0:
+                    d.set_dept_type("学院");
+                    break;
+                case 1:
+                    d.set_dept_type("部门/课题组");
+                    break;
+            }
+        }
+        return list;
+    }
+
+    public int selectSearchCount(Dept dept) {
+        return deptDao.selectSearchCount(dept);
+    }
+
+    public boolean searchEntry(Dept dept) {
+        return deptDao.searchEntry(dept) == 0;
+    }
+
+    public boolean insertDept(Dept dept) {
+        dept.preInsert();
+        return deptDao.insertDept(dept) == 1;
+    }
+
+    public boolean updateDept(Dept dept){
+        dept.preUpdate();
+        return deptDao.updateDept(dept)==1;
+    }
+
+    public boolean deleteListByIds(List<Dept> list){
+        return list.size()==0 || deptDao.deleteDictByIds(list)==list.size();
     }
 }

@@ -40,7 +40,6 @@ public class ConfidentialStorageController extends BaseApi {
     public Object insertStorage(@RequestBody ConfidentialStorage confidentialStorage) throws Exception {
         System.out.println(confidentialStorage);
         if(confidentialStorage.getId()==null||confidentialStorage.getId().equals("")){
-            System.out.println("Insert");
             if(confidentialStorageService.insertStorage(confidentialStorage))
                 return retMsg.Set(MsgType.SUCCESS);
             else return retMsg.Set(MsgType.ERROR);

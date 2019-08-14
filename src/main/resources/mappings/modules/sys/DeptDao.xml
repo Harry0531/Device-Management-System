@@ -4,4 +4,97 @@
     <select id="getSchoolList" resultType="com.management.admin.modules.sys.entity.Dept">
         SELECT * FROM `department` WHERE `dept_type` = 0 AND `del_flag` = 0
     </select>
+
+    <resultMap id="deptBean" type="com.management.admin.modules.sys.entity.Dept">
+        <id property="id" column="id"/>
+        <result column="dept_name" property="dept_name"/>
+        <result column="dept_code" property="dept_code"/>
+        <result column="dept_type" property="dept_type"/>
+        <result column="dept_attach" property="dept_attach"/>
+        <result column="_dept_type" property="_dept_type"/>
+        <result column="_dept_attach" property="_dept_attach"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="del_flag" property="delFlag"/>
+    </resultMap>
+
+    <select id="selectListByPage" parameterType="com.management.admin.modules.sys.entity.Dept" resultMap="deptBean">
+        SELECT a.*,
+        b.`dept_name` AS `_dept_attach`
+        FROM `department` a
+        LEFT JOIN `department` b ON a.`dept_attach` = b.`id`
+        <where>
+            <if test="page.searchKey != '' and page.searchKey != null">
+                AND a.`dept_code` = #{page.searchKey}
+            </if>
+            <if test="id != '' and id != null">
+                AND (a.`dept_attach` = #{id} OR a.`id` = #{id})
+            </if>
+            <if test="1 == 1">
+                AND a.`del_flag` = 0
+            </if>
+        </where>
+        ORDER BY a.`modify_time` DESC
+        limit #{page.pageStart}, #{page.pageSize}
+    </select>
+
+    <select id="selectSearchCount" parameterType="com.management.admin.modules.sys.entity.Dept" resultType="int">
+        SELECT COUNT(*) FROM `department`
+        <where>
+            <if test="page.searchKey != '' and page.searchKey != null">
+                AND `dept_code` = #{page.searchKey}
+            </if>
+            <if test="id != '' and id != null">
+                AND (`dept_attach` = #{id} OR `id` = #{id})
+            </if>
+            <if test="1 == 1">
+                AND `del_flag` = 0
+            </if>
+        </where>
+    </select>
+
+    <select id="searchEntry" parameterType="com.management.admin.modules.sys.entity.Dept" resultType="int">
+        SELECT COUNT(*) FROM `department` WHERE (`dept_attach` = #{dept_attach} AND `dept_code` = #{dept_code})
+    </select>
+
+    <insert id="insertDept" parameterType="com.management.admin.modules.sys.entity.Dept">
+        INSERT INTO `department` (
+        `id`,
+        `dept_name`,
+        `dept_code`,
+        `dept_attach`,
+        `dept_type`,
+        `create_time`,
+        `modify_time`,
+        `del_flag`
+        )VALUES(
+        #{id},
+        #{dept_name},
+        #{dept_code},
+        #{dept_attach},
+        #{dept_type},
+        #{createTime},
+        #{modifyTime},
+        #{delFlag}
+        )
+    </insert>
+
+    <update id="updateDept" parameterType="com.management.admin.modules.sys.entity.Dept">
+        UPDATE `department`
+        SET `dept_name` = #{dept_name},
+            `dept_code` = #{dept_code},
+            `dept_type` = #{dept_type},
+            `dept_attach` = #{dept_attach},
+            `create_time` = #{createTime},
+            `modify_time` = #{modifyTime},
+            `del_flag`  = #{delFlag}
+        WHERE id =#{id}
+    </update>
+
+    <update id="deleteDictByIds">
+        UPDATE `department` SET `del_flag` = 1 WHERE `id` IN
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item.id}
+        </foreach>
+    </update>
 </mapper>
