@@ -5,6 +5,7 @@ var app = new Vue({
         urls: {
             getDictList: 'http://localhost:8444/api/sys/dict/selectDictListByPage',
             getDictType:'http://localhost:8444/api/sys/dict/getDictTypeList',
+            getFieldList:"http://localhost:8444/api/tool/excel/getColumnInTableAndExcel",
             insertDict:'http://localhost:8444/api/sys/dict/insertOrUpdateDict',
             deleteListByIds:'http://localhost:8444/api/sys/dict/deleteDictByIds',
 
@@ -23,6 +24,7 @@ var app = new Vue({
             typeId:''
         },
         dictType:[],
+        FieldList:[],
         dialog:{
             visible:false,
             loading:false,
@@ -30,9 +32,11 @@ var app = new Vue({
                 id:"",
                 typeId:"",
                 typeName:"",
+                tableName:"",
                 dicProperty:"",
                 dicValue:"",
-                fatherId:""
+                fatherId:"",
+                enName:""
             }
         }
     },
@@ -71,7 +75,7 @@ var app = new Vue({
         //打开修改弹窗
         openDialog_updateEntity: function (row) {
             this.dialog.updateEntity.visible = true;
-            this.dialog.updateEntity.formData = copy(row);
+            this.dialog.updateEntity.formData = JSON.parse(JSON.stringify(row));
         },
         // 处理选中的行变化
         onSelectionChange: function (val) {
@@ -113,8 +117,19 @@ var app = new Vue({
         },
         handleSelectTypeChange:function (v) {
             var app=this;
+            console.log(v);
+            app.dialog.data.tableName=v["tableName"];
             app.dialog.data.typeName=  v["typeName"];
             app.dialog.data.typeId= v["id"]
+
+            let data={
+                tableName:v["tableName"],
+                ExcelName:null
+            };
+            ajaxPost(app.urls.getFieldList,data,function (result) {
+                app.FieldList = result.data["tableColumnList"]
+            })
+
         },
         insertOrUpdateDict: function () {
             let app = this;
@@ -125,7 +140,8 @@ var app = new Vue({
                 dicProperty:app.dialog.data.dicProperty,
                 dicValue:app.dialog.data.dicValue,
                 fatherId:"",
-                id:app.dialog.data.id
+                id:app.dialog.data.id,
+                enName:app.dialog.data.enName
             };
             ajaxPostJSON(this.urls.insertDict, data, function (d) {
                 app.dialog.loading = false;
@@ -148,11 +164,14 @@ var app = new Vue({
                     typeName:"",
                     dicProperty:"",
                     dicValue:"",
-                    fatherId:""
+                    fatherId:"",
+                    enName:"",
+                    tableName:""
                 }
             }
         },
         updateDialog:function (v) {
+            console.log(v);
             var app=this;
             app.dialog.data.id=v["id"];
             app.dialog.data.typeId=v["typeId"];
@@ -160,6 +179,21 @@ var app = new Vue({
             app.dialog.data.dicProperty=v["dicProperty"];
             app.dialog.data.dicValue=v["dicValue"];
             app.dialog.data.fatherId=v["fatherId"];
+            //找到表名
+            console.log(app.dictType);
+            let tableName='';
+            app.dictType.forEach(function (w) {
+                if(w["typeName"] === v["typeName"]){
+                    tableName=w["tableName"];
+                }
+            })
+            let data={
+                tableName:tableName,
+                ExcelName:null
+            };
+            ajaxPost(app.urls.getFieldList,data,function (result) {
+                app.FieldList = result.data["tableColumnList"]
+            })
             app.dialog.visible=true;
         }
 

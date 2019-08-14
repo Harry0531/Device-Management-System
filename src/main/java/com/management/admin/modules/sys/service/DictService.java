@@ -40,4 +40,25 @@ public class DictService {
         dict.preUpdate();
         return dictDao.updateDict(dict) == 1;
     }
+
+    //根据类型和字段名判断是否用了字典
+    public  boolean isUseDict(String typeId,String fieldName){
+        return dictDao.isUseDict(typeId,fieldName) >= 1 ;
+    }
+    //三个参数确定唯一字典 d
+    /**
+     * @param enName  对应字段英文名称
+     * @param typeId 对应字段字典类别
+     * @param value 对应字典值
+     */
+    public String getUUID(String typeId,String enName,String value){
+        return dictDao.getUUid(typeId,enName,value);
+    }
+
+       /**
+            * @param UUid 根据uuid获取对应值
+            */
+    public String getValue(String UUid){
+        return dictDao.getValue(UUid);
+    }
 }

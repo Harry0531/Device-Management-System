@@ -21,12 +21,14 @@
         insert into data_dictionary_type (
         `id`,
         `type_name`,
+        `table_name`,
         `create_time`,
         `modify_time`,
         `del_flag`
         )values (
           #{id},
           #{typeName},
+          #{tableName},
           #{createTime},
           #{modifyTime},
           #{delFlag}
@@ -34,7 +36,7 @@
     </insert>
 
     <select id="selectDictTypeList" resultType="com.management.admin.modules.sys.entity.DictType">
-      select type_name as "typeName",`id`,`create_time`,`modify_time`,`del_flag`
+      select `table_name` as "tableName",type_name as "typeName",`id`,`create_time`,`modify_time`,`del_flag`
       from data_dictionary_type
     </select>
 
@@ -83,6 +85,7 @@
         `type_id`,
         `dic_property`,
         `dic_value`,
+        `dic_en_name`,
         `father`,
         `remark`,
         `create_time`,
@@ -93,6 +96,7 @@
           #{typeId},
           #{dicProperty},
           #{dicValue},
+          #{enName},
           #{fatherId},
           #{remark},
           #{createTime},
@@ -114,11 +118,21 @@
             `dic_property` = #{dicProperty},
             `dic_value`    = #{dicValue},
             `father`       = #{fatherId},
-            `create_time`  = #{createTime},
             `modify_time`  = #{modifyTime},
-            `del_flag`     = #{delFlag}
+            `del_flag`     = #{delFlag},
+            `dic_en_name`  = #{enName}
         where id =#{id}
     </update>
 
+    <select id="isUseDict" resultType="int">
+        select count(*) from data_dictionary where type_id=#{param1} and dic_en_name=#{param2} and del_flag=0
+    </select>
 
+    <select id="getUUid" resultType="String">
+        select `id` from data_dictionary where `type_id`=#{param1} and `dic_en_name`=#{param2} and `dic_value`=#{param3} and del_flag=0
+    </select>
+
+    <select id="getValue" resultType="String">
+        select type_name from data_dictionary_type where id=#{param1} and del_flag=0
+    </select>
 </mapper>

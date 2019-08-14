@@ -17,6 +17,7 @@ var app = new Vue({
             if(tab.name === "importData" && document.getElementById('importData') != null){
                 document.getElementById("importData").contentWindow.location.reload(true);
             }
-        }
+        },
+
     }
 })

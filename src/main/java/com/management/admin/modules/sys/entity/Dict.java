@@ -9,7 +9,10 @@ public class Dict extends DataEntity<Dict> {
     public  String typeId;
     //字典项所属类型名称
     public  String typeName;
-    //字典属性
+
+    //字段对应英文名字
+    public String enName;
+    //字典中文属性
     public  String dicProperty;
     //字典值
     public  String dicValue;

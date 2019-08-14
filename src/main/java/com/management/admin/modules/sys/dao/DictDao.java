@@ -22,4 +22,8 @@ public interface DictDao {
     int deleteDictByIds(List<Dict> dicts);
 
     int updateDict(Dict dict);
+
+    int isUseDict(String typeId,String fieldName);
+    String getUUid(String typeId,String enName,String value);
+    String getValue(String UUid);
 }

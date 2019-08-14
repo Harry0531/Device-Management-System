@@ -11,6 +11,7 @@
             height: 100%;
         }
     </style>
+
 </head>
 <body>
 <div id="app" v-cloak style="background: white;height: 100%;overflow: hidden;" v-loading="fullScreenLoading">
@@ -81,21 +82,30 @@
         <el-form label-position="left" label-width="140px" style="padding: 0 100px;"
                   v-loading="dialog.loading" status-icon
         >
-            <el-form-item label="字典属性" >
-                <el-input v-model="dialog.data.dicProperty"></el-input>
-            </el-form-item>
-            <el-form-item label="字典值" >
-                <el-input v-model="dialog.data.dicValue"></el-input>
-            </el-form-item>
-            <el-form-item label="父字典" >
-                <el-input v-model="dialog.data.fatherId"></el-input>
-            </el-form-item>
             <el-form-item label="选择类型" >
                 <el-select v-model="dialog.data.typeName" clearable @change="handleSelectTypeChange">
                     <el-option v-for="item in dictType" :key="item.id" :label="item.typeName"
                                :value="item"></el-option>
                 </el-select>
             </el-form-item>
+
+            <el-form-item label="字典中文属性" >
+                <el-input v-model="dialog.data.dicProperty"></el-input>
+            </el-form-item>
+            <el-form-item label="字典英文名称" >
+                <el-select v-model="dialog.data.enName" clearable >
+                    <el-option v-for="item in FieldList" :key="item" :label="item"
+                               :value="item"></el-option>
+                </el-select>
+            </el-form-item>
+
+            <el-form-item label="字典值">
+                <el-input v-model="dialog.data.dicValue"></el-input>
+            </el-form-item>
+            <el-form-item label="父字典" >
+                <el-input v-model="dialog.data.fatherId"></el-input>
+            </el-form-item>
+
 
         </el-form>
         <div slot="footer" >
@@ -105,6 +115,6 @@
     </el-dialog>
 </div>
 </body>
-
+<script src="../../js/utils.js"></script>
 <script src="../../js/management/dictManagement.js"></script>
 </html>

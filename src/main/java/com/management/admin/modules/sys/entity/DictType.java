@@ -9,4 +9,5 @@ import lombok.Data;
 @Data
 public class DictType extends DataEntity<DictType> {
    public String  typeName;
+   public String  tableName;
 }

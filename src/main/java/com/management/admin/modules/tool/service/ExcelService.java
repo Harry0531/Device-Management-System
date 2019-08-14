@@ -3,6 +3,7 @@ package com.management.admin.modules.tool.service;
 import com.management.admin.common.utils.ExcelUtils;
 import com.management.admin.common.utils.IdGen;
 import com.management.admin.common.utils.SystemPath;
+import com.management.admin.modules.sys.service.DictService;
 import com.management.admin.modules.tool.dao.ColumnMapFieldDao;
 import com.management.admin.modules.tool.dao.ExcelTemplateDao;
 import com.management.admin.modules.tool.dao.ImportDataDao;
@@ -36,6 +37,9 @@ public class ExcelService {
 
     @Autowired
     ImportDataDao importDataDao;
+
+    @Autowired
+    DictService dictService;
 
     /**
      * @param excelTemplate include all info
@@ -155,9 +159,9 @@ public class ExcelService {
 
         //判断字段是否用了数据字典
         List<Boolean> isDict = new ArrayList<>();
-        for(int i = 0 ; i <fieldList.size();i++){
+        for(int i = 4 ; i <fieldList.size();i++){ //跳过前4个固定
             String fieldName=fieldList.get(i);
-            //if()
+            isDict.add(dictService.isUseDict(excelData.getTypeId(),fieldName));
         }
 
 
@@ -186,6 +190,10 @@ public class ExcelService {
                         int tmp=columnMapField.getColumnIndex();
                         Cell cell =dataRow.getCell(tmp);
                     cellValue = ExcelUtils.getCellValueByFieldType(cell, columnMapField.getFieldType());
+
+                    if(isDict.get(i)){
+                        cellValue = dictService.getUUID(excelData.getTypeId(),fieldList.get(i+4),(String)cellValue);
+                    }
                 }
                 row.add(cellValue);
             }

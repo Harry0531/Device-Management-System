@@ -4,6 +4,7 @@ import com.management.admin.common.utils.ExcelUtils;
 import com.management.admin.common.utils.SystemPath;
 import com.management.admin.common.web.BaseApi;
 import com.management.admin.common.web.MsgType;
+import com.management.admin.modules.sys.service.DictService;
 import com.management.admin.modules.tool.entity.ExcelData;
 import com.management.admin.modules.tool.entity.ExcelTemplate;
 import com.management.admin.modules.tool.entity.tiny.ExcelColumn;
@@ -35,6 +36,8 @@ public class ExcelController extends BaseApi {
 
     @Autowired
     ExcelService excelService;
+    @Autowired
+    DictService dictService;
 
     @RequestMapping(value="insertExcelTemplate",method = RequestMethod.POST)
     @ResponseBody
@@ -57,6 +60,9 @@ public class ExcelController extends BaseApi {
             @RequestBody ExcelTemplate excelTemplate
             )throws Exception{
         List<ExcelTemplate> excelTemplateList = excelService.selectAllTemplate(excelTemplate);
+        for (ExcelTemplate e :excelTemplateList){
+            e.setTypeName(dictService.getValue(e.getTypeId()));
+        }
         return retMsg.Set(MsgType.SUCCESS, excelTemplateList);
     }
 
@@ -96,6 +102,7 @@ public class ExcelController extends BaseApi {
         }
     }
 
+    //获取表名
     @RequestMapping(value="getTableList",method = RequestMethod.GET)
     @ResponseBody
     public  Object getTableList()throws Exception{
@@ -108,8 +115,16 @@ public class ExcelController extends BaseApi {
             @RequestParam String tableName,
             @RequestParam String ExcelName
     )throws Exception{
-            List<String>tableColumnList = excelService.getTableColumnList(tableName);
-            List<ExcelColumn>excelColumnList= excelService.getExcelColumnList(ExcelName);
+            List<ExcelColumn>excelColumnList = null;
+            List<String>tableColumnList = null;
+
+            if(tableName!=null && !tableName.equals("")) {
+                tableColumnList = excelService.getTableColumnList(tableName);
+            }
+            if(ExcelName!=null && !ExcelName.equals("")){
+                excelColumnList= excelService.getExcelColumnList(ExcelName);
+            }
+
             HashMap<String ,Object> data =new HashMap<>();
             data.put("tableColumnList",tableColumnList);
             data.put("excelColumnList",excelColumnList);
