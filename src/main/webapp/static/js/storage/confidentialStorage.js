@@ -1,11 +1,11 @@
 //数量统计：允许分别按单位、类型、密级、用途、使用范围、使用情况等统计数量
 let select1 = [
-    {value: 'dept', label: '单位（暂不可用）', disabled: true},//todo 待单位表确定
-    {value: '存储介质类型', label: '类型'},
-    {value: '存储介质密级', label: '密级'},
-    {value: '存储介质用途', label: '用途'},
-    {value: '存储介质使用范围', label: '使用范围'},
-    {value: '存储介质使用情况', label: '使用情况'}
+    {value: 'dept', label: '单位'},
+    {value: 'type', label: '类型'},
+    {value: 'secret_level', label: '密级'},
+    {value: 'usage', label: '用途'},
+    {value: 'scope', label: '使用范围'},
+    {value: 'use_situation', label: '使用情况'}
 ];
 
 let app = new Vue({
@@ -23,7 +23,9 @@ let app = new Vue({
         loading: false,
         filters: {
             value1: '',
-            value2: ''
+            value2: '',
+            value3: '',
+            value4: ''
         },
         table: {
             loading: false,
@@ -100,31 +102,31 @@ let app = new Vue({
             })
         },
         getDialogList: function () {
-            ajaxPost(this.urls.getSub, {param: "存储介质使用范围"}, function (result) {
+            ajaxPost(this.urls.getSub, {param: "scope"}, function (result) {
                 app.dialog.selectionList.scope = [];
                 result.forEach(function (r) {
                     app.dialog.selectionList.scope.push({'value': r.id, 'label': r.dicValue});
                 });
             });
-            ajaxPost(this.urls.getSub, {param: "存储介质类型"}, function (result) {
+            ajaxPost(this.urls.getSub, {param: "type"}, function (result) {
                 app.dialog.selectionList.type = [];
                 result.forEach(function (r) {
                     app.dialog.selectionList.type.push({'value': r.id, 'label': r.dicValue});
                 });
             });
-            ajaxPost(this.urls.getSub, {param: "存储介质密级"}, function (result) {
+            ajaxPost(this.urls.getSub, {param: "secret_level"}, function (result) {
                 app.dialog.selectionList.secret_level = [];
                 result.forEach(function (r) {
                     app.dialog.selectionList.secret_level.push({'value': r.id, 'label': r.dicValue});
                 });
             });
-            ajaxPost(this.urls.getSub, {param: "存储介质用途"}, function (result) {
+            ajaxPost(this.urls.getSub, {param: "usage"}, function (result) {
                 app.dialog.selectionList.usage = [];
                 result.forEach(function (r) {
                     app.dialog.selectionList.usage.push({'value': r.id, 'label': r.dicValue});
                 });
             });
-            ajaxPost(this.urls.getSub, {param: "存储介质使用情况"}, function (result) {
+            ajaxPost(this.urls.getSub, {param: "use_situation"}, function (result) {
                 app.dialog.selectionList.use_situation = [];
                 result.forEach(function (r) {
                     app.dialog.selectionList.use_situation.push({'value': r.id, 'label': r.dicValue});
@@ -174,8 +176,8 @@ let app = new Vue({
                 });
                 app.resetDialogData();
                 app.getList();
-                app.filters.value1='';
-                app.filters.value2='';
+                app.filters.value1 = '';
+                app.filters.value2 = '';
             })
         },
         getList: function (index) {
