@@ -1,14 +1,15 @@
 package com.management.admin.modules.tool.controller;
 
-import com.management.admin.common.utils.ExcelUtils;
 import com.management.admin.common.utils.SystemPath;
 import com.management.admin.common.web.BaseApi;
 import com.management.admin.common.web.MsgType;
 import com.management.admin.modules.sys.service.DictService;
-import com.management.admin.modules.tool.entity.ExcelData;
+import com.management.admin.modules.tool.entity.ExportExcel;
+import com.management.admin.modules.tool.entity.ImportExcel;
 import com.management.admin.modules.tool.entity.ExcelTemplate;
 import com.management.admin.modules.tool.entity.tiny.ExcelColumn;
 import com.management.admin.modules.tool.service.ExcelService;
+import com.management.admin.modules.tool.service.ExportDataService;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -38,6 +39,8 @@ public class ExcelController extends BaseApi {
     ExcelService excelService;
     @Autowired
     DictService dictService;
+    @Autowired
+    ExportDataService exportDataService;
 
     @RequestMapping(value="insertExcelTemplate",method = RequestMethod.POST)
     @ResponseBody
@@ -88,19 +91,30 @@ public class ExcelController extends BaseApi {
     }
 
     /**
-     * @param excelData include template params and data file's name in server
+     * @param importExcel include template params and data file's name in server
      * @return isSuccess
      */
     @RequestMapping(value = "importExcelToTable", method = RequestMethod.POST)
     @ResponseBody
-    public Object importExcelToTable(@RequestBody ExcelData excelData) {
+    public Object importExcelToTable(@RequestBody ImportExcel importExcel) {
         try {
-            excelService.importExcelToTable(excelData);
+            excelService.importExcelToTable(importExcel);
             return retMsg.Set(MsgType.SUCCESS);
         } catch (IOException e) {
             return retMsg.Set(MsgType.ERROR);
         }
     }
+
+
+    @RequestMapping(value = "exportDataToExcel",method = RequestMethod.POST)
+    @ResponseBody
+    public void exportExcelToTable(
+            @RequestBody ExportExcel exportExcel,
+            HttpServletResponse response
+            )throws Exception{
+        exportDataService.ExportToExcel(response,exportExcel);
+    }
+
 
     //获取表名
     @RequestMapping(value="getTableList",method = RequestMethod.GET)

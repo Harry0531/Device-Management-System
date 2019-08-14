@@ -1,13 +1,12 @@
 package com.management.admin.modules.tool.entity;
 
 import com.management.admin.common.persistence.DataEntity;
-import javafx.scene.chart.PieChart;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class ExcelData extends DataEntity<ExcelData> {
+public class ImportExcel extends DataEntity<ImportExcel> {
 
     private String templateName;    // 模板名（导入方案名）
     private String tableName;       // 目标表名

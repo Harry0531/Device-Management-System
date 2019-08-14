@@ -13,9 +13,6 @@
         <result column="del_flag" property="delFlag"/>
     </resultMap>
 
-
-
-
     <select id="getTableList" resultType="String">
         select `table_name` from information_schema.tables where table_schema="securityManager"
     </select>
@@ -23,7 +20,6 @@
     <select id="getTableColumnList" resultType="String">
         select COLUMN_NAME from information_schema.COLUMNS where table_name = #{param1} and table_schema = 'securityManager'
     </select>
-
 
     <insert id="insertOrUpdate" parameterType="com.management.admin.modules.tool.entity.ExcelTemplate">
         insert excel_template (id,

@@ -15,8 +15,6 @@
         </foreach>
     </insert>
 
-
-
     <select id="selectFieldListByTableName" parameterType="string" resultType="com.management.admin.modules.tool.entity.tiny.TableField">
         select COLUMN_NAME    as fieldName,
                DATA_TYPE      as fieldType

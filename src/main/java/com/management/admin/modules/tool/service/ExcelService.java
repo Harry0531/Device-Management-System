@@ -9,7 +9,7 @@ import com.management.admin.modules.tool.dao.ExcelTemplateDao;
 import com.management.admin.modules.tool.dao.ImportDataDao;
 import com.management.admin.modules.tool.entity.ColumnMapField;
 import com.management.admin.modules.tool.entity.DynamicInsertParam;
-import com.management.admin.modules.tool.entity.ExcelData;
+import com.management.admin.modules.tool.entity.ImportExcel;
 import com.management.admin.modules.tool.entity.ExcelTemplate;
 import com.management.admin.modules.tool.entity.tiny.ExcelColumn;
 import com.management.admin.modules.tool.entity.tiny.TableField;
@@ -115,15 +115,15 @@ public class ExcelService {
         return excelTemplateDao.selectAllTemplate(conditions);
     }
 
-    public boolean importExcelToTable(ExcelData excelData) throws IOException {
+    public boolean importExcelToTable(ImportExcel importExcel) throws IOException {
         //数据excel名字
-        String dataExcelPath=SystemPath.getRootPath()+SystemPath.getTemporaryPath()+excelData.getExcelDataName();
+        String dataExcelPath=SystemPath.getRootPath()+SystemPath.getTemporaryPath()+ importExcel.getExcelDataName();
 
         //获得模版信息
-        ExcelTemplate excelTemplate = excelTemplateDao.selectById(excelData.getId());
+        ExcelTemplate excelTemplate = excelTemplateDao.selectById(importExcel.getId());
 
         //获得字段对应列名map信息
-        List<ColumnMapField> columnMapFieldList = columnMapFieldDao.selectByTemplateId(excelData.getId());
+        List<ColumnMapField> columnMapFieldList = columnMapFieldDao.selectByTemplateId(importExcel.getId());
 
 
 
@@ -135,7 +135,7 @@ public class ExcelService {
 
 //            2.获取数据库字段信息
         // add info from table field and reorder
-        List<TableField> tableFieldList = getTableFieldList(excelData.getTableName(), false);
+        List<TableField> tableFieldList = getTableFieldList(importExcel.getTableName(), false);
         List<ColumnMapField> columnMapFieldList2 = new ArrayList<>();
         for (TableField tableField : tableFieldList) {
             for (ColumnMapField columnMapField : columnMapFieldList) {
@@ -161,13 +161,13 @@ public class ExcelService {
         List<Boolean> isDict = new ArrayList<>();
         for(int i = 4 ; i <fieldList.size();i++){ //跳过前4个固定
             String fieldName=fieldList.get(i);
-            isDict.add(dictService.isUseDict(excelData.getTypeId(),fieldName));
+            isDict.add(dictService.isUseDict(importExcel.getTypeId(),fieldName));
         }
 
 
         DynamicInsertParam dynamicInsertParam = new DynamicInsertParam();
         //设置插入的数据库表名
-        dynamicInsertParam.setTableName(excelData.getTableName());
+        dynamicInsertParam.setTableName(importExcel.getTableName());
         //设置插入字段
         dynamicInsertParam.setFieldList(fieldList);
 
@@ -192,7 +192,7 @@ public class ExcelService {
                     cellValue = ExcelUtils.getCellValueByFieldType(cell, columnMapField.getFieldType());
 
                     if(isDict.get(i)){
-                        cellValue = dictService.getUUID(excelData.getTypeId(),fieldList.get(i+4),(String)cellValue);
+                        cellValue = dictService.getUUID(importExcel.getTypeId(),fieldList.get(i+4),(String)cellValue);
                     }
                 }
                 row.add(cellValue);
