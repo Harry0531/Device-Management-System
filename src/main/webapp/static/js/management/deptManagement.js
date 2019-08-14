@@ -161,11 +161,15 @@ let app = new Vue({
             app.dialog.data.dept_type = v["dept_type"];
             app.dialog.data._dept_type = v["_dept_type"];
             app.dialog.data._dept_attach = v["_dept_attach"];
-            console.log(app.dialog.data);
             app.dialog.data.dept_attach = v["dept_attach"];
             if (app.dialog.data.dept_attach == '0')
                 app.dialog.data.dept_attach = '';
             app.dialog.visible = true;
+        },
+        handleDeptTypeChange:function (type) {
+            if (type==0){
+                this.dialog.data.dept_attach='';
+            }
         }
     },
     mounted: function () {

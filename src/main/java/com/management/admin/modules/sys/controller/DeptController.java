@@ -62,21 +62,23 @@ public class DeptController extends BaseApi {
                 } else return retMsg.Set(MsgType.ERROR, "，请稍后重试");
             } else return retMsg.Set(MsgType.ERROR, "，请检查单位代码");
         } else {
-            if(deptService.updateDept(dept))
-                return retMsg.Set(MsgType.SUCCESS);
-            else return retMsg.Set(MsgType.ERROR);
+            if (deptService.searchEntry(dept)) {
+                if (deptService.updateDept(dept))
+                    return retMsg.Set(MsgType.SUCCESS);
+                else return retMsg.Set(MsgType.ERROR, "，请稍后重试");
+            } else return retMsg.Set(MsgType.ERROR, "，请检查单位代码");
         }
     }
 
-    @RequestMapping(value = "/deleteListByIds",method = RequestMethod.POST)
+    @RequestMapping(value = "/deleteListByIds", method = RequestMethod.POST)
     @ResponseBody
-    public Object deleteListByIds(@RequestBody List<Dept> list)throws Exception{
-        try{
-            if(deptService.deleteListByIds(list)){
+    public Object deleteListByIds(@RequestBody List<Dept> list) throws Exception {
+        try {
+            if (deptService.deleteListByIds(list)) {
                 return retMsg.Set(MsgType.SUCCESS);
-            }else
+            } else
                 return retMsg.Set(MsgType.ERROR);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return retMsg.Set(MsgType.ERROR);
         }

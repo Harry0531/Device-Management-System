@@ -79,7 +79,7 @@
                 <el-input v-model="dialog.data.dept_code"></el-input>
             </el-form-item>
             <el-form-item label="选择类型">
-                <el-select v-model="dialog.data.dept_type">
+                <el-select v-model="dialog.data.dept_type" placeholder="默认：学院" @change="handleDeptTypeChange">
                     <el-option v-for="item in selectionType" :key="item.value" :label="item.label"
                                :value="item.value"></el-option>
                 </el-select>
