@@ -1,9 +1,7 @@
-package com.management.admin.modules.sys.entity;
+package com.management.admin.modules.storage.entity;
 
 import com.management.admin.common.persistence.DataEntity;
 import lombok.Data;
-
-import java.util.Date;
 
 @Data
 public class ConfidentialStorage extends DataEntity<ConfidentialStorage> {

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.management.admin.modules.sys.dao.ConfidentialStorageDao">
+<mapper namespace="com.management.admin.modules.storage.dao.ConfidentialStorageDao">
     <select id="getSubFromDict" resultType="com.management.admin.modules.sys.entity.Dict">
         SELECT `id`, `dic_value` AS `dicValue` FROM `data_dictionary` WHERE `dic_property` = #{_parameter}
     </select>
 
-    <insert id="insertStorage" parameterType="com.management.admin.modules.sys.entity.ConfidentialStorage">
+    <insert id="insertStorage" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage">
         INSERT INTO `confidential_storage_device` (
             `id`,
             `department_code`,
@@ -55,7 +55,7 @@
         )
     </insert>
 
-    <update id="updateStorage" parameterType="com.management.admin.modules.sys.entity.ConfidentialStorage">
+    <update id="updateStorage" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage">
         UPDATE `confidential_storage_device`
         SET `department_code` = #{department_code},
             `department_name` = #{department_name},
@@ -80,7 +80,7 @@
         WHERE id =#{id}
     </update>
 
-    <select id="selectSearchCount" parameterType="com.management.admin.modules.sys.entity.ConfidentialStorage" resultType="int">
+    <select id="selectSearchCount" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage" resultType="int">
         SELECT COUNT(*) FROM `confidential_storage_device` a
         <where>
             <!--暂缺按单位筛选-->
@@ -97,7 +97,7 @@
         </where>
     </select>
 
-    <resultMap id="storageBean" type="com.management.admin.modules.sys.entity.ConfidentialStorage">
+    <resultMap id="storageBean" type="com.management.admin.modules.storage.entity.ConfidentialStorage">
         <id property="id" column="id"/>
         <result column="department_code" property="department_code"/>
         <result column="department_name" property="department_name"/>
@@ -128,7 +128,7 @@
         <result column="del_flag" property="delFlag"/>
     </resultMap>
 
-    <select id="selectDictListByPage" parameterType="com.management.admin.modules.sys.entity.ConfidentialStorage"
+    <select id="selectDictListByPage" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage"
             resultMap="storageBean">
         SELECT a.*,
                b.`dic_value` AS `_type`,
@@ -160,7 +160,7 @@
         limit #{page.pageStart}, #{page.pageSize}
     </select>
 
-    <update id="deleteListByIds" parameterType="com.management.admin.modules.sys.entity.ConfidentialStorage">
+    <update id="deleteListByIds" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage">
         UPDATE `confidential_storage_device` SET `del_flag` = 1 WHERE `id` IN
         <foreach collection="list" item="item" open="(" close=")" separator=",">
             #{item.id}

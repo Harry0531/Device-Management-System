@@ -1,10 +1,10 @@
-package com.management.admin.modules.sys.controller;
+package com.management.admin.modules.storage.controller;
 
 import com.management.admin.common.persistence.Page;
 import com.management.admin.common.web.BaseApi;
 import com.management.admin.common.web.MsgType;
-import com.management.admin.modules.sys.entity.ConfidentialStorage;
-import com.management.admin.modules.sys.service.ConfidentialStorageService;
+import com.management.admin.modules.storage.entity.ConfidentialStorage;
+import com.management.admin.modules.storage.service.ConfidentialStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

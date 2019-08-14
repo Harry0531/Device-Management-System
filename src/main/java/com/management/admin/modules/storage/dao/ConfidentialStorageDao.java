@@ -1,6 +1,6 @@
-package com.management.admin.modules.sys.dao;
+package com.management.admin.modules.storage.dao;
 
-import com.management.admin.modules.sys.entity.ConfidentialStorage;
+import com.management.admin.modules.storage.entity.ConfidentialStorage;
 
 import java.util.List;
 

@@ -5,7 +5,7 @@ let select1 = [
     {value: '存储介质密级', label: '密级'},
     {value: '存储介质用途', label: '用途'},
     {value: '存储介质使用范围', label: '使用范围'},
-    {value: '使用情况', label: '使用情况'}
+    {value: '存储介质使用情况', label: '使用情况'}
 ];
 
 let app = new Vue({
@@ -79,6 +79,7 @@ let app = new Vue({
             let data = {
                 param: prov
             };
+            console.log(prov);
             ajaxPost(this.urls.getSub, data, function (result) {
                 result.forEach(function (r) {
                     app.select2.push({'value': r.id, 'label': r.dicValue});
@@ -123,7 +124,7 @@ let app = new Vue({
                     app.dialog.selectionList.usage.push({'value': r.id, 'label': r.dicValue});
                 });
             });
-            ajaxPost(this.urls.getSub, {param: "使用情况"}, function (result) {
+            ajaxPost(this.urls.getSub, {param: "存储介质使用情况"}, function (result) {
                 app.dialog.selectionList.use_situation = [];
                 result.forEach(function (r) {
                     app.dialog.selectionList.use_situation.push({'value': r.id, 'label': r.dicValue});
@@ -173,6 +174,8 @@ let app = new Vue({
                 });
                 app.resetDialogData();
                 app.getList();
+                app.filters.value1='';
+                app.filters.value2='';
             })
         },
         getList: function (index) {

@@ -1,7 +1,7 @@
-package com.management.admin.modules.sys.service;
+package com.management.admin.modules.storage.service;
 
-import com.management.admin.modules.sys.dao.ConfidentialStorageDao;
-import com.management.admin.modules.sys.entity.ConfidentialStorage;
+import com.management.admin.modules.storage.dao.ConfidentialStorageDao;
+import com.management.admin.modules.storage.entity.ConfidentialStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
