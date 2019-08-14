@@ -13,6 +13,7 @@ let app = new Vue({
     data: {
         urls: {
             getSub: 'http://localhost:8444/api/sys/storage/getSub',
+            getDeptSub: 'http://localhost:8444/api/sys/storage/getDeptSub',
             getList: 'http://localhost:8444/api/sys/storage/getList',
             insertOrUpdateStorage: 'http://localhost:8444/api/sys/storage/insertOrUpdateStorage',
             deleteListByIds: 'http://localhost:8444/api/sys/storage/deleteListByIds',
@@ -20,6 +21,8 @@ let app = new Vue({
         },
         select1: select1,
         select2: [],
+        select3: [],
+        select4: [],
         loading: false,
         filters: {
             value1: '',
@@ -64,13 +67,17 @@ let app = new Vue({
                 _usage: '',
                 _scope: '',
                 _use_situation: '',
+                department_code: '',
+                subject_code: ''
             },
             selectionList: {
                 type: [],
                 secret_level: [],
                 usage: [],
                 scope: [],
-                use_situation: []
+                use_situation: [],
+                subject: [],
+                department: []
             }
         }
     },
@@ -78,13 +85,27 @@ let app = new Vue({
         getSub(prov) {
             app.select2 = [];
             app.filters.value2 = '';
+            app.select3 = [];
+            app.filters.value3 = '';
             let data = {
                 param: prov
             };
-            console.log(prov);
             ajaxPost(this.urls.getSub, data, function (result) {
+                if (prov === 'dept') {
+                    result.forEach(function (r) {
+                        app.select3.push(r);
+                    });
+                } else {
+                    result.forEach(function (r) {
+                        app.select2.push({'value': r.id, 'label': r.dicValue});
+                    });
+                }
+            })
+        },
+        getDeptSub: function (index) {
+            ajaxPost(this.urls.getDeptSub, {id: index}, function (result) {
                 result.forEach(function (r) {
-                    app.select2.push({'value': r.id, 'label': r.dicValue});
+                    app.select4.push(r);
                 });
             })
         },
@@ -132,6 +153,12 @@ let app = new Vue({
                     app.dialog.selectionList.use_situation.push({'value': r.id, 'label': r.dicValue});
                 });
             });
+            ajaxPost(this.urls.getSub, {param: "dept"}, function (result) {
+                app.dialog.selectionList.department = [];
+                result.forEach(function (r) {
+                    app.dialog.selectionList.department.push(r);
+                })
+            })
         },
         handleTypeChange: function (v) {
             app.dialog.data.type = v;
@@ -148,12 +175,31 @@ let app = new Vue({
         handleSituationChange: function (v) {
             app.dialog.data.use_situation = v;
         },
+        handleSchoolChange: function (v) {
+            app.dialog.data.department_name = v.dept_name;
+            app.dialog.data.department_code = v.id;
+            console.log("data", app.dialog.data);
+            ajaxPost(this.urls.getDeptSub, {id: v.id}, function (result) {
+                app.dialog.selectionList.subject = [];
+                result.forEach(function (r) {
+                    app.dialog.selectionList.subject.push(r);
+                })
+            });
+            app.dialog.data.subject_name = '';
+            app.dialog.data.subject_code = '';
+        },
+        handleSubjectChange: function (v) {
+            app.dialog.data.subject_name = v.dept_name;
+            app.dialog.data.subject_code = v.id;
+        },
         insertOrUpdateStorage: function () {
             app.dialog.loading = true;
             let data = {
                 id: app.dialog.data.id,
                 department_name: app.dialog.data.department_name,
+                department_code: app.dialog.data.department_code,
                 subject_name: app.dialog.data.subject_name,
+                subject_code: app.dialog.data.subject_code,
                 secret_number: app.dialog.data.secret_number,
                 type: app.dialog.data.type,
                 model: app.dialog.data.model,
@@ -187,7 +233,6 @@ let app = new Vue({
         updateDialog: function (v) {
             let app = this;
             app.getDialogList();
-            console.log(v);
             app.dialog.data.id = v["id"];
             app.dialog.data.department_name = v["department_name"];
             app.dialog.data.subject_name = v["subject_name"];
@@ -202,15 +247,12 @@ let app = new Vue({
             app.dialog.data.scope = v["scope"];
             app.dialog.data.enablation_time = v["enablation_time"];
             app.dialog.data.use_situation = v["use_situation"];
-            console.log(app.dialog.data.use_situation);
             app.dialog.data.remarks = v["remarks"];
             app.dialog.data._type = v["_type"];
             app.dialog.data._secret_level = v["_secret_level"];
             app.dialog.data._usage = v["_usage"];
             app.dialog.data._scope = v["_scope"];
             app.dialog.data._use_situation = v["_use_situation"];
-            console.log("*********");
-            console.log(app.dialog.data);
             app.dialog.visible = true;
         },
         resetDialogData: function () {
@@ -278,8 +320,7 @@ let app = new Vue({
         onPageSizeChange: function (newSize) {
             this.table.props.pageSize = newSize;
             this.refreshTable();
-        }
-        ,
+        },
         onPageIndexChange: function (newIndex) {
             this.table.props.pageIndex = newIndex;
             this.refreshTable();
@@ -292,19 +333,19 @@ let app = new Vue({
         isInsertStorageDisable: function () {
             let app = this;
             return !(
-                app.dialog.data.department_name &&
-                app.dialog.data.subject_name &&
-                app.dialog.data.secret_number &&
-                app.dialog.data.type &&
-                app.dialog.data.model &&
-                app.dialog.data.person &&
-                app.dialog.data.secret_level &&
-                app.dialog.data.serial_number &&
-                app.dialog.data.place_location &&
-                app.dialog.data.usage &&
-                app.dialog.data.scope &&
-                app.dialog.data.enablation_time &&
-                app.dialog.data.use_situation
+                app.dialog.data.department_name
+                && app.dialog.data.subject_name
+                && app.dialog.data.secret_number
+                && app.dialog.data.type
+                && app.dialog.data.model
+                && app.dialog.data.person
+                && app.dialog.data.secret_level
+                && app.dialog.data.serial_number
+                && app.dialog.data.place_location
+                && app.dialog.data.usage
+                && app.dialog.data.scope
+                && app.dialog.data.enablation_time
+                && app.dialog.data.use_situation
             )
         }
     }

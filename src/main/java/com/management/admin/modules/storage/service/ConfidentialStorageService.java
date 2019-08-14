@@ -2,6 +2,7 @@ package com.management.admin.modules.storage.service;
 
 import com.management.admin.modules.storage.dao.ConfidentialStorageDao;
 import com.management.admin.modules.storage.entity.ConfidentialStorage;
+import com.management.admin.modules.sys.entity.Dept;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,22 +17,22 @@ public class ConfidentialStorageService {
         return confidentialStorageDao.getSubFromDict(param);
     }
 
-    public List<String> getSubFromDept() {
+    public List<Dept> getSubFromDept() {
         return confidentialStorageDao.getSubFromDept();
+    }
+
+    public List<Dept> getDeptSub(String id){
+        return confidentialStorageDao.getDeptSub(id);
     }
 
     public boolean insertStorage(ConfidentialStorage confidentialStorage) {
         confidentialStorage.preInsert();
-        confidentialStorage.setDepartment_code("000");
-        confidentialStorage.setSubject_code("000");
         System.out.println(confidentialStorage.getId());
         return confidentialStorageDao.insertStorage(confidentialStorage) == 1;
     }
 
     public boolean updateStorage(ConfidentialStorage confidentialStorage){
         confidentialStorage.preUpdate();
-        confidentialStorage.setDepartment_code("000");
-        confidentialStorage.setSubject_code("000");
         return confidentialStorageDao.updateStorage(confidentialStorage) == 1;
     }
 

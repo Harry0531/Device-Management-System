@@ -25,26 +25,29 @@ public class ConfidentialStorageController extends BaseApi {
     @RequestMapping(value = "/getSub", method = RequestMethod.POST)
     @ResponseBody
     public Object getSub(@RequestParam String param) throws Exception {
-        List<String> list;
-        if(param.equals("dept")){
-            list=confidentialStorageService.getSubFromDept();
-            return list;
-        }else {
-            list=confidentialStorageService.getSubFromDict(param);
-            return list;
+        if (param.equals("dept")) {
+            return confidentialStorageService.getSubFromDept();
+        } else {
+            return confidentialStorageService.getSubFromDict(param);
         }
+    }
+
+    @RequestMapping(value = "/getDeptSub", method = RequestMethod.POST)
+    @ResponseBody
+    public Object getDeptSub(@RequestParam String id) throws Exception {
+        return confidentialStorageService.getDeptSub(id);
     }
 
     @RequestMapping(value = "/insertOrUpdateStorage", method = RequestMethod.POST)
     @ResponseBody
     public Object insertStorage(@RequestBody ConfidentialStorage confidentialStorage) throws Exception {
         System.out.println(confidentialStorage);
-        if(confidentialStorage.getId()==null||confidentialStorage.getId().equals("")){
-            if(confidentialStorageService.insertStorage(confidentialStorage))
+        if (confidentialStorage.getId() == null || confidentialStorage.getId().equals("")) {
+            if (confidentialStorageService.insertStorage(confidentialStorage))
                 return retMsg.Set(MsgType.SUCCESS);
             else return retMsg.Set(MsgType.ERROR);
-        }else{
-            if(confidentialStorageService.updateStorage(confidentialStorage))
+        } else {
+            if (confidentialStorageService.updateStorage(confidentialStorage))
                 return retMsg.Set(MsgType.SUCCESS);
             else return retMsg.Set(MsgType.ERROR);
         }
@@ -53,26 +56,26 @@ public class ConfidentialStorageController extends BaseApi {
     @RequestMapping(value = "/getList", method = RequestMethod.POST)
     @ResponseBody
     public Object getList(@RequestBody ConfidentialStorage confidentialStorage) throws Exception {
-        try{
+        try {
             Page<ConfidentialStorage> page = new Page<>();
             page.setResultList(confidentialStorageService.selectDictListByPage(confidentialStorage));
             page.setTotal(confidentialStorageService.selectSearchCount(confidentialStorage));
-            return retMsg.Set(MsgType.SUCCESS,page);
-        }catch (Exception e){
+            return retMsg.Set(MsgType.SUCCESS, page);
+        } catch (Exception e) {
             e.printStackTrace();
-            return  retMsg.Set(MsgType.ERROR);
+            return retMsg.Set(MsgType.ERROR);
         }
     }
 
-    @RequestMapping(value = "/deleteListByIds",method = RequestMethod.POST)
+    @RequestMapping(value = "/deleteListByIds", method = RequestMethod.POST)
     @ResponseBody
-    public Object deleteListByIds(@RequestBody List<ConfidentialStorage> list)throws Exception{
-        try{
-            if(confidentialStorageService.deleteListByIds(list)){
+    public Object deleteListByIds(@RequestBody List<ConfidentialStorage> list) throws Exception {
+        try {
+            if (confidentialStorageService.deleteListByIds(list)) {
                 return retMsg.Set(MsgType.SUCCESS);
-            }else
+            } else
                 return retMsg.Set(MsgType.ERROR);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return retMsg.Set(MsgType.ERROR);
         }

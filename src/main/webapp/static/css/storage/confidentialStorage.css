@@ -25,35 +25,55 @@
     background: #f6faff;
 }
 
-.el-table--enable-row-transition .el-table__body td, .el-table td, .el-table th{
+.el-table--enable-row-transition .el-table__body td, .el-table td, .el-table th {
     border: 0px !important;
 }
 
-.el-table th.is-leaf, tr .gutter{
+.el-table th.is-leaf, tr .gutter {
     background: aliceblue;
 }
 
-.el-button--mini{
+.el-button--mini {
     font-size: 11px;
     padding: 6px 8px;
 }
 
 /* 取消button间的自动间隔 */
-.el-button+.el-button{
+.el-button + .el-button {
     margin-left: 0px;
 }
 
 /* 弹窗 */
-.el-dialog{
+.el-dialog {
     width: 654px;
     margin-top: 30px !important;
 }
 
 /* 弹窗固定上下移动 */
-.el-dialog__wrapper{
+.el-dialog__wrapper {
     /*overflow-y: hidden;*/
 }
 
-.el-form{
+.el-form {
     padding: 0px 90px !important;
+}
+
+/* 选择框宽度 */
+.el-select.el-select--mini {
+    width: 100px;
+!important;
+}
+
+.el-select.el-select--small {
+    width: 150px;
+!important;
+}
+
+.el-select {
+    width: 200px;
+}
+
+.el-input__inner {
+    font-size: 12px !important;
+    height: 40px !important;
 }

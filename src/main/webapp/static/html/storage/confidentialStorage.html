@@ -23,24 +23,41 @@
         <span style="float: right;margin-right: 10px;">
             <el-form :inline="true" :model="filters">
                 <el-form-item>
-                    <el-select v-model="filters.value1" clearable placeholder="请选择类别" @change="getSub($event)">
+                    <el-select v-model="filters.value1" clearable placeholder="选择类别"
+                               @change="getSub($event)" size="mini">
                         <el-option
                                 v-for="item in select1"
                                 :key="item.value"
                                 :label="item.label"
-                                :value="item.value"
-                                :disabled="item.disabled">
+                                :value="item.value">
                         </el-option>
                     </el-select>
-                    <el-select v-model="filters.value2" placeholder="请选择" :loading="loading" @change="getList($event)">
+                    <el-select v-model="filters.value2" placeholder="请先选择类别" v-if="filters.value1 != 'dept'"
+                               :loading="loading" @change="getList($event)" size="small" clearable>
                         <el-option
                                 v-for="item in select2"
                                 :key="item.value"
                                 :label="item.label"
                                 :value="item.value"></el-option>
                     </el-select>
+                    <el-select v-model="filters.value3" placeholder="选择学院" v-if="filters.value1 == 'dept'"
+                               :loading="loading" @change="getList($event);getDeptSub($event)" size="small" clearable>
+                        <el-option
+                                v-for="item in select3"
+                                :key="item.id"
+                                :label="item.dept_name"
+                                :value="item.id"></el-option>
+                    </el-select>
+                    <el-select v-model="filters.value4" placeholder="请先选择学院" v-if="filters.value1 == 'dept'"
+                               :loading="loading" @change="getList($event)" clearable>
+                        <el-option
+                                v-for="item in select4"
+                                :key="item.id"
+                                :label="item.dept_name"
+                                :value="item.id"></el-option>
+                    </el-select>
                 </el-form-item>
-        </el-form>
+            </el-form>
         </span>
     </div>
 
@@ -52,7 +69,7 @@
 
         <el-table-column label="单位" width="100" prop="department_name" align="center"
                          header-align="center"></el-table-column>
-        <el-table-column label="科室/课题组" width="100" prop="subject_name" align="center"
+        <el-table-column label="科室/课题组" width="180" prop="subject_name" align="center"
                          header-align="center"></el-table-column>
         <el-table-column label="保密编号" width="150" prop="secret_number" align="center"
                          header-align="center"></el-table-column>
@@ -65,7 +82,7 @@
                          header-align="center"></el-table-column>
         <el-table-column label="放置地点" width="200" prop="place_location" align="center"
                          header-align="center"></el-table-column>
-        <el-table-column label="用途" width="80" prop="_usage" align="center" header-align="center"></el-table-column>
+        <el-table-column label="用途" width="130" prop="_usage" align="center" header-align="center"></el-table-column>
         <el-table-column label="使用范围" width="100" prop="_scope" align="center" header-align="center"></el-table-column>
         <el-table-column label="启用时间" width="100" prop="enablation_time" align="center"
                          header-align="center"></el-table-column>
@@ -101,10 +118,20 @@
         <el-form label-position="left" label-width="140px" style="padding: 0 100px;"
                  v-loading="dialog.loading" status-icon>
             <el-form-item label="单位">
-                <el-input v-model="dialog.data.department_name"></el-input>
+                <el-select v-model="dialog.data.department_name" @change="handleSchoolChange">
+                    <el-option v-for="item in dialog.selectionList.department"
+                               :key="item.id"
+                               :label="item.dept_name"
+                               :value="item"></el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="科室/课题组">
-                <el-input v-model="dialog.data.subject_name"></el-input>
+                <el-select v-model="dialog.data.subject_name" @change="handleSubjectChange">
+                    <el-option v-for="item in dialog.selectionList.subject"
+                               :key="item.id"
+                               :label="item.dept_name"
+                               :value="item"></el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="保密编号">
                 <el-input v-model="dialog.data.secret_number"></el-input>
