@@ -11,7 +11,7 @@
 <div id="app" v-cloak style="background: white;height: 100%;overflow: hidden;" v-loading="fullScreenLoading">
     <div style="padding: 15px 20px 0 15px;">
         <span class="button-group">
-            <el-button size="small" type="success" @click="dialog.visible=true"
+            <el-button size="small" @click="dialog.visible=true" type="primary" plain
                        style="margin-left: 10px;">新增记录</el-button>
             <el-button size="small" type="danger" @click="deleteByIds(table.selectionList)"
                        style="margin-left: 10px;">批量删除</el-button>
