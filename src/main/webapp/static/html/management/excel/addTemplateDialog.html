@@ -36,15 +36,7 @@
        <div v-if="StepCount==1">
            <p style="margin: 10px">模版名称</p>
            <el-input v-model="templateEntity.templateName"></el-input>
-            <p style="margin: 10px">选择表</p>
-           <el-select v-model="templateEntity.tableName" placeholder="请选择">
-               <el-option
-                       v-for="item in TableList"
-                       :key="item"
-                       :label="item"
-                       :value="item">
-               </el-option>
-           </el-select>
+
 
            <p style="margin: 10px">选择类型</p>
            <el-select v-model="templateEntity.TypeId" clearable @change="handleSelectTypeChange">

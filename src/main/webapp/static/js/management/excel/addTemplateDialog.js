@@ -51,6 +51,7 @@ var app=new Vue({
                     tableName:app.templateEntity.tableName,
                     ExcelName:app.templateEntity.filePath
             };
+            console.log(data);
             ajaxPost(app.urls.getColumnInTableAndExcel,data,function (result) {
                 app.ColumnList.ExcelColumnList=result.data["excelColumnList"];
                 app.ColumnList.TableColumnList=result.data["tableColumnList"];
@@ -110,12 +111,15 @@ var app=new Vue({
         },
         handleSelectTypeChange:function (v) {
             var app=this;
-            app.templateEntity.typeId= v["id"]
+            app.templateEntity.typeId= v["id"];
+            app.templateEntity.tableName=v["tableName"]
         },
         getDictTypeData:function(){
             let app= this;
             ajaxGet(app.urls.getDictType,null,function (d) {
                 app.dictType=d.data;
+                d.data.forEach(function (v) {
+                })
             })
         },
     },

@@ -16,17 +16,26 @@
             <el-button type="danger" size="small">删除模版</el-button>
         </span>
 
+        <el-table  :data="table.data" height="600px" v-loading="table.loading"
+                   style="width: 100%;overflow-y: hidden;margin-top: 15px;" class="scroll-bar" stripe
+                   width="100%">
+            <el-table-column type="selection" ></el-table-column>
+            <el-table-column label="模版名称" prop="templateName" ></el-table-column>
+            <el-table-column label="模版类别" prop="typeName"></el-table-column>
 
+        </el-table>
 
         <!--新增模版的dialog-->
-        <el-dialog :title="insertOrUpdateDialog.title" :visible="insertOrUpdateDialog.visible" lock-scroll style="position: relative;top:-150px;">
-            <iframe v-if="insertOrUpdateDialog.visible" src="addTemplateDialog.html" frameborder="false" style="width:100%;height: 600px" ></iframe>
+        <el-dialog :title="insertOrUpdateDialog.title" :before-close="handleDialogClose" :visible="insertOrUpdateDialog.visible" lock-scroll  top="25px"  style="position:absolute;top:0;">
+            <iframe v-if="insertOrUpdateDialog.visible" src="addTemplateDialog.html" frameborder="false" style="width:100%;height: 550px" ></iframe>
         </el-dialog>
     </div>
 </body>
 <script src="../../../plugins/vue/vue.js"></script>
 <script src="../../../plugins/jquery/jquery-3.3.1.min.js"></script>
 <script src="../../../plugins/elementui/index.js"></script>
+<script src="../../../js/utils.js"></script>
 <script src="../../../js/management/excel/TemplateManager.js"></script>
+
 
 </html>

@@ -35,7 +35,7 @@ public class DictController  extends BaseApi {
         }else
             return retMsg.Set(MsgType.ERROR);
     }
-
+    //获取字典类型序列
     @RequestMapping(value= "getDictTypeList",method = RequestMethod.GET)
     @ResponseBody
     public  Object getDictTypeList()throws Exception{
@@ -47,6 +47,7 @@ public class DictController  extends BaseApi {
             return retMsg.Set(MsgType.ERROR);
         }
     }
+
 
     @RequestMapping(value ="selectDictListByPage",method = RequestMethod.POST)
     @ResponseBody
