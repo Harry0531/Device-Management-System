@@ -84,7 +84,6 @@ let app = new Vue({
     },
     methods: {
         getSub(prov) {
-            let flag = app.filters.value3 || app.filters.value4;
             app.select2 = [];
             app.filters.value2 = '';
             app.select3 = [];
@@ -105,7 +104,7 @@ let app = new Vue({
                     });
                 }
             });
-            if (flag) {
+            if (app.filters.value1=='') {
                 app.table.type = '';
                 app.refreshTable();
             }
