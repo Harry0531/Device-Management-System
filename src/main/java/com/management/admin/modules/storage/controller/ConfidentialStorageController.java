@@ -80,4 +80,12 @@ public class ConfidentialStorageController extends BaseApi {
             return retMsg.Set(MsgType.ERROR);
         }
     }
+
+    @RequestMapping(value = "/scrap", method = RequestMethod.POST)
+    @ResponseBody
+    public Object scrap(@RequestBody ConfidentialStorage confidentialStorage) throws Exception {
+        if(confidentialStorageService.scrap(confidentialStorage))
+            return retMsg.Set(MsgType.SUCCESS);
+        return retMsg.Set(MsgType.ERROR);
+    }
 }

@@ -17,7 +17,8 @@ let app = new Vue({
             getList: 'http://localhost:8444/api/sys/storage/getList',
             insertOrUpdateStorage: 'http://localhost:8444/api/sys/storage/insertOrUpdateStorage',
             deleteListByIds: 'http://localhost:8444/api/sys/storage/deleteListByIds',
-            deleteAll: 'http://localhost:8444/api/sys/storage/deleteAll'
+            deleteAll: 'http://localhost:8444/api/sys/storage/deleteAll',
+            scrap: 'http://localhost:8444/api/sys/storage/scrap'
         },
         select1: select1,
         select2: [],
@@ -213,6 +214,7 @@ let app = new Vue({
                 use_situation: app.dialog.data.use_situation,
                 remarks: app.dialog.data.remarks
             };
+            console.log("data",data);
             ajaxPostJSON(this.urls.insertOrUpdateStorage, data, function (d) {
                 app.dialog.loading = false;
                 app.dialog.visible = false;
@@ -253,6 +255,8 @@ let app = new Vue({
             app.dialog.data._usage = v["_usage"];
             app.dialog.data._scope = v["_scope"];
             app.dialog.data._use_situation = v["_use_situation"];
+            app.dialog.data.department_code=v["department_code"];
+            app.dialog.data.subject_code=v["subject_code"];
             app.dialog.visible = true;
         },
         resetDialogData: function () {
@@ -324,6 +328,36 @@ let app = new Vue({
         onPageIndexChange: function (newIndex) {
             this.table.props.pageIndex = newIndex;
             this.refreshTable();
+        },
+        scrap: function (v) {
+            console.log(v);
+            let data = {
+                id: v["id"],
+                department_name: v["department_name"],
+                subject_name: v["subject_name"],
+                secret_number: v["secret_number"],
+                type: v["type"],
+                model: v["model"],
+                person: v["person"],
+                secret_level: v["secret_level"],
+                serial_number: v["serial_number"],
+                place_location: v["place_location"],
+                usage: v["usage"],
+                scope: v["scope"],
+                enablation_time: v["enablation_time"],
+                use_situation: v["use_situation"],
+                remarks: v["remarks"],
+                department_code: v["department_code"],
+                subject_code: v["subject_code"]
+            };
+            console.log(data);
+            ajaxPostJSON(app.urls.scrap, data, function (result) {
+                app.$message({
+                    message: "报废成功",
+                    type: "success"
+                });
+                app.refreshTable();
+            })
         }
     },
     mounted: function () {

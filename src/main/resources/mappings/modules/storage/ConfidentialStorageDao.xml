@@ -103,7 +103,11 @@
                 OR a.`subject_code` = #{type}
             </if>
             <if test="1 == 1">
-                and a.`del_flag` = 0
+                AND a.`del_flag` = 0
+            </if>
+            <!--不显示报废项-->
+            <if test="1 == 1">
+                AND a.`scrapped_flag` = 0
             </if>
         </where>
     </select>
@@ -166,7 +170,11 @@
                 OR a.`subject_code` = #{type}
             </if>
             <if test="1 == 1">
-                and a.`del_flag` = 0
+                AND a.`del_flag` = 0
+            </if>
+            <!--不显示报废项-->
+            <if test="1 == 1">
+                AND a.`scrapped_flag` = 0
             </if>
         </where>
         ORDER BY a.`modify_time` DESC
@@ -179,4 +187,10 @@
             #{item.id}
         </foreach>
     </update>
+
+    <select id="getScrap" resultType="String">
+        SELECT `id` FROM `data_dictionary` WHERE
+            (`dic_value` = '报废' AND
+                (`type_id` = (SELECT `id` FROM `data_dictionary_type` WHERE `type_name` = '涉密存储介质')))
+    </select>
 </mapper>

@@ -1,6 +1,7 @@
 package com.management.admin.common.persistence;
 
 import com.management.admin.common.utils.IdGen;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
@@ -23,6 +24,8 @@ public class DataEntity<T> {
     private Date modifyTime;        // 最后修改日期
     @Column(name = "del_flag")
     private boolean delFlag;        // 是否被删除
+    @Column(name = "scrap_time")
+    private Date scrap_time;        //报废时间
 
     @Transient
     private Page<T> page; // 分页对象
@@ -46,6 +49,14 @@ public class DataEntity<T> {
      */
     public void preUpdate() {
         modifyTime = new Date();
+    }
+
+    /**
+     * 报废前手动调用
+     */
+    public void preScrap() {
+        scrap_time = new Date();
+        modifyTime = scrap_time;
     }
 
     public String getId() {
@@ -74,7 +85,6 @@ public class DataEntity<T> {
     }
 
 
-
     public Date getCreateDate() {
         return createTime;
     }
@@ -89,5 +99,13 @@ public class DataEntity<T> {
 
     public void setModifyDate(Date modifyDate) {
         this.modifyTime = modifyDate;
+    }
+
+    public Date getScrap_time() {
+        return scrap_time;
+    }
+
+    public void setScrap_time(Date scrap_time) {
+        this.scrap_time = scrap_time;
     }
 }
