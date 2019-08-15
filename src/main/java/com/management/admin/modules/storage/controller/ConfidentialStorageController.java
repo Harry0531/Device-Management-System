@@ -16,7 +16,7 @@ import java.util.List;
  * @Description 涉密存储
  * @date 2019/8/12 20:39
  */
-@RequestMapping("/api/sys/storage")
+@RequestMapping("/api/sys/storage/confidential")
 @Controller
 public class ConfidentialStorageController extends BaseApi {
     @Autowired

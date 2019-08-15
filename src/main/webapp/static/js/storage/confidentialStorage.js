@@ -12,13 +12,13 @@ let app = new Vue({
     el: '#app',
     data: {
         urls: {
-            getSub: 'http://localhost:8444/api/sys/storage/getSub',
-            getDeptSub: 'http://localhost:8444/api/sys/storage/getDeptSub',
-            getList: 'http://localhost:8444/api/sys/storage/getList',
-            insertOrUpdateStorage: 'http://localhost:8444/api/sys/storage/insertOrUpdateStorage',
-            deleteListByIds: 'http://localhost:8444/api/sys/storage/deleteListByIds',
-            deleteAll: 'http://localhost:8444/api/sys/storage/deleteAll',
-            scrap: 'http://localhost:8444/api/sys/storage/scrap'
+            getSub: 'http://localhost:8444/api/sys/storage/confidential/getSub',
+            getDeptSub: 'http://localhost:8444/api/sys/storage/confidential/getDeptSub',
+            getList: 'http://localhost:8444/api/sys/storage/confidential/getList',
+            insertOrUpdateStorage: 'http://localhost:8444/api/sys/storage/confidential/insertOrUpdateStorage',
+            deleteListByIds: 'http://localhost:8444/api/sys/storage/confidential/deleteListByIds',
+            deleteAll: 'http://localhost:8444/api/sys/storage/confidential/deleteAll',
+            scrap: 'http://localhost:8444/api/sys/storage/confidential/scrap'
         },
         select1: select1,
         select2: [],
