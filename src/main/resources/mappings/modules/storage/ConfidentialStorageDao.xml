@@ -2,7 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.management.admin.modules.storage.dao.ConfidentialStorageDao">
     <select id="getSubFromDict" resultType="com.management.admin.modules.sys.entity.Dict">
-        SELECT `id`, `dic_value` AS `dicValue` FROM `data_dictionary` WHERE `dic_en_name` = #{_parameter}
+        SELECT `id`, `dic_value` AS `dicValue` FROM `data_dictionary` WHERE
+            (`dic_en_name` = #{_parameter} AND
+                (`type_id` = (SELECT `id` FROM `data_dictionary_type` WHERE `type_name` = '涉密存储介质')))
     </select>
 
     <select id="getSubFromDept" resultType="com.management.admin.modules.sys.entity.Dept">
