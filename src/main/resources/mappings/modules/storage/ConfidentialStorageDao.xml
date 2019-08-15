@@ -94,20 +94,17 @@
         SELECT COUNT(*) FROM `confidential_storage_device` a
         <where>
             <if test="type != '' and type != null">
-                AND a.`type` = #{type}
+                AND (a.`type` = #{type}
                 OR a.`secret_level` = #{type}
                 OR a.`usage` = #{type}
                 OR a.`scope` = #{type}
                 OR a.`use_situation` = #{type}
                 OR a.`department_code` = #{type}
-                OR a.`subject_code` = #{type}
+                OR a.`subject_code` = #{type})
             </if>
             <if test="1 == 1">
-                AND a.`del_flag` = 0
-            </if>
-            <!--不显示报废项-->
-            <if test="1 == 1">
-                AND a.`scrapped_flag` = 0
+                AND (a.`del_flag` = 0
+                AND a.`scrapped_flag` = 0)
             </if>
         </where>
     </select>
@@ -161,20 +158,17 @@
         <where>
             <!--暂缺按单位筛选-->
             <if test="type != '' and type != null">
-                AND a.`type` = #{type}
+                AND (a.`type` = #{type}
                 OR a.`secret_level`  = #{type}
                 OR a.`usage`  = #{type}
                 OR a.`scope`  = #{type}
                 OR a.`use_situation`  = #{type}
                 OR a.`department_code` = #{type}
-                OR a.`subject_code` = #{type}
+                OR a.`subject_code` = #{type})
             </if>
             <if test="1 == 1">
-                AND a.`del_flag` = 0
-            </if>
-            <!--不显示报废项-->
-            <if test="1 == 1">
-                AND a.`scrapped_flag` = 0
+                AND (a.`del_flag` = 0
+                AND a.`scrapped_flag` = 0)
             </if>
         </where>
         ORDER BY a.`modify_time` DESC

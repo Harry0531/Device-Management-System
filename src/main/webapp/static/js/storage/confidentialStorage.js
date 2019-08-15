@@ -84,10 +84,13 @@ let app = new Vue({
     },
     methods: {
         getSub(prov) {
+            let flag = app.filters.value3 || app.filters.value4;
             app.select2 = [];
             app.filters.value2 = '';
             app.select3 = [];
             app.filters.value3 = '';
+            app.select4 = [];
+            app.filters.value4 = '';
             let data = {
                 param: prov
             };
@@ -101,9 +104,15 @@ let app = new Vue({
                         app.select2.push({'value': r.id, 'label': r.dicValue});
                     });
                 }
-            })
+            });
+            if (flag) {
+                app.table.type = '';
+                app.refreshTable();
+            }
         },
         getDeptSub: function (index) {
+            app.select4 = [];
+            app.filters.value4 = '';
             ajaxPost(this.urls.getDeptSub, {id: index}, function (result) {
                 result.forEach(function (r) {
                     app.select4.push(r);
@@ -214,7 +223,6 @@ let app = new Vue({
                 use_situation: app.dialog.data.use_situation,
                 remarks: app.dialog.data.remarks
             };
-            console.log("data",data);
             ajaxPostJSON(this.urls.insertOrUpdateStorage, data, function (d) {
                 app.dialog.loading = false;
                 app.dialog.visible = false;
@@ -230,6 +238,8 @@ let app = new Vue({
         },
         getList: function (index) {
             this.table.type = index;
+            if (app.filters.value4 == '' && app.filters.value3 != '')
+                this.table.type = app.filters.value3;
             this.refreshTable();
         },
         updateDialog: function (v) {
@@ -255,8 +265,8 @@ let app = new Vue({
             app.dialog.data._usage = v["_usage"];
             app.dialog.data._scope = v["_scope"];
             app.dialog.data._use_situation = v["_use_situation"];
-            app.dialog.data.department_code=v["department_code"];
-            app.dialog.data.subject_code=v["subject_code"];
+            app.dialog.data.department_code = v["department_code"];
+            app.dialog.data.subject_code = v["subject_code"];
             app.dialog.visible = true;
         },
         resetDialogData: function () {
@@ -350,7 +360,6 @@ let app = new Vue({
                 department_code: v["department_code"],
                 subject_code: v["subject_code"]
             };
-            console.log(data);
             ajaxPostJSON(app.urls.scrap, data, function (result) {
                 app.$message({
                     message: "报废成功",
