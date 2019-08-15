@@ -203,7 +203,8 @@
                                :key="item.value"
                                :label="item.label"
                                :value="item.value"
-                               :disabled="item.label == '报废' && dialog.data.id != ''"></el-option><!--不可以在修改时报废-->
+                               :disabled="item.label == '报废'"></el-option>
+                    <!--本页面不可以通过输入的方式报废-->
                 </el-select>
             </el-form-item>
             <el-form-item label="备注">
