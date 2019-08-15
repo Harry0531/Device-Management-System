@@ -104,7 +104,7 @@ let app = new Vue({
                     });
                 }
             });
-            if (app.filters.value1=='') {
+            if (app.filters.value1 == '') {
                 app.table.type = '';
                 app.refreshTable();
             }
@@ -239,6 +239,7 @@ let app = new Vue({
             this.table.type = index;
             if (app.filters.value4 == '' && app.filters.value3 != '')
                 this.table.type = app.filters.value3;
+            app.table.props.pageIndex = 1;
             this.refreshTable();
         },
         updateDialog: function (v) {
@@ -318,6 +319,7 @@ let app = new Vue({
                         message: "删除成功",
                         type: "success"
                     });
+                    app.table.props.pageIndex = 1;
                     app.refreshTable();
                 })
             }).catch(() => {
@@ -364,6 +366,7 @@ let app = new Vue({
                     message: "报废成功",
                     type: "success"
                 });
+                app.table.props.pageIndex = 1;
                 app.refreshTable();
             })
         }

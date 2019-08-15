@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.management.admin.modules.storage.dao.ConfidentialStorageDao">
+<mapper namespace="com.management.admin.modules.storage.dao.ScrappedStorageDao">
     <select id="getSubFromDict" resultType="com.management.admin.modules.sys.entity.Dict">
         SELECT `id`, `dic_value` AS `dicValue` FROM `data_dictionary` WHERE
             (`dic_en_name` = #{_parameter} AND
@@ -15,95 +15,22 @@
         SELECT `id`, `dept_name` FROM `department` WHERE (`dept_attach` = #{_parameter} AND `del_flag` = 0)
     </select>
 
-    <insert id="insertStorage" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage">
-        INSERT INTO `confidential_storage_device` (
-            `id`,
-            `department_code`,
-            `department_name`,
-            `subject_code`,
-            `subject_name`,
-            `secret_number`,
-            `type`,
-            `model`,
-            `person`,
-            `secret_level`,
-            `serial_number`,
-            `place_location`,
-            `usage`,
-            `scope`,
-            `enablation_time`,
-            `use_situation`,
-            `remarks`,
-            `create_time`,
-            `modify_time`,
-            `del_flag`,
-            `scrapped_flag`,
-            `scrap_time`
-        )VALUES (
-            #{id},
-            #{department_code},
-            #{department_name},
-            #{subject_code},
-            #{subject_name},
-            #{secret_number},
-            #{type},
-            #{model},
-            #{person},
-            #{secret_level},
-            #{serial_number},
-            #{place_location},
-            #{usage},
-            #{scope},
-            #{enablation_time},
-            #{use_situation},
-            #{remarks},
-            #{createTime},
-            #{modifyTime},
-            #{delFlag},
-            #{scrapped_flag},
-            #{scrap_time}
-        )
-    </insert>
-
-    <update id="updateStorage" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage">
-        UPDATE `confidential_storage_device`
-        SET `department_code` = #{department_code},
-            `department_name` = #{department_name},
-            `subject_code` = #{subject_code},
-            `subject_name` = #{subject_name},
-            `secret_number` = #{secret_number},
-            `type` = #{type},
-            `model` = #{model},
-            `person` = #{person},
-            `secret_level` = #{secret_level},
-            `serial_number` = #{serial_number},
-            `place_location` = #{place_location},
-            `usage` = #{usage},
-            `scope` = #{scope},
-            `enablation_time` = #{enablation_time},
-            `use_situation` = #{use_situation},
-            `remarks` = #{remarks},
-            `modify_time` = #{modifyTime},
-            `del_flag` = #{delFlag},
-            `scrapped_flag` = #{scrapped_flag},
-            `scrap_time` = #{scrap_time}
-        WHERE id =#{id}
-    </update>
-
     <select id="selectSearchCount" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage" resultType="int">
         SELECT COUNT(*) FROM `confidential_storage_device` a
         <where>
+            <if test="page.searchKey != '' and page.searchKey != null">
+                AND a.`secret_number` = #{page.searchKey}
+            </if>
             <if test="type != '' and type != null">
                 AND (a.`type` = #{type}
                 OR a.`secret_level` = #{type}
                 OR a.`usage` = #{type}
                 OR a.`scope` = #{type}
-                OR a.`use_situation` = #{type}
                 OR a.`department_code` = #{type}
                 OR a.`subject_code` = #{type})
             </if>
             <if test="1 == 1">
-                AND (a.`del_flag` = 0 AND a.`scrapped_flag` = 0)
+                AND a.`del_flag` = 0
             </if>
         </where>
     </select>
@@ -142,11 +69,11 @@
     <select id="selectDictListByPage" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage"
             resultMap="storageBean">
         SELECT a.*,
-               b.`dic_value` AS `_type`,
-               c.`dic_value` AS `_secret_level`,
-               d.`dic_value` AS `_usage`,
-               e.`dic_value` AS `_scope`,
-               f.`dic_value` AS `_use_situation`
+        b.`dic_value` AS `_type`,
+        c.`dic_value` AS `_secret_level`,
+        d.`dic_value` AS `_usage`,
+        e.`dic_value` AS `_scope`,
+        f.`dic_value` AS `_use_situation`
         FROM `confidential_storage_device` a
         LEFT JOIN `data_dictionary` b ON a.`type` = b.`id`
         LEFT JOIN `data_dictionary` c ON a.`secret_level` = c.`id`
@@ -155,33 +82,37 @@
         LEFT JOIN `data_dictionary` f ON a.`use_situation` = f.`id`
 
         <where>
+            <if test="page.searchKey != '' and page.searchKey != null">
+                AND a.`secret_number` = #{page.searchKey}
+            </if>
             <if test="type != '' and type != null">
                 AND (a.`type` = #{type}
                 OR a.`secret_level`  = #{type}
                 OR a.`usage`  = #{type}
                 OR a.`scope`  = #{type}
-                OR a.`use_situation`  = #{type}
                 OR a.`department_code` = #{type}
                 OR a.`subject_code` = #{type})
             </if>
             <if test="1 == 1">
-                AND (a.`del_flag` = 0 AND a.`scrapped_flag` = 0)
+                AND a.`del_flag` = 0
             </if>
         </where>
         ORDER BY a.`create_time` DESC
         limit #{page.pageStart}, #{page.pageSize}
     </select>
 
-    <update id="deleteListByIds" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage">
-        UPDATE `confidential_storage_device` SET `del_flag` = 1 WHERE `id` IN
-        <foreach collection="list" item="item" open="(" close=")" separator=",">
-            #{item.id}
-        </foreach>
-    </update>
-
     <select id="getScrap" resultType="String">
         SELECT `id` FROM `data_dictionary` WHERE
             (`dic_value` = '报废' AND
                 (`type_id` = (SELECT `id` FROM `data_dictionary_type` WHERE `type_name` = '涉密存储介质')))
     </select>
+
+    <update id="scrapStorage" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage">
+        UPDATE `confidential_storage_device`
+        SET `use_situation` = #{use_situation},
+            `remarks` = #{remarks},
+            `scrapped_flag` = #{scrapped_flag},
+            `scrap_time` = #{scrap_time}
+        WHERE id =#{id}
+    </update>
 </mapper>
