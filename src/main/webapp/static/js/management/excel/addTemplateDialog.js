@@ -18,7 +18,8 @@ var app=new Vue({
             templateName:"",       //模版名
             tableName:"",       //对应表名
             filePath:"" ,  //文件名
-            TypeId:""   //对应数据字典类型ID
+            TypeId:"" ,  //对应数据字典类型ID
+            TypeName:""
         },
         ColumnList:{
             ExcelColumnList:[],
@@ -111,8 +112,14 @@ var app=new Vue({
         },
         handleSelectTypeChange:function (v) {
             var app=this;
-            app.templateEntity.typeId= v["id"];
-            app.templateEntity.tableName=v["tableName"]
+            app.templateEntity.TypeId= v;
+            console.log(app.dictType);
+            app.dictType.forEach(function (w) {
+                if(v["id"]=== w["id"]){
+                    app.templateEntity.tableName=w["tableName"]
+                    app.templateEntity.typeName=w["typeName"]
+                }
+            })
         },
         getDictTypeData:function(){
             let app= this;

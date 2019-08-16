@@ -17,7 +17,7 @@ public class ExportExcel {
     //导出的字段名
     private List<String> fieldList;
     //筛选条件
-    private List<String> conditionList;
+    private List<String> conditionsList;
     //选中多项导出
     private List<String> idList;
 

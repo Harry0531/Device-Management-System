@@ -39,9 +39,9 @@
 
 
            <p style="margin: 10px">选择类型</p>
-           <el-select v-model="templateEntity.TypeId" clearable @change="handleSelectTypeChange">
+           <el-select v-model="templateEntity.TypeName" clearable @change="handleSelectTypeChange">
                <el-option v-for="item in dictType" :key="item.id" :label="item.typeName"
-                          :value="item"></el-option>
+                          :value="item.id"></el-option>
            </el-select>
 
            <el-upload
@@ -50,7 +50,7 @@
                    action="http://localhost:8444/api/tool/file/uploadFile"
                    :on-success="SuccessUpload"
                    :before-upload="beforeUpload"
-                   multiple>
+                   >
                <i class="el-icon-upload"></i>
                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
            </el-upload>

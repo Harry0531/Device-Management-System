@@ -9,13 +9,25 @@
             display: none;
         }
     </style>
+
+
 </head>
 <body>
-    <div id="app" v-cloak=""></div>
+    <div id="app" v-cloak>
+        <template>
+            <el-transfer v-model="ExportList" :data="FieldList"
+                :titles="titles"
+            ></el-transfer>
+        </template>
+        <div style="position: absolute;right: 20px;bottom: 20px;">
+            <el-button type="success" @click="startExport">导出</el-button>
+        </div>
+    </div>
 
 </body>
 <script src="../../../plugins/vue/vue.js"></script>
 <script src="../../../plugins/jquery/jquery-3.3.1.min.js"></script>
+<script src="../../../plugins/jquery/form.js"></script>
 <script src="../../../plugins/elementui/index.js"></script>
 <script src="../../../js/utils.js"></script>
 <script src="../../../js/management/excel/ExportData.js"></script>
