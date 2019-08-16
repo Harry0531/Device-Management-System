@@ -128,7 +128,7 @@
     <el-dialog title="添加记录" :visible.sync="dialog.visible" heigth="700" @closed="resetDialogData">
         <el-form label-position="left" label-width="140px" style="padding: 0 100px;"
                  v-loading="dialog.loading" status-icon>
-            <el-form-item label="单位">
+            <el-form-item label="单位" :required="true">
                 <el-select v-model="dialog.data.department_name" @change="handleSchoolChange">
                     <el-option v-for="item in dialog.selectionList.department"
                                :key="item.id"
@@ -136,7 +136,7 @@
                                :value="item"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="科室/课题组">
+            <el-form-item label="科室/课题组" :required="true">
                 <el-select v-model="dialog.data.subject_name" @change="handleSubjectChange">
                     <el-option v-for="item in dialog.selectionList.subject"
                                :key="item.id"
@@ -144,10 +144,10 @@
                                :value="item"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="保密编号">
+            <el-form-item label="保密编号" :required="true">
                 <el-input v-model="dialog.data.secret_number"></el-input>
             </el-form-item>
-            <el-form-item label="类型">
+            <el-form-item label="类型" :required="true">
                 <el-select v-model="dialog.data.type" @change="handleTypeChange">
                     <el-option v-for="item in dialog.selectionList.type"
                                :key="item.value"
@@ -155,13 +155,13 @@
                                :value="item.value"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="型号">
+            <el-form-item label="型号" :required="true">
                 <el-input v-model="dialog.data.model"></el-input>
             </el-form-item>
-            <el-form-item label="责任人">
+            <el-form-item label="责任人" :required="true">
                 <el-input v-model="dialog.data.person"></el-input>
             </el-form-item>
-            <el-form-item label="密级">
+            <el-form-item label="密级" :required="true">
                 <el-select v-model="dialog.data.secret_level" @change="handleLevelChange">
                     <el-option v-for="item in dialog.selectionList.secret_level"
                                :key="item.value"
@@ -169,13 +169,13 @@
                                :value="item.value"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="序列号">
+            <el-form-item label="序列号" :required="true">
                 <el-input v-model="dialog.data.serial_number"></el-input>
             </el-form-item>
-            <el-form-item label="放置地点">
+            <el-form-item label="放置地点" :required="true">
                 <el-input v-model="dialog.data.place_location"></el-input>
             </el-form-item>
-            <el-form-item label="用途">
+            <el-form-item label="用途" :required="true">
                 <el-select v-model="dialog.data.usage" @change="handleUsageChange">
                     <el-option v-for="item in dialog.selectionList.usage"
                                :key="item.value"
@@ -183,7 +183,7 @@
                                :value="item.value"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="使用范围">
+            <el-form-item label="使用范围" :required="true">
                 <el-select v-model="dialog.data.scope" @change="handleScopeChange">
                     <el-option v-for="item in dialog.selectionList.scope"
                                :key="item.value"
@@ -191,13 +191,13 @@
                                :value="item.value"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="启用时间">
+            <el-form-item label="启用时间" :required="true">
                 <el-date-picker v-model="dialog.data.enablation_time"
                                 placeholder="选择日期"
                                 value-format="yyyy-MM-dd"
                                 format="yyyy-MM-dd"></el-date-picker>
             </el-form-item>
-            <el-form-item label="使用情况">
+            <el-form-item label="使用情况" :required="true">
                 <el-select v-model="dialog.data.use_situation" @change="handleSituationChange">
                     <el-option v-for="item in dialog.selectionList.use_situation"
                                :key="item.value"

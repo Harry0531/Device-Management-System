@@ -24,7 +24,7 @@ public class DataEntity<T> {
     @Column(name = "modify_time")
     private Date modifyTime;        // 最后修改日期
     @Column(name = "del_flag")
-    private boolean delFlag;        // 是否被删除
+    private Integer delFlag;        // 是否被删除
     @Column(name = "scrap_time")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date scrap_time;        //报废时间
@@ -43,7 +43,7 @@ public class DataEntity<T> {
         id = IdGen.uuid();
         createTime = new Date();
         modifyTime = createTime;
-        delFlag = false;
+        delFlag = 0;
     }
 
     /**
@@ -77,15 +77,13 @@ public class DataEntity<T> {
         this.page = page;
     }
 
-
-    public boolean isDelFlag() {
+    public Integer getDelFlag() {
         return delFlag;
     }
 
-    public void setDelFlag(boolean delFlag) {
+    public void setDelFlag(Integer delFlag) {
         this.delFlag = delFlag;
     }
-
 
     public Date getCreateDate() {
         return createTime;

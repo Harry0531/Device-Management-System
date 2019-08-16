@@ -46,7 +46,7 @@
         <el-table-column label="启用" width="100" align="center">
             <template slot-scope="scope">
                 <el-switch v-model="scope.row.delFlag"
-                           :active-value="false" :inactive-value="true"
+                           :active-value="0" :inactive-value="1"
                            @change="disable(scope.row)"></el-switch>
             </template>
         </el-table-column>
@@ -54,7 +54,7 @@
         <el-table-column label="操作" header-align="center" align="center">
             <template slot-scope="scope">
                 <el-button type="warning" size="mini" style="position:relative;bottom: 1px;"
-                           @click="updateDialog(scope.row)" :disabled="scope.row.delFlag">
+                           @click="updateDialog(scope.row)" :disabled="scope.row.delFlag === 1">
                     <span>编辑</span>
                 </el-button>
             </template>
@@ -75,19 +75,19 @@
     <el-dialog title="添加数据" :visible.sync="dialog.visible" @closed="resetDialogData">
         <el-form label-position="left" label-width="140px" style="padding: 0 100px;"
                  v-loading="dialog.loading" status-icon>
-            <el-form-item label="单位名称">
+            <el-form-item label="单位名称" :required="true">
                 <el-input v-model="dialog.data.dept_name"></el-input>
             </el-form-item>
-            <el-form-item label="单位代码">
+            <el-form-item label="单位代码" :required="true">
                 <el-input v-model="dialog.data.dept_code"></el-input>
             </el-form-item>
-            <el-form-item label="选择类型">
+            <el-form-item label="选择类型" :required="true">
                 <el-select v-model="dialog.data.dept_type" placeholder="默认：学院" @change="handleDeptTypeChange">
                     <el-option v-for="item in selectionType" :key="item.value" :label="item.label"
                                :value="item.value"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="所属学院">
+            <el-form-item label="所属学院" :required="dialog.data.dept_type === 1">
                 <el-select v-model="dialog.data.dept_attach" :disabled=isAttachDisabled>
                     <el-option v-for="item in schoolList" :key="item.id" :label="item.dept_name"
                                :value="item.id"></el-option>

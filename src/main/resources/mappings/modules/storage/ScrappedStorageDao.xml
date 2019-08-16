@@ -3,8 +3,7 @@
 <mapper namespace="com.management.admin.modules.storage.dao.ScrappedStorageDao">
     <select id="getSubFromDict" resultType="com.management.admin.modules.sys.entity.Dict">
         SELECT `id`, `dic_value` AS `dicValue` FROM `data_dictionary` WHERE
-            (`dic_en_name` = #{_parameter} AND
-                (`type_id` = (SELECT `id` FROM `data_dictionary_type` WHERE `type_name` = '涉密存储介质')))
+            (`dic_en_name` = #{_parameter} AND (`dic_property` = '存储介质使用情况'))
     </select>
 
     <select id="getSubFromDept" resultType="com.management.admin.modules.sys.entity.Dept">

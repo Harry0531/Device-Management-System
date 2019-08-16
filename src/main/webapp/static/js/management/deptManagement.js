@@ -1,6 +1,7 @@
 let app = new Vue({
     el: '#app',
     data: {
+        aaa:0,
         fullScreenLoading: false,
         selectionType: [
             {value: 0, label: '学院'},
@@ -173,10 +174,11 @@ let app = new Vue({
             }
         },
         disable: function (v) {
-            let flag = v.delFlag === true ? 1 : 0;
+            // let flag = v.delFlag === true ? 1 : 0;
             let data = {
                 id: v.id,
-                flag: flag
+                flag: v.delFlag
+                // flag: flag
             };
             ajaxPost(this.urls.changeDisable, data);
         }
