@@ -43,16 +43,19 @@
         <el-table-column label="单位代码" width="300" prop="dept_code" align="center"></el-table-column>
         <el-table-column label="单位类型" width="150" prop="_dept_type" align="center"></el-table-column>
         <el-table-column label="归属学院" width="200" prop="_dept_attach" align="center"></el-table-column>
+        <el-table-column label="启用" width="100" align="center">
+            <template slot-scope="scope">
+                <el-switch v-model="scope.row.delFlag"
+                           :active-value="false" :inactive-value="true"
+                           @change="disable(scope.row)"></el-switch>
+            </template>
+        </el-table-column>
 
         <el-table-column label="操作" header-align="center" align="center">
             <template slot-scope="scope">
                 <el-button type="warning" size="mini" style="position:relative;bottom: 1px;"
                            @click="updateDialog(scope.row)" :disabled="scope.row.delFlag">
                     <span>编辑</span>
-                </el-button>
-                <el-button type="danger" size="mini" style="position:relative;bottom: 1px;margin-left: 6px;"
-                           @click="deleteByIds([{id: scope.row.id}])" :disabled="scope.row.delFlag">
-                    {{scope.row.delFlag ? '已' : ''}}禁用
                 </el-button>
             </template>
         </el-table-column>

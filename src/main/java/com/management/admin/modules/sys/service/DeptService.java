@@ -44,12 +44,16 @@ public class DeptService {
         return deptDao.insertDept(dept) == 1;
     }
 
-    public boolean updateDept(Dept dept){
+    public boolean updateDept(Dept dept) {
         dept.preUpdate();
-        return deptDao.updateDept(dept)==1;
+        return deptDao.updateDept(dept) == 1;
     }
 
-    public boolean deleteListByIds(List<Dept> list){
-        return list.size()==0 || deptDao.deleteDictByIds(list)==list.size();
+    public boolean deleteListByIds(List<Dept> list) {
+        return list.size() == 0 || deptDao.deleteDictByIds(list) == list.size();
+    }
+
+    public boolean changeDisable(String id, Integer flag) {
+        return deptDao.changeDisable(id, flag) == 1;
     }
 }

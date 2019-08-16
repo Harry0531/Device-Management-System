@@ -96,4 +96,8 @@
             #{item.id}
         </foreach>
     </update>
+
+    <update id="changeDisable">
+        UPDATE `department` SET `del_flag` = #{param2} WHERE `id` = #{param1}
+    </update>
 </mapper>

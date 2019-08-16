@@ -7,10 +7,7 @@ import com.management.admin.modules.sys.entity.Dept;
 import com.management.admin.modules.sys.service.DeptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -82,5 +79,16 @@ public class DeptController extends BaseApi {
             e.printStackTrace();
             return retMsg.Set(MsgType.ERROR);
         }
+    }
+
+    @RequestMapping(value = "/changeDisable", method = RequestMethod.POST)
+    @ResponseBody
+    public Object changeDisable(
+            @RequestParam String id,
+            @RequestParam Integer flag
+    ) throws Exception {
+        if (deptService.changeDisable(id, flag))
+            return retMsg.Set(MsgType.SUCCESS);
+        else return retMsg.Set(MsgType.ERROR);
     }
 }

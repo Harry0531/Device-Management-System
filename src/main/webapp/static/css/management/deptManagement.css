@@ -61,8 +61,3 @@ html, body{
 .el-form{
     padding: 0px 90px !important;
 }
-
-/* 统一禁用按钮宽度 */
-.el-button--danger.el-button--mini{
-    width: 60px;
-}

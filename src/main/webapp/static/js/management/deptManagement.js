@@ -10,7 +10,8 @@ let app = new Vue({
             getSchoolList: 'http://localhost:8444/api/sys/dept/getSchoolList',
             getList: 'http://localhost:8444/api/sys/dept/getList',
             insertOrUpdateDept: 'http://localhost:8444/api/sys/dept/insertOrUpdateDept',
-            deleteListByIds: 'http://localhost:8444/api/sys/dept/deleteListByIds'
+            deleteListByIds: 'http://localhost:8444/api/sys/dept/deleteListByIds',//批量禁用
+            changeDisable: 'http://localhost:8444/api/sys/dept/changeDisable'
         },
         table: {
             loading: false,
@@ -166,13 +167,18 @@ let app = new Vue({
                 app.dialog.data.dept_attach = '';
             app.dialog.visible = true;
         },
-        handleDeptTypeChange:function (type) {
-            if (type==0){
-                this.dialog.data.dept_attach='';
+        handleDeptTypeChange: function (type) {
+            if (type == 0) {
+                this.dialog.data.dept_attach = '';
             }
         },
-        log:function (v) {
-            console.log(v);
+        disable: function (v) {
+            let flag = v.delFlag === true ? 1 : 0;
+            let data = {
+                id: v.id,
+                flag: flag
+            };
+            ajaxPost(this.urls.changeDisable, data);
         }
     },
     mounted: function () {
