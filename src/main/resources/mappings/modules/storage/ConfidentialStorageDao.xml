@@ -181,7 +181,6 @@
 
     <select id="getScrap" resultType="String">
         SELECT `id` FROM `data_dictionary` WHERE
-            (`dic_value` = '报废' AND
-                (`type_id` = (SELECT `id` FROM `data_dictionary_type` WHERE `type_name` = '涉密存储介质')))
+            (`dic_value` = '报废' AND `dic_property` = '存储介质使用情况')
     </select>
 </mapper>

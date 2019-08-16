@@ -342,33 +342,44 @@ let app = new Vue({
         },
         scrap: function (v) {
             console.log(v);
-            let data = {
-                id: v["id"],
-                department_name: v["department_name"],
-                subject_name: v["subject_name"],
-                secret_number: v["secret_number"],
-                type: v["type"],
-                model: v["model"],
-                person: v["person"],
-                secret_level: v["secret_level"],
-                serial_number: v["serial_number"],
-                place_location: v["place_location"],
-                usage: v["usage"],
-                scope: v["scope"],
-                enablation_time: v["enablation_time"],
-                use_situation: v["use_situation"],
-                remarks: v["remarks"],
-                department_code: v["department_code"],
-                subject_code: v["subject_code"]
-            };
-            ajaxPostJSON(app.urls.scrap, data, function (result) {
-                app.$message({
-                    message: "报废成功",
-                    type: "success"
+            app.$confirm('确认报废', '警告', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                let data = {
+                    id: v["id"],
+                    department_name: v["department_name"],
+                    subject_name: v["subject_name"],
+                    secret_number: v["secret_number"],
+                    type: v["type"],
+                    model: v["model"],
+                    person: v["person"],
+                    secret_level: v["secret_level"],
+                    serial_number: v["serial_number"],
+                    place_location: v["place_location"],
+                    usage: v["usage"],
+                    scope: v["scope"],
+                    enablation_time: v["enablation_time"],
+                    use_situation: v["use_situation"],
+                    remarks: v["remarks"],
+                    department_code: v["department_code"],
+                    subject_code: v["subject_code"]
+                };
+                ajaxPostJSON(app.urls.scrap, data, function (result) {
+                    app.$message({
+                        message: "报废成功",
+                        type: "success"
+                    });
+                    app.table.props.pageIndex = 1;
+                    app.refreshTable();
                 });
-                app.table.props.pageIndex = 1;
-                app.refreshTable();
-            })
+            }).catch(() => {
+                app.$message({
+                    message: "取消操作",
+                    type: "danger"
+                });
+            });
         }
     },
     mounted: function () {
