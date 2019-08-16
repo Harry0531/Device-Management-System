@@ -1,6 +1,7 @@
 let app = new Vue({
     el: '#app',
     data: {
+        aaa:0,
         fullScreenLoading: false,
         selectionType: [
             {value: 0, label: '学院'},
@@ -10,7 +11,8 @@ let app = new Vue({
             getSchoolList: 'http://localhost:8444/api/sys/dept/getSchoolList',
             getList: 'http://localhost:8444/api/sys/dept/getList',
             insertOrUpdateDept: 'http://localhost:8444/api/sys/dept/insertOrUpdateDept',
-            deleteListByIds: 'http://localhost:8444/api/sys/dept/deleteListByIds'
+            deleteListByIds: 'http://localhost:8444/api/sys/dept/deleteListByIds',//批量禁用
+            changeDisable: 'http://localhost:8444/api/sys/dept/changeDisable'
         },
         table: {
             loading: false,
@@ -115,7 +117,7 @@ let app = new Vue({
                 });
                 return;
             }
-            app.$confirm('确认删除选中的项', '警告', {
+            app.$confirm('确认禁用选中的项', '警告', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
@@ -125,14 +127,14 @@ let app = new Vue({
                 app.table.loading = true;
                 ajaxPostJSON(this.urls.deleteListByIds, data, function (d) {
                     app.$message({
-                        message: "删除成功",
+                        message: "操作成功",
                         type: "success"
                     });
                     app.refreshTable();
                 })
             }).catch(() => {
                 app.$message({
-                    message: "取消删除",
+                    message: "取消操作",
                     type: "danger"
                 });
             });
@@ -166,10 +168,19 @@ let app = new Vue({
                 app.dialog.data.dept_attach = '';
             app.dialog.visible = true;
         },
-        handleDeptTypeChange:function (type) {
-            if (type==0){
-                this.dialog.data.dept_attach='';
+        handleDeptTypeChange: function (type) {
+            if (type == 0) {
+                this.dialog.data.dept_attach = '';
             }
+        },
+        disable: function (v) {
+            // let flag = v.delFlag === true ? 1 : 0;
+            let data = {
+                id: v.id,
+                flag: v.delFlag
+                // flag: flag
+            };
+            ajaxPost(this.urls.changeDisable, data);
         }
     },
     mounted: function () {

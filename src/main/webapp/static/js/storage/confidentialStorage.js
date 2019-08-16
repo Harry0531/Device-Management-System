@@ -8,17 +8,17 @@ let select1 = [
     {value: 'use_situation', label: '使用情况'}
 ];
 
-
 let app = new Vue({
     el: '#app',
     data: {
         urls: {
-            getSub: 'http://localhost:8444/api/sys/storage/getSub',
-            getDeptSub: 'http://localhost:8444/api/sys/storage/getDeptSub',
-            getList: 'http://localhost:8444/api/sys/storage/getList',
-            insertOrUpdateStorage: 'http://localhost:8444/api/sys/storage/insertOrUpdateStorage',
-            deleteListByIds: 'http://localhost:8444/api/sys/storage/deleteListByIds',
-            deleteAll: 'http://localhost:8444/api/sys/storage/deleteAll'
+            getSub: 'http://localhost:8444/api/sys/storage/confidential/getSub',
+            getDeptSub: 'http://localhost:8444/api/sys/storage/confidential/getDeptSub',
+            getList: 'http://localhost:8444/api/sys/storage/confidential/getList',
+            insertOrUpdateStorage: 'http://localhost:8444/api/sys/storage/confidential/insertOrUpdateStorage',
+            deleteListByIds: 'http://localhost:8444/api/sys/storage/confidential/deleteListByIds',
+            deleteAll: 'http://localhost:8444/api/sys/storage/confidential/deleteAll',
+            scrap: 'http://localhost:8444/api/sys/storage/confidential/scrap'
         },
         select1: select1,
         select2: [],
@@ -80,10 +80,6 @@ let app = new Vue({
                 subject: [],
                 department: []
             }
-        },
-        exportInfo:{
-            visible:false,
-            src:"../management/excel/ExportData.html"
         }
     },
     methods: {
@@ -92,6 +88,8 @@ let app = new Vue({
             app.filters.value2 = '';
             app.select3 = [];
             app.filters.value3 = '';
+            app.select4 = [];
+            app.filters.value4 = '';
             let data = {
                 param: prov
             };
@@ -105,9 +103,15 @@ let app = new Vue({
                         app.select2.push({'value': r.id, 'label': r.dicValue});
                     });
                 }
-            })
+            });
+            if (app.filters.value1 == '') {
+                app.table.type = '';
+                app.refreshTable();
+            }
         },
         getDeptSub: function (index) {
+            app.select4 = [];
+            app.filters.value4 = '';
             ajaxPost(this.urls.getDeptSub, {id: index}, function (result) {
                 result.forEach(function (r) {
                     app.select4.push(r);
@@ -233,6 +237,9 @@ let app = new Vue({
         },
         getList: function (index) {
             this.table.type = index;
+            if (app.filters.value4 == '' && app.filters.value3 != '')
+                this.table.type = app.filters.value3;
+            app.table.props.pageIndex = 1;
             this.refreshTable();
         },
         updateDialog: function (v) {
@@ -258,6 +265,8 @@ let app = new Vue({
             app.dialog.data._usage = v["_usage"];
             app.dialog.data._scope = v["_scope"];
             app.dialog.data._use_situation = v["_use_situation"];
+            app.dialog.data.department_code = v["department_code"];
+            app.dialog.data.subject_code = v["subject_code"];
             app.dialog.visible = true;
         },
         resetDialogData: function () {
@@ -310,6 +319,7 @@ let app = new Vue({
                         message: "删除成功",
                         type: "success"
                     });
+                    app.table.props.pageIndex = 1;
                     app.refreshTable();
                 })
             }).catch(() => {
@@ -330,11 +340,46 @@ let app = new Vue({
             this.table.props.pageIndex = newIndex;
             this.refreshTable();
         },
-
-        //excel导出
-        exportData:function () {
-            var app=this;
-            app.exportInfo.visible=true;
+        scrap: function (v) {
+            console.log(v);
+            app.$confirm('确认报废', '警告', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                let data = {
+                    id: v["id"],
+                    department_name: v["department_name"],
+                    subject_name: v["subject_name"],
+                    secret_number: v["secret_number"],
+                    type: v["type"],
+                    model: v["model"],
+                    person: v["person"],
+                    secret_level: v["secret_level"],
+                    serial_number: v["serial_number"],
+                    place_location: v["place_location"],
+                    usage: v["usage"],
+                    scope: v["scope"],
+                    enablation_time: v["enablation_time"],
+                    use_situation: v["use_situation"],
+                    remarks: v["remarks"],
+                    department_code: v["department_code"],
+                    subject_code: v["subject_code"]
+                };
+                ajaxPostJSON(app.urls.scrap, data, function (result) {
+                    app.$message({
+                        message: "报废成功",
+                        type: "success"
+                    });
+                    app.table.props.pageIndex = 1;
+                    app.refreshTable();
+                });
+            }).catch(() => {
+                app.$message({
+                    message: "取消操作",
+                    type: "danger"
+                });
+            });
         }
     },
     mounted: function () {
@@ -361,14 +406,3 @@ let app = new Vue({
         }
     }
 });
-
-//实现导出传值
-function getExportConditions(){
-    var  data={
-        fileName:"测试一",
-        tableName:"confidential_storage_device",
-        conditionsList:[],
-        idList:[]
-    }
-    return data;
-}

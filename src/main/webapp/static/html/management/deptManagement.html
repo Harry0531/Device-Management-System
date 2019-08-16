@@ -14,7 +14,7 @@
             <el-button size="small" @click="dialog.visible=true" type="primary" plain
                        style="margin-left: 10px;">新增记录</el-button>
             <el-button size="small" type="danger" @click="deleteByIds(table.selectionList)"
-                       style="margin-left: 10px;">批量删除</el-button>
+                       style="margin-left: 10px;">批量禁用</el-button>
         </span>
 
         <span style="float: right;margin-right: 10px;">
@@ -43,16 +43,19 @@
         <el-table-column label="单位代码" width="300" prop="dept_code" align="center"></el-table-column>
         <el-table-column label="单位类型" width="150" prop="_dept_type" align="center"></el-table-column>
         <el-table-column label="归属学院" width="200" prop="_dept_attach" align="center"></el-table-column>
+        <el-table-column label="启用" width="100" align="center">
+            <template slot-scope="scope">
+                <el-switch v-model="scope.row.delFlag"
+                           :active-value="0" :inactive-value="1"
+                           @change="disable(scope.row)"></el-switch>
+            </template>
+        </el-table-column>
 
         <el-table-column label="操作" header-align="center" align="center">
             <template slot-scope="scope">
                 <el-button type="warning" size="mini" style="position:relative;bottom: 1px;"
-                           @click="updateDialog(scope.row)">
+                           @click="updateDialog(scope.row)" :disabled="scope.row.delFlag === 1">
                     <span>编辑</span>
-                </el-button>
-                <el-button type="danger" size="mini" style="position:relative;bottom: 1px;margin-left: 6px;"
-                           @click="deleteByIds([{id: scope.row.id}])">
-                    <span>删除</span>
                 </el-button>
             </template>
         </el-table-column>
@@ -72,19 +75,19 @@
     <el-dialog title="添加数据" :visible.sync="dialog.visible" @closed="resetDialogData">
         <el-form label-position="left" label-width="140px" style="padding: 0 100px;"
                  v-loading="dialog.loading" status-icon>
-            <el-form-item label="单位名称">
+            <el-form-item label="单位名称" :required="true">
                 <el-input v-model="dialog.data.dept_name"></el-input>
             </el-form-item>
-            <el-form-item label="单位代码">
+            <el-form-item label="单位代码" :required="true">
                 <el-input v-model="dialog.data.dept_code"></el-input>
             </el-form-item>
-            <el-form-item label="选择类型">
+            <el-form-item label="选择类型" :required="true">
                 <el-select v-model="dialog.data.dept_type" placeholder="默认：学院" @change="handleDeptTypeChange">
                     <el-option v-for="item in selectionType" :key="item.value" :label="item.label"
                                :value="item.value"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="所属学院">
+            <el-form-item label="所属学院" :required="dialog.data.dept_type === 1">
                 <el-select v-model="dialog.data.dept_attach" :disabled=isAttachDisabled>
                     <el-option v-for="item in schoolList" :key="item.id" :label="item.dept_name"
                                :value="item.id"></el-option>
