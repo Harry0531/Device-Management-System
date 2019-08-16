@@ -9,60 +9,104 @@
 </head>
 <body>
 <div id="app" v-cloak style="background: white;height: 100%;overflow: hidden;">
+    <el-collapse v-model="activeNames">
+        <el-collapse-item name="search">
+            <template slot="title">
+                筛选&nbsp; <i class="header-icon el-icon-search"></i>
+            </template>
+            <el-form :model="filters">
+                <el-form-item>
+                    <div class="my-flex-div">
+                        <p class="my-title">类型</p>
+                        <el-checkbox-group v-model="filters.condition.type" size="mini" :min="0" :max="1">
+                            <el-checkbox-button v-for="item in filters.selectionList.type"
+                                                :label="item.value">{{item.label}}
+                            </el-checkbox-button>
+                        </el-checkbox-group>
+                        <span style="margin-left: 550px">
+                            <el-button type="primary" size="mini" @click="getList()">查找</el-button>
+                        </span>
+                    </div>
+                </el-form-item>
+                <el-form-item>
+                    <div class="my-flex-div">
+                        <p class="my-title">密级</p>
+                        <el-checkbox-group v-model="filters.condition.secret_level" size="mini" :min="0" :max="1">
+                            <el-checkbox-button v-for="item in filters.selectionList.secret_level"
+                                                :label="item.value">{{item.label}}
+                            </el-checkbox-button>
+                        </el-checkbox-group>
+                    </div>
+                </el-form-item>
+                <el-form-item>
+                    <div class="my-flex-div">
+                        <p class="my-title">使用范围</p>
+                        <el-checkbox-group v-model="filters.condition.scope" size="mini" :min="0" :max="1">
+                            <el-checkbox-button v-for="item in filters.selectionList.scope"
+                                                :label="item.value">{{item.label}}
+                            </el-checkbox-button>
+                        </el-checkbox-group>
+                    </div>
+                </el-form-item>
+                <el-form-item>
+                    <div class="my-flex-div">
+                        <p class="my-title">用途</p>
+                        <el-checkbox-group v-model="filters.condition.usage" size="mini" :min="0" :max="1">
+                            <el-checkbox-button v-for="item in filters.selectionList.usage"
+                                                :label="item.value">{{item.label}}
+                            </el-checkbox-button>
+                        </el-checkbox-group>
+                    </div>
+                </el-form-item>
+                <el-form-item>
+                    <div class="my-flex-div">
+                        <p class="my-title">使用情况</p>
+                        <el-checkbox-group v-model="filters.condition.use_situation" size="mini" :min="0" :max="1">
+                            <el-checkbox-button v-for="item in filters.selectionList.use_situation"
+                                                :label="item.value"
+                                                :disabled="item.label === '报废'">{{item.label}}
+                            </el-checkbox-button>
+                        </el-checkbox-group>
+                    </div>
+                </el-form-item>
+                <div class="my-flex-div" style="padding-top: 6px;">
+                    <p class="my-title">单位</p>
+                    <div>
+                        <el-select v-model="filters.condition.school" placeholder="选择学院"
+                                   :loading="loading" @change="getDeptSub($event)" size="medium" clearable>
+                            <el-option
+                                    v-for="item in filters.selectionList.school"
+                                    :key="item.id"
+                                    :label="item.dept_name"
+                                    :value="item.id"></el-option>
+                        </el-select>
+                        <el-select v-model="filters.condition.subject" placeholder="请先选择学院"
+                                   :loading="loading" clearable size="small">
+                            <el-option
+                                    v-for="item in filters.selectionList.subject"
+                                    :key="item.id"
+                                    :label="item.dept_name"
+                                    :value="item.id"></el-option>
+                        </el-select>
+                    </div>
+                </div>
+
+            </el-form>
+        </el-collapse-item>
+    </el-collapse>
+
     <!--顶栏-->
     <div style="padding: 15px 20px 0 15px;">
-        <!--操作-->
-        <span class="button-group">
-            <el-button size="small" @click="dialog.visible=true;getDialogList()" type="primary" plain
-                       style="margin-left: 10px;">手工录入</el-button>
-            <!--todo Excel操作-->
-            <el-button size="small" type="primary" @click="" style="margin-left: 10px;"
-                       disabled>导出到Excel</el-button>
-            <el-button size="small" type="danger" @click="deleteByIds(table.selectionList)"
-                       style="margin-left: 10px;">删除选中</el-button>
-        </span>
-
-        <!--筛选-->
-        <span style="float: right;margin-right: 10px;">
-            <el-form :inline="true" :model="filters">
-                <el-form-item>
-                    <el-select v-model="filters.value1" clearable placeholder="选择类别"
-                               @change="getSub($event)" size="mini">
-                        <el-option
-                                v-for="item in select1"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
-                        </el-option>
-                    </el-select>
-                    <el-select v-model="filters.value2" placeholder="请先选择类别" v-if="filters.value1 != 'dept'"
-                               :loading="loading" @change="getList($event)" size="small" clearable>
-                        <el-option
-                                v-for="item in select2"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value"
-                                :disabled="item.label == '报废'"></el-option>
-                    </el-select>
-                    <el-select v-model="filters.value3" placeholder="选择学院" v-if="filters.value1 == 'dept'"
-                               :loading="loading" @change="getList($event);getDeptSub($event)" size="small" clearable>
-                        <el-option
-                                v-for="item in select3"
-                                :key="item.id"
-                                :label="item.dept_name"
-                                :value="item.id"></el-option>
-                    </el-select>
-                    <el-select v-model="filters.value4" placeholder="请先选择学院" v-if="filters.value1 == 'dept'"
-                               :loading="loading" @change="getList($event)" clearable>
-                        <el-option
-                                v-for="item in select4"
-                                :key="item.id"
-                                :label="item.dept_name"
-                                :value="item.id"></el-option>
-                    </el-select>
-                </el-form-item>
-            </el-form>
-        </span>
+        <el-button size="small" @click="dialog.visible=true;getDialogList()" type="primary" plain
+                   style="margin-left: 10px;">手工录入
+        </el-button>
+        <!--todo Excel操作-->
+        <el-button size="small" type="primary" @click="" style="margin-left: 10px;"
+                   disabled>导出到Excel
+        </el-button>
+        <el-button size="small" type="danger" @click="deleteByIds(table.selectionList)"
+                   style="margin-left: 10px;">删除选中
+        </el-button>
     </div>
 
     <!--表格-->
@@ -88,7 +132,7 @@
         <el-table-column label="放置地点" width="200" prop="place_location" align="center"
                          header-align="center"></el-table-column>
         <el-table-column label="用途" width="130" prop="_usage" align="center" header-align="center"></el-table-column>
-        <el-table-column label="使用范围" width="100" prop="_scope" align="center" header-align="center"></el-table-column>
+        <el-table-column label="使用范围" width="150" prop="_scope" align="center" header-align="center"></el-table-column>
         <el-table-column label="启用时间" width="100" prop="enablation_time" align="center"
                          header-align="center"></el-table-column>
         <el-table-column label="使用情况" width="100" prop="_use_situation" align="center"
