@@ -115,7 +115,7 @@ let app = new Vue({
                 });
                 return;
             }
-            app.$confirm('确认删除选中的项', '警告', {
+            app.$confirm('确认禁用选中的项', '警告', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
@@ -125,14 +125,14 @@ let app = new Vue({
                 app.table.loading = true;
                 ajaxPostJSON(this.urls.deleteListByIds, data, function (d) {
                     app.$message({
-                        message: "删除成功",
+                        message: "操作成功",
                         type: "success"
                     });
                     app.refreshTable();
                 })
             }).catch(() => {
                 app.$message({
-                    message: "取消删除",
+                    message: "取消操作",
                     type: "danger"
                 });
             });
@@ -170,6 +170,9 @@ let app = new Vue({
             if (type==0){
                 this.dialog.data.dept_attach='';
             }
+        },
+        log:function (v) {
+            console.log(v);
         }
     },
     mounted: function () {

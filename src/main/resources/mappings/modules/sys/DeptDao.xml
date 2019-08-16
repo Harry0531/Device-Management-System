@@ -31,7 +31,7 @@
                 AND (a.`dept_attach` = #{id} OR a.`id` = #{id})
             </if>
             <if test="1 == 1">
-                AND a.`del_flag` = 0
+                AND a.`id` != '0'
             </if>
         </where>
         ORDER BY a.`modify_time` DESC
@@ -85,7 +85,6 @@
             `dept_code` = #{dept_code},
             `dept_type` = #{dept_type},
             `dept_attach` = #{dept_attach},
-            `create_time` = #{createTime},
             `modify_time` = #{modifyTime},
             `del_flag`  = #{delFlag}
         WHERE id =#{id}

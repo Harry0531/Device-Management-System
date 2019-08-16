@@ -14,7 +14,7 @@
             <el-button size="small" @click="dialog.visible=true" type="primary" plain
                        style="margin-left: 10px;">新增记录</el-button>
             <el-button size="small" type="danger" @click="deleteByIds(table.selectionList)"
-                       style="margin-left: 10px;">批量删除</el-button>
+                       style="margin-left: 10px;">批量禁用</el-button>
         </span>
 
         <span style="float: right;margin-right: 10px;">
@@ -47,12 +47,12 @@
         <el-table-column label="操作" header-align="center" align="center">
             <template slot-scope="scope">
                 <el-button type="warning" size="mini" style="position:relative;bottom: 1px;"
-                           @click="updateDialog(scope.row)">
+                           @click="updateDialog(scope.row)" :disabled="scope.row.delFlag">
                     <span>编辑</span>
                 </el-button>
                 <el-button type="danger" size="mini" style="position:relative;bottom: 1px;margin-left: 6px;"
-                           @click="deleteByIds([{id: scope.row.id}])">
-                    <span>删除</span>
+                           @click="deleteByIds([{id: scope.row.id}])" :disabled="scope.row.delFlag">
+                    {{scope.row.delFlag ? '已' : ''}}禁用
                 </el-button>
             </template>
         </el-table-column>
