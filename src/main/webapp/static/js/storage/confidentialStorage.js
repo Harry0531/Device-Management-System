@@ -85,17 +85,6 @@ let app = new Vue({
                 pageSize: 10,
                 pageSizes: [5, 10, 20, 40],
                 total: 0
-            },
-            condition: {
-                scope: '',
-                use_situation: '',
-                usage: '',
-                secret_level: '',
-                type: '',
-                department_code: '',
-                subject_code: '',
-                startTime: '',
-                endTime: ''
             }
         },
 
@@ -147,15 +136,15 @@ let app = new Vue({
             app.table.loading = true;
             let data = {
                 page: app.table.props,
-                type: app.table.condition.type,
-                usage: app.table.condition.usage,
-                use_situation: app.table.condition.use_situation,
-                scope: app.table.condition.scope,
-                secret_level: app.table.condition.secret_level,
-                department_code: app.table.condition.department_code,
-                subject_code: app.table.condition.subject_code,
-                startTime: app.table.condition.startTime,
-                endTime: app.table.condition.endTime
+                scope: this.filters.condition.scope[0],
+                type: this.filters.condition.type[0],
+                usage: this.filters.condition.usage[0],
+                secret_level: this.filters.condition.secret_level[0],
+                use_situation: this.filters.condition.use_situation[0],
+                department_code: this.filters.condition.school,
+                subject_code: this.filters.condition.subject,
+                startTime: this.filters.condition.startTime,
+                endTime: this.filters.condition.endTime
             };
             ajaxPostJSON(this.urls.getList, data, function (result) {
                 app.table.loading = false;
@@ -267,15 +256,6 @@ let app = new Vue({
             })
         },
         getList: function () {
-            this.table.condition.scope = this.filters.condition.scope[0];
-            this.table.condition.type = this.filters.condition.type[0];
-            this.table.condition.usage = this.filters.condition.usage[0];
-            this.table.condition.secret_level = this.filters.condition.secret_level[0];
-            this.table.condition.use_situation = this.filters.condition.use_situation[0];
-            this.table.condition.department_code = this.filters.condition.school;
-            this.table.condition.subject_code = this.filters.condition.subject;
-            this.table.condition.startTime = this.filters.condition.startTime;
-            this.table.condition.endTime = this.filters.condition.endTime;
             app.table.props.pageIndex = 1;
             this.refreshTable();
         },
