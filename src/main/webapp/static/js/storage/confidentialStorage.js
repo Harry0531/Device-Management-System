@@ -1,16 +1,57 @@
-//数量统计：允许分别按单位、类型、密级、用途、使用范围、使用情况等统计数量
-let select1 = [
-    {value: 'dept', label: '单位'},
-    {value: 'type', label: '类型'},
-    {value: 'secret_level', label: '密级'},
-    {value: 'usage', label: '用途'},
-    {value: 'scope', label: '使用范围'},
-    {value: 'use_situation', label: '使用情况'}
-];
+let defaultFiltersCondition = {
+    scope: [],
+    use_situation: [],
+    usage: [],
+    secret_level: [],
+    type: [],
+    school: '',
+    subject: '',
+    startTime: '',
+    endTime: ''
+};
+
+let defaultDialog = {
+    visible: false,
+    loading: false,
+    data: {
+        id: '',
+        department_name: '',
+        subject_name: '',
+        secret_number: '',
+        type: '',
+        model: '',
+        person: '',
+        secret_level: '',
+        serial_number: '',
+        place_location: '',
+        usage: '',
+        scope: '',
+        enablation_time: '',
+        use_situation: '',
+        remarks: '',
+        _type: '',
+        _secret_level: '',
+        _usage: '',
+        _scope: '',
+        _use_situation: '',
+        department_code: '',
+        subject_code: ''
+    },
+    selectionList: {
+        type: [],
+        secret_level: [],
+        usage: [],
+        scope: [],
+        use_situation: [],
+        subject: [],
+        department: []
+    }
+};
 
 let app = new Vue({
     el: '#app',
     data: {
+        loading: false,
         urls: {
             getSub: 'http://localhost:8444/api/sys/storage/confidential/getSub',
             getDeptSub: 'http://localhost:8444/api/sys/storage/confidential/getDeptSub',
@@ -20,17 +61,20 @@ let app = new Vue({
             deleteAll: 'http://localhost:8444/api/sys/storage/confidential/deleteAll',
             scrap: 'http://localhost:8444/api/sys/storage/confidential/scrap'
         },
-        select1: select1,
-        select2: [],
-        select3: [],
-        select4: [],
-        loading: false,
+        activeNames: [],
         filters: {
-            value1: '',
-            value2: '',
-            value3: '',
-            value4: ''
+            selectionList: {
+                scope: [],
+                use_situation: [],
+                usage: [],
+                secret_level: [],
+                type: [],
+                school: [],
+                subject: []
+            },
+            condition: defaultFiltersCondition
         },
+        dialog: defaultDialog,
         table: {
             loading: false,
             selectionList: [],
@@ -41,80 +85,49 @@ let app = new Vue({
                 pageSize: 10,
                 pageSizes: [5, 10, 20, 40],
                 total: 0
-            },
-            type: ''
-        },
-        dialog: {
-            visible: false,
-            loading: false,
-            data: {
-                id: '',
-                department_name: '',
-                subject_name: '',
-                secret_number: '',
-                type: '',
-                model: '',
-                person: '',
-                secret_level: '',
-                serial_number: '',
-                place_location: '',
-                usage: '',
-                scope: '',
-                enablation_time: '',
-                use_situation: '',
-                remarks: '',
-                _type: '',
-                _secret_level: '',
-                _usage: '',
-                _scope: '',
-                _use_situation: '',
-                department_code: '',
-                subject_code: ''
-            },
-            selectionList: {
-                type: [],
-                secret_level: [],
-                usage: [],
-                scope: [],
-                use_situation: [],
-                subject: [],
-                department: []
             }
-        }
+        },
+
     },
     methods: {
-        getSub(prov) {
-            app.select2 = [];
-            app.filters.value2 = '';
-            app.select3 = [];
-            app.filters.value3 = '';
-            app.select4 = [];
-            app.filters.value4 = '';
-            let data = {
-                param: prov
-            };
-            ajaxPost(this.urls.getSub, data, function (result) {
-                if (prov === 'dept') {
-                    result.forEach(function (r) {
-                        app.select3.push(r);
-                    });
-                } else {
-                    result.forEach(function (r) {
-                        app.select2.push({'value': r.id, 'label': r.dicValue});
-                    });
-                }
+        getSub() {
+            ajaxPost(this.urls.getSub, {param: "scope"}, function (result) {
+                result.forEach(function (r) {
+                    app.filters.selectionList.scope.push({'value': r.id, 'label': r.dicValue});
+                });
             });
-            if (app.filters.value1 == '') {
-                app.table.type = '';
-                app.refreshTable();
-            }
+            ajaxPost(this.urls.getSub, {param: "type"}, function (result) {
+                result.forEach(function (r) {
+                    app.filters.selectionList.type.push({'value': r.id, 'label': r.dicValue});
+                });
+            });
+            ajaxPost(this.urls.getSub, {param: "secret_level"}, function (result) {
+                result.forEach(function (r) {
+                    app.filters.selectionList.secret_level.push({'value': r.id, 'label': r.dicValue});
+                });
+            });
+            ajaxPost(this.urls.getSub, {param: "usage"}, function (result) {
+                result.forEach(function (r) {
+                    app.filters.selectionList.usage.push({'value': r.id, 'label': r.dicValue});
+                });
+            });
+            ajaxPost(this.urls.getSub, {param: "use_situation"}, function (result) {
+                result.forEach(function (r) {
+                    app.filters.selectionList.use_situation.push({'value': r.id, 'label': r.dicValue});
+                });
+            });
+            ajaxPost(this.urls.getSub, {param: "dept"}, function (result) {
+                result.forEach(function (r) {
+                    app.filters.selectionList.school.push(r);
+                })
+            })
         },
         getDeptSub: function (index) {
-            app.select4 = [];
-            app.filters.value4 = '';
+            app.filters.selectionList.subject = [];
+            app.filters.subject = '';
             ajaxPost(this.urls.getDeptSub, {id: index}, function (result) {
                 result.forEach(function (r) {
-                    app.select4.push(r);
+                    app.filters.selectionList.subject.push(r);
                 });
             })
         },
@@ -123,7 +136,15 @@ let app = new Vue({
             app.table.loading = true;
             let data = {
                 page: app.table.props,
-                type: app.table.type
+                scope: this.filters.condition.scope[0],
+                type: this.filters.condition.type[0],
+                usage: this.filters.condition.usage[0],
+                secret_level: this.filters.condition.secret_level[0],
+                use_situation: this.filters.condition.use_situation[0],
+                department_code: this.filters.condition.school,
+                subject_code: this.filters.condition.subject,
+                startTime: this.filters.condition.startTime,
+                endTime: this.filters.condition.endTime
             };
             ajaxPostJSON(this.urls.getList, data, function (result) {
                 app.table.loading = false;
@@ -220,7 +241,8 @@ let app = new Vue({
                 scope: app.dialog.data.scope,
                 enablation_time: app.dialog.data.enablation_time,
                 use_situation: app.dialog.data.use_situation,
-                remarks: app.dialog.data.remarks
+                remarks: app.dialog.data.remarks,
+                delFlag: 0
             };
             ajaxPostJSON(this.urls.insertOrUpdateStorage, data, function (d) {
                 app.dialog.loading = false;
@@ -231,14 +253,9 @@ let app = new Vue({
                 });
                 app.resetDialogData();
                 app.getList();
-                app.filters.value1 = '';
-                app.filters.value2 = '';
             })
         },
-        getList: function (index) {
-            this.table.type = index;
-            if (app.filters.value4 == '' && app.filters.value3 != '')
-                this.table.type = app.filters.value3;
+        getList: function () {
             app.table.props.pageIndex = 1;
             this.refreshTable();
         },
@@ -270,33 +287,7 @@ let app = new Vue({
             app.dialog.visible = true;
         },
         resetDialogData: function () {
-            app.dialog = {
-                visible: false,
-                loading: false,
-                data: {
-                    department_name: '',
-                    subject_name: '',
-                    secret_number: '',
-                    type: '',
-                    model: '',
-                    person: '',
-                    secret_level: '',
-                    serial_number: '',
-                    place_location: '',
-                    usage: '',
-                    scope: '',
-                    enablation_time: '',
-                    use_situation: '',
-                    remarks: ''
-                },
-                selectionList: {
-                    type: [],
-                    secret_level: [],
-                    usage: [],
-                    scope: [],
-                    use_situation: []
-                }
-            }
+            app.dialog = defaultDialog;
         },
         deleteByIds: function (list) {
             if (list.length === 0) {
@@ -364,7 +355,8 @@ let app = new Vue({
                     use_situation: v["use_situation"],
                     remarks: v["remarks"],
                     department_code: v["department_code"],
-                    subject_code: v["subject_code"]
+                    subject_code: v["subject_code"],
+                    delFlag: v["delFlag"]
                 };
                 ajaxPostJSON(app.urls.scrap, data, function (result) {
                     app.$message({
@@ -383,6 +375,7 @@ let app = new Vue({
         }
     },
     mounted: function () {
+        this.getSub();
         this.refreshTable();
     },
     computed: {

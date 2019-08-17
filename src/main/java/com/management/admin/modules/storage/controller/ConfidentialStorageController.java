@@ -57,6 +57,7 @@ public class ConfidentialStorageController extends BaseApi {
     @ResponseBody
     public Object getList(@RequestBody ConfidentialStorage confidentialStorage) throws Exception {
         try {
+            System.out.println(confidentialStorage);
             Page<ConfidentialStorage> page = new Page<>();
             page.setResultList(confidentialStorageService.selectDictListByPage(confidentialStorage));
             page.setTotal(confidentialStorageService.selectSearchCount(confidentialStorage));

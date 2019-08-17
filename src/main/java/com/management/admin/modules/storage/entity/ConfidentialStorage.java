@@ -22,6 +22,8 @@ public class ConfidentialStorage extends DataEntity<ConfidentialStorage> {
     private String use_situation;
     private String remarks;
     private int scrapped_flag;
+    private String startTime;
+    private String endTime;
 
     //以下为uuid转换后的中文
     private String _type;
