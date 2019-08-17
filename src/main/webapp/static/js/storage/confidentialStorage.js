@@ -1,9 +1,9 @@
 let defaultFiltersCondition = {
-    scope: [],
-    use_situation: [],
-    usage: [],
-    secret_level: [],
-    type: [],
+    scope: '',
+    use_situation: '',
+    usage: '',
+    secret_level: '',
+    type: '',
     school: '',
     subject: '',
     startTime: '',
@@ -92,26 +92,31 @@ let app = new Vue({
     methods: {
         getSub() {
             ajaxPost(this.urls.getSub, {param: "scope"}, function (result) {
+                app.filters.selectionList.scope.push({'value': '', 'label': '全选'});
                 result.forEach(function (r) {
                     app.filters.selectionList.scope.push({'value': r.id, 'label': r.dicValue});
                 });
             });
             ajaxPost(this.urls.getSub, {param: "type"}, function (result) {
+                app.filters.selectionList.type.push({'value': '', 'label': '全选'});
                 result.forEach(function (r) {
                     app.filters.selectionList.type.push({'value': r.id, 'label': r.dicValue});
                 });
             });
             ajaxPost(this.urls.getSub, {param: "secret_level"}, function (result) {
+                app.filters.selectionList.secret_level.push({'value': '', 'label': '全选'});
                 result.forEach(function (r) {
                     app.filters.selectionList.secret_level.push({'value': r.id, 'label': r.dicValue});
                 });
             });
             ajaxPost(this.urls.getSub, {param: "usage"}, function (result) {
+                app.filters.selectionList.usage.push({'value': '', 'label': '全选'});
                 result.forEach(function (r) {
                     app.filters.selectionList.usage.push({'value': r.id, 'label': r.dicValue});
                 });
             });
             ajaxPost(this.urls.getSub, {param: "use_situation"}, function (result) {
+                app.filters.selectionList.use_situation.push({'value': '', 'label': '全选'});
                 result.forEach(function (r) {
                     app.filters.selectionList.use_situation.push({'value': r.id, 'label': r.dicValue});
                 });
@@ -136,11 +141,11 @@ let app = new Vue({
             app.table.loading = true;
             let data = {
                 page: app.table.props,
-                scope: this.filters.condition.scope[0],
-                type: this.filters.condition.type[0],
-                usage: this.filters.condition.usage[0],
-                secret_level: this.filters.condition.secret_level[0],
-                use_situation: this.filters.condition.use_situation[0],
+                scope: this.filters.condition.scope,
+                type: this.filters.condition.type,
+                usage: this.filters.condition.usage,
+                secret_level: this.filters.condition.secret_level,
+                use_situation: this.filters.condition.use_situation,
                 department_code: this.filters.condition.school,
                 subject_code: this.filters.condition.subject,
                 startTime: this.filters.condition.startTime,

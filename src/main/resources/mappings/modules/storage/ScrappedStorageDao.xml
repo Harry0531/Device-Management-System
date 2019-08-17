@@ -21,12 +21,31 @@
                 AND a.`secret_number` = #{page.searchKey}
             </if>
             <if test="type != '' and type != null">
-                AND (a.`type` = #{type}
-                OR a.`secret_level` = #{type}
-                OR a.`usage` = #{type}
-                OR a.`scope` = #{type}
-                OR a.`department_code` = #{type}
-                OR a.`subject_code` = #{type})
+                AND a.`type` = #{type}
+            </if>
+            <if test="secret_level != '' and secret_level != null">
+                AND a.`secret_level` = #{secret_level}
+            </if>
+            <if test="usage != '' and usage != null">
+                AND a.`usage` = #{usage}
+            </if>
+            <if test="scope != '' and scope != null">
+                AND a.`scope` = #{scope}
+            </if>
+            <if test="use_situation != '' and use_situation != null">
+                AND a.`use_situation` = #{use_situation}
+            </if>
+            <if test="department_code != '' and department_code != null">
+                AND a.`department_code` = #{department_code}
+            </if>
+            <if test="subject_code != '' and subject_code != null">
+                AND a.`subject_code` = #{subject_code}
+            </if>
+            <if test="startTime != null and startTime !=''">
+                AND a.`scrap_time` &gt;=  #{startTime}
+            </if>
+            <if test="endTime != null and endTime !=''">
+                AND a.`scrap_time` &lt;=  #{endTime}
             </if>
             <if test="1 == 1">
                 AND a.`del_flag` = 0
@@ -85,12 +104,31 @@
                 AND a.`secret_number` = #{page.searchKey}
             </if>
             <if test="type != '' and type != null">
-                AND (a.`type` = #{type}
-                OR a.`secret_level`  = #{type}
-                OR a.`usage`  = #{type}
-                OR a.`scope`  = #{type}
-                OR a.`department_code` = #{type}
-                OR a.`subject_code` = #{type})
+                AND a.`type` = #{type}
+            </if>
+            <if test="secret_level != '' and secret_level != null">
+                AND a.`secret_level` = #{secret_level}
+            </if>
+            <if test="usage != '' and usage != null">
+                AND a.`usage` = #{usage}
+            </if>
+            <if test="scope != '' and scope != null">
+                AND a.`scope` = #{scope}
+            </if>
+            <if test="use_situation != '' and use_situation != null">
+                AND a.`use_situation` = #{use_situation}
+            </if>
+            <if test="department_code != '' and department_code != null">
+                AND a.`department_code` = #{department_code}
+            </if>
+            <if test="subject_code != '' and subject_code != null">
+                AND a.`subject_code` = #{subject_code}
+            </if>
+            <if test="startTime != null and startTime !=''">
+                AND a.`scrap_time` &gt;=  #{startTime}
+            </if>
+            <if test="endTime != null and endTime !=''">
+                AND a.`scrap_time` &lt;=  #{endTime}
             </if>
             <if test="1 == 1">
                 AND a.`del_flag` = 0

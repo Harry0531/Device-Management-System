@@ -54,10 +54,6 @@
     /*overflow-y: hidden;*/
 }
 
-.el-form {
-    padding: 0px 90px !important;
-}
-
 /* 选择框宽度 */
 .el-select.el-select--mini {
     width: 100px;
@@ -81,4 +77,52 @@
 /* 统一报废按钮宽度，注意其他按钮不要设成mini */
 .el-button--mini{
     width: 60px;
+}
+
+/* 折叠面板 */
+.el-collapse-item__content {
+    padding: 0 5px 0 80px;
+}
+
+.el-collapse-item__header {
+    padding: 0 50px 0 35px;
+    color: rgb(144, 147, 153);
+}
+
+/* 筛选 */
+.el-form-item {
+    margin-bottom: 0;
+}
+
+.el-radio-group{
+    padding-top: 6px;
+}
+
+.my-flex-div {
+    display: flex;
+    height: 40px;
+}
+
+.my-title {
+    color: rgb(144, 147, 153);
+    font-size: 12px;
+    width: 80px;
+    margin-block-start: 0 !important;
+    margin-block-end: 0 !important;
+}
+
+.el-input__inner {
+    height: 28px !important;
+}
+
+.el-input__icon {
+    line-height: 28px !important;
+}
+
+.el-collapse-item__content .el-form {
+    width: 50vw;
+}
+
+.el-collapse-item__content {
+    display: flex !important;
 }

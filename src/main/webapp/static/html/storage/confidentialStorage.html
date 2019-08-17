@@ -18,52 +18,51 @@
                 <el-form-item>
                     <div class="my-flex-div">
                         <p class="my-title">类型</p>
-                        <el-checkbox-group v-model="filters.condition.type" size="mini" :min="0" :max="1">
-                            <el-checkbox-button v-for="item in filters.selectionList.type"
-                                                :label="item.value">{{item.label}}
-                            </el-checkbox-button>
-                        </el-checkbox-group>
+                        <el-radio-group v-model="filters.condition.type" size="mini">
+                            <el-radio-button v-for="item in filters.selectionList.type"
+                                             :label="item.value">{{item.label}}
+                            </el-radio-button>
+                        </el-radio-group>
                     </div>
                 </el-form-item>
                 <el-form-item>
                     <div class="my-flex-div">
                         <p class="my-title">密级</p>
-                        <el-checkbox-group v-model="filters.condition.secret_level" size="mini" :min="0" :max="1">
-                            <el-checkbox-button v-for="item in filters.selectionList.secret_level"
-                                                :label="item.value">{{item.label}}
-                            </el-checkbox-button>
-                        </el-checkbox-group>
+                        <el-radio-group v-model="filters.condition.secret_level" size="mini">
+                            <el-radio-button v-for="item in filters.selectionList.secret_level"
+                                             :label="item.value">{{item.label}}
+                            </el-radio-button>
+                        </el-radio-group>
                     </div>
                 </el-form-item>
                 <el-form-item>
                     <div class="my-flex-div">
                         <p class="my-title">使用范围</p>
-                        <el-checkbox-group v-model="filters.condition.scope" size="mini" :min="0" :max="1">
-                            <el-checkbox-button v-for="item in filters.selectionList.scope"
-                                                :label="item.value">{{item.label}}
-                            </el-checkbox-button>
-                        </el-checkbox-group>
+                        <el-radio-group v-model="filters.condition.scope" size="mini">
+                            <el-radio-button v-for="item in filters.selectionList.scope"
+                                             :label="item.value">{{item.label}}
+                            </el-radio-button>
+                        </el-radio-group>
                     </div>
                 </el-form-item>
                 <el-form-item>
                     <div class="my-flex-div">
                         <p class="my-title">用途</p>
-                        <el-checkbox-group v-model="filters.condition.usage" size="mini" :min="0" :max="1">
-                            <el-checkbox-button v-for="item in filters.selectionList.usage"
-                                                :label="item.value">{{item.label}}
-                            </el-checkbox-button>
-                        </el-checkbox-group>
+                        <el-radio-group v-model="filters.condition.usage" size="mini">
+                            <el-radio-button v-for="item in filters.selectionList.usage"
+                                             :label="item.value">{{item.label}}
+                            </el-radio-button>
+                        </el-radio-group>
                     </div>
                 </el-form-item>
                 <el-form-item>
                     <div class="my-flex-div">
                         <p class="my-title">使用情况</p>
-                        <el-checkbox-group v-model="filters.condition.use_situation" size="mini" :min="0" :max="1">
-                            <el-checkbox-button v-for="item in filters.selectionList.use_situation"
-                                                :label="item.value"
-                                                :disabled="item.label === '报废'">{{item.label}}
-                            </el-checkbox-button>
-                        </el-checkbox-group>
+                        <el-radio-group v-model="filters.condition.use_situation" size="mini">
+                            <el-radio-button v-for="item in filters.selectionList.use_situation"
+                                             :label="item.value">{{item.label}}
+                            </el-radio-button>
+                        </el-radio-group>
                     </div>
                 </el-form-item>
             </el-form>

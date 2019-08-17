@@ -1,12 +1,24 @@
-//数量统计：允许分别按单位、类型、密级、用途、使用范围、使用情况等统计数量
-let select1 = [
-    {value: 'dept', label: '单位'},
-    {value: 'type', label: '类型'},
-    {value: 'secret_level', label: '密级'},
-    {value: 'usage', label: '用途'},
-    {value: 'scope', label: '使用范围'},
-    {value: 'search', label: '搜索'}
-];
+let defaultFiltersCondition = {
+    scope: '',
+    use_situation: '',
+    usage: '',
+    secret_level: '',
+    type: '',
+    school: '',
+    subject: '',
+    startTime: '',
+    endTime: ''
+};
+
+let defaultDialog = {
+    visible: false,
+    loading: false,
+    data: {
+        id: '',
+        remarks: '',
+        scrap_time: ''
+    }
+};
 
 let app = new Vue({
     el: '#app',
@@ -17,16 +29,19 @@ let app = new Vue({
             getList: 'http://localhost:8444/api/sys/storage/scrapped/getList',
             scrap: 'http://localhost:8444/api/sys/storage/scrapped/scrap'
         },
-        select1: select1,
-        select2: [],
-        select3: [],
-        select4: [],
         loading: false,
+        activeNames: [],
         filters: {
-            value1: '',
-            value2: '',
-            value3: '',
-            value4: ''
+            selectionList: {
+                scope: [],
+                use_situation: [],
+                usage: [],
+                secret_level: [],
+                type: [],
+                school: [],
+                subject: []
+            },
+            condition: defaultFiltersCondition
         },
         table: {
             loading: false,
@@ -38,55 +53,54 @@ let app = new Vue({
                 pageSize: 10,
                 pageSizes: [5, 10, 20, 40],
                 total: 0
-            },
-            type: ''
-        },
-        dialog: {
-            visible: false,
-            loading: false,
-            data: {
-                id: '',
-                remarks: '',
-                scrap_time: ''
             }
-        }
+        },
+        dialog: defaultDialog
     },
     methods: {
-        getSub(prov) {
-            app.select2 = [];
-            app.filters.value2 = '';
-            app.select3 = [];
-            app.filters.value3 = '';
-            app.select4 = [];
-            app.filters.value4 = '';
-            if (prov == 'search')
-                return;
-            let data = {
-                param: prov
-            };
-            ajaxPost(this.urls.getSub, data, function (result) {
-                if (prov === 'dept') {
-                    result.forEach(function (r) {
-                        app.select3.push(r);
-                    });
-                } else {
-                    result.forEach(function (r) {
-                        app.select2.push({'value': r.id, 'label': r.dicValue});
-                    });
-                }
+        getSub() {
+            ajaxPost(this.urls.getSub, {param: "scope"}, function (result) {
+                app.filters.selectionList.scope.push({'value': '', 'label': '全选'});
+                result.forEach(function (r) {
+                    app.filters.selectionList.scope.push({'value': r.id, 'label': r.dicValue});
+                });
             });
-            if (app.filters.value1 == '') {
-                app.table.type = '';
-                app.table.props.pageIndex=1;
-                app.refreshTable();
-            }
+            ajaxPost(this.urls.getSub, {param: "type"}, function (result) {
+                app.filters.selectionList.type.push({'value': '', 'label': '全选'});
+                result.forEach(function (r) {
+                    app.filters.selectionList.type.push({'value': r.id, 'label': r.dicValue});
+                });
+            });
+            ajaxPost(this.urls.getSub, {param: "secret_level"}, function (result) {
+                app.filters.selectionList.secret_level.push({'value': '', 'label': '全选'});
+                result.forEach(function (r) {
+                    app.filters.selectionList.secret_level.push({'value': r.id, 'label': r.dicValue});
+                });
+            });
+            ajaxPost(this.urls.getSub, {param: "usage"}, function (result) {
+                app.filters.selectionList.usage.push({'value': '', 'label': '全选'});
+                result.forEach(function (r) {
+                    app.filters.selectionList.usage.push({'value': r.id, 'label': r.dicValue});
+                });
+            });
+            ajaxPost(this.urls.getSub, {param: "use_situation"}, function (result) {
+                app.filters.selectionList.use_situation.push({'value': '', 'label': '全选'});
+                result.forEach(function (r) {
+                    app.filters.selectionList.use_situation.push({'value': r.id, 'label': r.dicValue});
+                });
+            });
+            ajaxPost(this.urls.getSub, {param: "dept"}, function (result) {
+                result.forEach(function (r) {
+                    app.filters.selectionList.school.push(r);
+                })
+            })
         },
         getDeptSub: function (index) {
-            app.select4 = [];
-            app.filters.value4 = '';
+            app.filters.selectionList.subject = [];
+            app.filters.subject = '';
             ajaxPost(this.urls.getDeptSub, {id: index}, function (result) {
                 result.forEach(function (r) {
-                    app.select4.push(r);
+                    app.filters.selectionList.subject.push(r);
                 });
             })
         },
@@ -95,7 +109,15 @@ let app = new Vue({
             app.table.loading = true;
             let data = {
                 page: app.table.props,
-                type: app.table.type
+                scope: this.filters.condition.scope,
+                type: this.filters.condition.type,
+                usage: this.filters.condition.usage,
+                secret_level: this.filters.condition.secret_level,
+                use_situation: this.filters.condition.use_situation,
+                department_code: this.filters.condition.school,
+                subject_code: this.filters.condition.subject,
+                startTime: this.filters.condition.startTime,
+                endTime: this.filters.condition.endTime
             };
             ajaxPostJSON(this.urls.getList, data, function (result) {
                 app.table.loading = false;
@@ -124,10 +146,7 @@ let app = new Vue({
             })
         },
         getList: function (index) {
-            this.table.type = index;
-            if (app.filters.value4 == '' && app.filters.value3 != '')
-                this.table.type = app.filters.value3;
-            app.table.props.pageIndex=1;
+            app.table.props.pageIndex = 1;
             this.refreshTable();
         },
         showDialog: function (v) {
@@ -138,15 +157,7 @@ let app = new Vue({
             app.dialog.visible = true;
         },
         resetDialogData: function () {
-            app.dialog = {
-                visible: false,
-                loading: false,
-                data: {
-                    id: '',
-                    remarks: '',
-                    scrap_time: ''
-                }
-            }
+            app.dialog = defaultDialog;
         },
         onSelectionChange: function (val) {
             this.table.selectionList = val;
@@ -161,6 +172,7 @@ let app = new Vue({
         }
     },
     mounted: function () {
+        this.getSub();
         this.refreshTable();
     },
     computed: {
