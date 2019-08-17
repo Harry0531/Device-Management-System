@@ -22,4 +22,7 @@
         where TABLE_SCHEMA = (select database()) and table_name = #{tableName}
     </select>
 
+    <select id="selectAllDictInfo" resultType="com.management.admin.modules.tool.entity.tiny.DictInfo">
+        select id,`dic_property`as"dicProperty",`dic_value`as"dicValue" from data_dictionary union select id,`dept_name`as"dicProperty",`dept_property`as "dicValue" from department
+    </select>
 </mapper>

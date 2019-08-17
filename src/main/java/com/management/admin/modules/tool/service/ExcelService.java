@@ -11,8 +11,10 @@ import com.management.admin.modules.tool.entity.ColumnMapField;
 import com.management.admin.modules.tool.entity.DynamicInsertParam;
 import com.management.admin.modules.tool.entity.ImportExcel;
 import com.management.admin.modules.tool.entity.ExcelTemplate;
+import com.management.admin.modules.tool.entity.tiny.DictInfo;
 import com.management.admin.modules.tool.entity.tiny.ExcelColumn;
 import com.management.admin.modules.tool.entity.tiny.TableField;
+import com.management.admin.modules.tool.entity.tiny.TemplateType;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -157,12 +159,6 @@ public class ExcelService {
             fieldList.add(columnMapField.getTableColumnName());
         }
 
-        //判断字段是否用了数据字典
-        List<Boolean> isDict = new ArrayList<>();
-        for(int i = 4 ; i <fieldList.size();i++){ //跳过前4个固定
-            String fieldName=fieldList.get(i);
-            isDict.add(dictService.isUseDict(importExcel.getTypeId(),fieldName));
-        }
 
 
         DynamicInsertParam dynamicInsertParam = new DynamicInsertParam();
@@ -172,6 +168,8 @@ public class ExcelService {
         dynamicInsertParam.setFieldList(fieldList);
 
 //        3.处理表格数据
+        List<DictInfo>dictInfos =importDataDao.selectAllDictInfo();
+
         for(int rowIndex = 1; rowIndex <=sheet.getLastRowNum();rowIndex++){ //忽略第一行
             Row dataRow = sheet.getRow(rowIndex);   //获取一行的数据
 
@@ -190,9 +188,11 @@ public class ExcelService {
                         int tmp=columnMapField.getColumnIndex();
                         Cell cell =dataRow.getCell(tmp);
                     cellValue = ExcelUtils.getCellValueByFieldType(cell, columnMapField.getFieldType());
-
-                    if(isDict.get(i)){
-                        cellValue = dictService.getUUID(importExcel.getTypeId(),fieldList.get(i+4),(String)cellValue);
+                    if(columnMapField.getIsDict()){
+                        for(DictInfo dictInfo:dictInfos){
+                            if(dictInfo.getDicProperty().equals(columnMapField.getDict()) &&cellValue.equals(dictInfo.getDicValue()))
+                                cellValue=dictInfo.getId();
+                        }
                     }
                 }
                 row.add(cellValue);
@@ -228,5 +228,9 @@ public class ExcelService {
                 return false;
         }
         return true;
+    }
+
+    public List<TemplateType> getTemplateTypeList(){
+        return excelTemplateDao.getTypeList();
     }
 }

@@ -7,6 +7,6 @@
     overflow: hidden;
 }
 .button-group{
-
+    float: right;
     margin: 10px;
 }

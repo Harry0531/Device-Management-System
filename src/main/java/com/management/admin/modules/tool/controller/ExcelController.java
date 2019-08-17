@@ -66,7 +66,7 @@ public class ExcelController extends BaseApi {
             )throws Exception{
         List<ExcelTemplate> excelTemplateList = excelService.selectAllTemplate(excelTemplate);
         for (ExcelTemplate e :excelTemplateList){
-            e.setTypeName(dictService.getValue(e.getTypeId()));
+//            e.setTypeName(dictService.getValue(e.getTypeId()));
         }
         return retMsg.Set(MsgType.SUCCESS, excelTemplateList);
     }
@@ -159,4 +159,12 @@ public class ExcelController extends BaseApi {
             data.put("excelColumnList",excelColumnList);
             return retMsg.Set(MsgType.SUCCESS,data);
     }
+
+
+    @RequestMapping(value="getTemplateTypeList",method = RequestMethod.GET)
+    @ResponseBody
+    public Object getTemplateTypeList()throws Exception{
+        return retMsg.Set(MsgType.SUCCESS,excelService.getTemplateTypeList());
+    }
+
 }

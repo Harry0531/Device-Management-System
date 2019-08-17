@@ -5,10 +5,6 @@ import lombok.Data;
 
 @Data
 public class Dict extends DataEntity<Dict> {
-    //字典项所属类型
-    public  String typeId;
-    //字典项所属类型名称
-    public  String typeName;
 
     //字段对应英文名字
     public String enName;
@@ -18,8 +14,11 @@ public class Dict extends DataEntity<Dict> {
     public  String dicValue;
     //备注
     public  String remark;
-    //父字典id
-    public  String fatherId;
+
     //父字典名字
-    public  String fatherName;
+    public  String fatherProperty;
+    //排序等级
+    public Integer sort;
+
+
 }

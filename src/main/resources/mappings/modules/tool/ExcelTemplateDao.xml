@@ -10,6 +10,7 @@
         <result column="create_date" property="createDate"/>
         <result column="modify_date" property="modifyDate"/>
         <result column="template_type" property="typeId"/>
+        <result column="type_name" property="typeName"/>
         <result column="del_flag" property="delFlag"/>
     </resultMap>
 
@@ -50,20 +51,13 @@
 
 
     <select id="selectAllTemplate" parameterType="com.management.admin.modules.tool.entity.ExcelTemplate" resultMap="excelTemplateBean">
-        select a.* from excel_template a where del_flag=0
+        select a.*,b.type_name from excel_template a left join data_dictionary_type b on a.table_name=b.table_name where a.del_flag=0
     </select>
 
 
     <select id="selectById" parameterType="string" resultMap="excelTemplateBean">
-        select *
-        from excel_template
-        where id = #{param1} and del_flag=0
+     select a.*,b.type_name from excel_template a left join data_dictionary_type b on a.table_name=b.table_name where a.id=#{param1} and a.del_flag=0
     </select>
-
-
-
-
-
 
 
     <select id="selectFieldListByTableName" parameterType="string" resultType="com.management.admin.modules.tool.entity.tiny.TableField">
@@ -71,6 +65,10 @@
                DATA_TYPE      as fieldType
         from INFORMATION_SCHEMA.Columns
         where TABLE_SCHEMA = (select database()) and table_name = #{tableName}
+    </select>
+
+    <select id="getTypeList" resultType="com.management.admin.modules.tool.entity.tiny.TemplateType">
+      select type_name as "typeName",`table_name`as "tableName" from data_dictionary_type where del_flag=0
     </select>
 
 </mapper>
