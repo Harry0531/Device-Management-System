@@ -17,7 +17,7 @@ public class DictService {
         dictType.preInsert();
         return dictDao.insertDictType(dictType) == 1;
     }
-    public List<DictType> selectDictTypeList(){
+    public List<String> selectDictTypeList(){
         return dictDao.selectDictTypeList();
     }
 
@@ -36,29 +36,33 @@ public class DictService {
     public boolean deleteDictByIds(List<Dict> dicts){
         return dicts.size()==0 || dictDao.deleteDictByIds(dicts)==dicts.size();
     }
+    public boolean deleteDictById(Dict dict){
+        return dictDao.deleteDictById(dict)==1;
+    }
+
     public  boolean updateDict(Dict dict){
         dict.preUpdate();
         return dictDao.updateDict(dict) == 1;
     }
 
-    //根据类型和字段名判断是否用了字典
-    public  boolean isUseDict(String typeId,String fieldName){
-        return dictDao.isUseDict(typeId,fieldName) >= 1 ;
-    }
-    //三个参数确定唯一字典 d
-    /**
-     * @param enName  对应字段英文名称
-     * @param typeId 对应字段字典类别
-     * @param value 对应字典值
-     */
-    public String getUUID(String typeId,String enName,String value){
-        return dictDao.getUUid(typeId,enName,value);
-    }
-
-       /**
-            * @param UUid 根据uuid获取对应值
-            */
-    public String getValue(String UUid){
-        return dictDao.getValue(UUid);
-    }
+//    //根据类型和字段名判断是否用了字典
+//    public  boolean isUseDict(String typeId,String fieldName){
+//        return dictDao.isUseDict(typeId,fieldName) >= 1 ;
+//    }
+//    //三个参数确定唯一字典 d
+//    /**
+//     * @param enName  对应字段英文名称
+//     * @param typeId 对应字段字典类别
+//     * @param value 对应字典值
+//     */
+//    public String getUUID(String typeId,String enName,String value){
+//        return dictDao.getUUid(typeId,enName,value);
+//    }
+//
+//       /**
+//            * @param UUid 根据uuid获取对应值
+//            */
+//    public String getValue(String UUid){
+//        return dictDao.getValue(UUid);
+//    }
 }

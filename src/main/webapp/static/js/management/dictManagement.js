@@ -4,10 +4,10 @@ var app = new Vue({
         fullScreenLoading: false,
         urls: {
             getDictList: 'http://localhost:8444/api/sys/dict/selectDictListByPage',
-            getDictType:'http://localhost:8444/api/sys/dict/getDictTypeList',
-            getFieldList:"http://localhost:8444/api/tool/excel/getColumnInTableAndExcel",
             insertDict:'http://localhost:8444/api/sys/dict/insertOrUpdateDict',
             deleteListByIds:'http://localhost:8444/api/sys/dict/deleteDictByIds',
+            deleteListById:'http://localhost:8444/api/sys/dict/deleteDictById',
+            getDictType:"http://localhost:8444/api/sys/dict/getDictTypeList"
 
         },
         table: {
@@ -30,13 +30,13 @@ var app = new Vue({
             loading:false,
             data:{
                 id:"",
-                typeId:"",
-                typeName:"",
-                tableName:"",
                 dicProperty:"",
                 dicValue:"",
-                fatherId:"",
-                enName:""
+                fatherProperty:"",
+                sort:"",
+                remarks:"",
+                delFlag:"",
+                dis:false
             }
         }
     },
@@ -47,7 +47,7 @@ var app = new Vue({
             app.table.loading = true;
             let data = {
                 page: app.table.props,
-                typeId:app.table.typeId
+                dicProperty:app.table.data.dicProperty
             };
             ajaxPostJSON(this.urls.getDictList, data, function (d) {
                 app.table.loading = false;
@@ -117,37 +117,33 @@ var app = new Vue({
         },
         handleSelectTypeChange:function (v) {
             var app=this;
-            console.log(v);
-            app.dialog.data.tableName=v["tableName"];
-            app.dialog.data.typeName=  v["typeName"];
-            app.dialog.data.typeId= v["id"]
-
-            let data={
-                tableName:v["tableName"],
-                ExcelName:null
-            };
-            ajaxPost(app.urls.getFieldList,data,function (result) {
-                app.FieldList = result.data["tableColumnList"]
-            })
-
+            app.dialog.data.dicProperty=v;
+        },
+        handleSelectTypeChange2:function (v) {
+            var app=this;
+            app.table.props.searchKey=v;
+            app.refreshTable();
+        },
+        handleSelectFatherTypeChange:function(v){
+            var app=this;
+            app.dialog.data.fatherProperty=v;
         },
         insertOrUpdateDict: function () {
             let app = this;
             app.dialog.loading = true;
             let data = {
-                typeId:app.dialog.data.typeId,
-                typeName:app.dialog.data.typeName,
                 dicProperty:app.dialog.data.dicProperty,
                 dicValue:app.dialog.data.dicValue,
-                fatherId:"",
+                fatherProperty:app.dialog.data.fatherProperty,
+                sort:app.dialog.data.sort,
+                remark:app.dialog.data.remarks,
                 id:app.dialog.data.id,
-                enName:app.dialog.data.enName
             };
             ajaxPostJSON(this.urls.insertDict, data, function (d) {
                 app.dialog.loading = false;
                 app.dialog.visible=false;
                 app.$message({
-                    message:"插入成功",
+                    message:"操作成功",
                     type:"success"
                 })
                 app.refreshTable();
@@ -160,41 +156,37 @@ var app = new Vue({
                 loading:false,
                 data:{
                     id:"",
-                    typeId:"",
-                    typeName:"",
                     dicProperty:"",
                     dicValue:"",
-                    fatherId:"",
-                    enName:"",
-                    tableName:""
+                    fatherProperty:"",
+                    sort:"",
+                    remarks:"",
+                    delFlag:"",
+                    dis:false
                 }
             }
         },
         updateDialog:function (v) {
-            console.log(v);
             var app=this;
             app.dialog.data.id=v["id"];
-            app.dialog.data.typeId=v["typeId"];
-            app.dialog.data.typeName=v["typeName"];
             app.dialog.data.dicProperty=v["dicProperty"];
             app.dialog.data.dicValue=v["dicValue"];
-            app.dialog.data.fatherId=v["fatherId"];
-            //找到表名
-            console.log(app.dictType);
-            let tableName='';
-            app.dictType.forEach(function (w) {
-                if(w["typeName"] === v["typeName"]){
-                    tableName=w["tableName"];
-                }
-            })
-            let data={
-                tableName:tableName,
-                ExcelName:null
-            };
-            ajaxPost(app.urls.getFieldList,data,function (result) {
-                app.FieldList = result.data["tableColumnList"]
-            })
+            app.dialog.data.fatherProperty=v["fatherProperty"];
+            app.dialog.data.sort=v["sort"];
+            app.dialog.data.remarks=v["remark"];
+            app.dialog.data.delFlag=v["delFlag"];
+            app.dialog.data.dis=true;
             app.dialog.visible=true;
+        },
+        disable:function (v) {
+            var app=this;
+            let data={
+                dicts:v["id"]
+            }
+            ajaxPost(app.urls.deleteListById,data, function (d) {
+                app.refreshTable();
+            })
+
         }
 
     },

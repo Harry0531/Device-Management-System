@@ -16,29 +16,31 @@
 <body>
 <div id="app" v-cloak style="background: white;height: 100%;overflow: hidden;" v-loading="fullScreenLoading">
     <div style="padding: 15px 20px 0 15px;">
-        <span class="button-group">
-            <el-button size="small" type="warning" @click="deleteByIds(table.selectionList)"
-                       style="margin-left: 10px;">
-                <span>批量删除</span>
+
+
+        <span style="float: left;margin:0 0 10px 0px">
+              <el-button size="small" type="warning" @click="deleteByIds(table.selectionList)"
+                         style="margin-right:  40px;">
+                <span>批量禁用</span>
             </el-button>
+            <el-select prefix-icon="el-icon-search" placeholder="请筛选字典类型" v-model="table.props.searchKey"  filterable clearable @change="handleSelectTypeChange2">
+                    <el-option v-for="item in dictType" :key="item" :label="item"
+                               :value="item"></el-option>
+                </el-select>
+            <!--<el-input size="small" placeholder="请输入字典类型" suffix-icon="el-icon-search"-->
+            <!--style="width: 250px;margin-right: 10px;" v-model="table.props.searchKey"-->
+            <!--@keyup.enter.native="table.props.pageIndex=1;refreshTable()">-->
+            <!--</el-input>-->
+            <!--<el-button size="small" type="primary" style="position:relative;"-->
+            <!--@click="table.props.pageIndex=1;refreshTable()">-->
+            <!--<span>搜索</span>-->
+            </el-button>
+        </span>
+        <span style="float: right;margin-right: 50px;margin-top: 5px" >
+
             <el-button size="small" type="success" @click="dialog.visible=true" style="margin-left: 10px;">新增字典</el-button>
         </span>
 
-        <span style="float: right;margin-right: 10px;">
-            <el-select v-model="table.typeId" size="small" @change="refreshTable();" clearable
-                       filterable placeholder="选择字典类型">
-                <el-option v-for="item in dictType" :key="item.id" :label="item.typeName"
-                           :value="item.id"></el-option>
-            </el-select>
-            <el-input size="small" placeholder="请输入字典属性" suffix-icon="el-icon-search"
-                      style="width: 250px;margin-right: 10px;" v-model="table.props.searchKey"
-                      @keyup.enter.native="table.props.pageIndex=1;refreshTable()">
-            </el-input>
-            <el-button size="small" type="primary" style="position:relative;"
-                       @click="table.props.pageIndex=1;refreshTable()">
-                <span>搜索</span>
-            </el-button>
-        </span>
 
 
     </div>
@@ -48,10 +50,18 @@
               width="100%"
     >
         <el-table-column type="selection" width="100"></el-table-column>
-        <el-table-column label="所属类别" width="200" prop="typeName" align="center"></el-table-column>
-        <el-table-column label="字典属性" width="300" prop="dicProperty" align="center"></el-table-column>
-        <el-table-column label="字典值" width="250" prop="dicValue" align="center"></el-table-column>
-        <el-table-column label="父字典" width="300" prop="fatherName" align="center"></el-table-column>
+        <el-table-column label="字典类型" width="250" prop="dicProperty" align="center"></el-table-column>
+        <el-table-column label="字典值" width="200" prop="dicValue" align="center"></el-table-column>
+        <el-table-column label="父字典类型" width="250" prop="fatherProperty" align="center"></el-table-column>
+        <el-table-column label="排序" width="150" prop="sort" align="center"></el-table-column>
+        <el-table-column label="备注" width="250" prop="remark" align="center"></el-table-column>
+        <el-table-column label="启用" width="100" align="center">
+            <template slot-scope="scope">
+                <el-switch v-model="scope.row.delFlag"
+                           :active-value="0" :inactive-value="1"
+                           @change="disable(scope.row)"></el-switch>
+            </template>
+        </el-table-column>
 
         <el-table-column label="操作"  header-align="center" align="center">
             <template slot-scope="scope">
@@ -59,10 +69,10 @@
                            @click="updateDialog(scope.row)">
                     <span>编辑</span>
                 </el-button>
-                <el-button type="danger" size="mini" style="position:relative;bottom: 1px;margin-left: 6px;"
-                           @click="deleteByIds([{id: scope.row.id}])">
-                    <span>删除</span>
-                </el-button>
+                <!--<el-button type="danger" size="mini" style="position:relative;bottom: 1px;margin-left: 6px;"-->
+                           <!--@click="deleteByIds([{id: scope.row.id}])">-->
+                    <!--<span>删除</span>-->
+                <!--</el-button>-->
             </template>
         </el-table-column>
         <el-table-column width="50"></el-table-column>
@@ -82,30 +92,29 @@
         <el-form label-position="left" label-width="140px" style="padding: 0 100px;"
                   v-loading="dialog.loading" status-icon
         >
-            <el-form-item label="选择类型" >
-                <el-select v-model="dialog.data.typeName" clearable @change="handleSelectTypeChange">
-                    <el-option v-for="item in dictType" :key="item.id" :label="item.typeName"
+            <el-form-item label="选择字典类型"  :required="true" style="margin-left: 20px">
+                <el-select v-model="dialog.data.dicProperty"  filterable clearable @change="handleSelectTypeChange">
+                    <el-option v-for="item in dictType" :key="item" :label="item" :disabled="dialog.data.dis"
                                :value="item"></el-option>
                 </el-select>
             </el-form-item>
 
-            <el-form-item label="字典中文名称" >
-                <el-input v-model="dialog.data.dicProperty"></el-input>
-            </el-form-item>
-            <el-form-item label="字典英文名称" >
-                <el-select v-model="dialog.data.enName" clearable >
-                    <el-option v-for="item in FieldList" :key="item" :label="item"
-                               :value="item"></el-option>
-                </el-select>
-            </el-form-item>
-
-            <el-form-item label="字典值">
+            <el-form-item label="字典值" :required="true" style="margin-left: 20px">
                 <el-input v-model="dialog.data.dicValue"></el-input>
             </el-form-item>
-            <el-form-item label="父字典" >
-                <el-input v-model="dialog.data.fatherId"></el-input>
+            <el-form-item label="父字典" style="margin-left: 30px" >
+                <el-select v-model="dialog.data.fatherProperty"  filterable clearable @change="handleSelectFatherTypeChange" style="margin-left:-8px">
+                    <el-option v-for="item in dictType" :key="item" :label="item"
+                               :value="item"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="排序" :required="true" style="margin-left: 27px">
+                <el-input v-model="dialog.data.sort" style="margin-left: -2px"></el-input>
             </el-form-item>
 
+            <el-form-item label="备注" style="margin-left: 37px">
+                <el-input v-model="dialog.data.remarks"style="margin-left: -10px"></el-input>
+            </el-form-item>
 
         </el-form>
         <div slot="footer" >

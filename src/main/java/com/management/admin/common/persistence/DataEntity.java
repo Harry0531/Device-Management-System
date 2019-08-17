@@ -7,7 +7,9 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Date;
+import  java.lang.String;
 
 /**
  * 所有表格的对应实体类的基类
@@ -77,13 +79,14 @@ public class DataEntity<T> {
         this.page = page;
     }
 
-    public Integer getDelFlag() {
-        return delFlag;
-    }
+
 
     public void setDelFlag(Integer delFlag) {
         this.delFlag = delFlag;
     }
+   public Integer getDelFlag(){
+        return delFlag;
+   }
 
     public Date getCreateDate() {
         return createTime;

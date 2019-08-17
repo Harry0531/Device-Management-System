@@ -39,9 +39,9 @@
 
 
            <p style="margin: 10px">选择类型</p>
-           <el-select v-model="templateEntity.TypeId" clearable @change="handleSelectTypeChange">
-               <el-option v-for="item in dictType" :key="item.id" :label="item.typeName"
-                          :value="item"></el-option>
+           <el-select v-model="templateEntity.TableName" clearable @change="handleSelectTypeChange">
+               <el-option v-for="item in dictType" :key="item.tableName" :label="item.typeName"
+                          :value="item.tableName"></el-option>
            </el-select>
 
            <el-upload
@@ -50,7 +50,7 @@
                    action="http://localhost:8444/api/tool/file/uploadFile"
                    :on-success="SuccessUpload"
                    :before-upload="beforeUpload"
-                   multiple>
+                   >
                <i class="el-icon-upload"></i>
                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
            </el-upload>
@@ -58,8 +58,23 @@
        </div>
         <div v-if="StepCount==2">
             <el-table :data="ColumnList.mapList" ref="table"  height="360">
-                <el-table-column label="字段名" prop="tableColumnName">
 
+                <el-table-column type="expand">
+                    <template slot-scope="{row}">
+                        <el-form label-position="left"  size="mini">
+                            <el-form-item label="数据字典类型" v-if="row.isDict">
+                                <el-select clearable filterable style="width: 150px;margin-right: 10px;"
+                                           v-model="row.dict">
+                                    <el-option v-for="item in Dict" :key="item"
+                                               :value="item" :label="item"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-form>
+                    </template>
+                </el-table-column>
+
+
+                <el-table-column label="字段名" prop="tableColumnName">
                 </el-table-column>
                 <el-table-column label="请选择导入的excel中的列名" prop="ExcelColumnIndex">
                     <template slot-scope="{row}">
@@ -70,6 +85,13 @@
                                        :label="excelColumn.columnName" :value="excelColumn.columnIndex"></el-option>
                             <el-option v-show="false" :key="-1" :value="-1" label="请选择 ……"></el-option>
                         </el-select>
+                    </template>
+                </el-table-column>
+
+                <el-table-column label="外  键" width="80" align="center">
+                    <template slot-scope="{row}">
+                        <el-switch v-model="row.isDict"  active-value="true"   inactive-value="false"
+                                   @change="$refs.table.toggleRowExpansion(row)"></el-switch>
                     </template>
                 </el-table-column>
 

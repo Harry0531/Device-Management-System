@@ -31,3 +31,7 @@ var app = new Vue({
         this.refreshTable();
     }
 })
+
+function closeIframe() {
+    app.insertOrUpdateDialog.visible=false;
+}

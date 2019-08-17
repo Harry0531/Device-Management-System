@@ -159,7 +159,7 @@
     <select id="selectDictListByPage" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage"
             resultMap="storageBean">
         SELECT a.*,
-               b.`dic_value` AS `_type`,
+               b.`dic_value`AS `_type`,
                c.`dic_value` AS `_secret_level`,
                d.`dic_value` AS `_usage`,
                e.`dic_value` AS `_scope`,

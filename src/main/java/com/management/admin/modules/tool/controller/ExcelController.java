@@ -1,5 +1,7 @@
 package com.management.admin.modules.tool.controller;
 
+import com.management.admin.common.utils.Excel.ExcelUtils;
+import com.management.admin.common.utils.Excel.ExportExcelData;
 import com.management.admin.common.utils.SystemPath;
 import com.management.admin.common.web.BaseApi;
 import com.management.admin.common.web.MsgType;
@@ -64,7 +66,7 @@ public class ExcelController extends BaseApi {
             )throws Exception{
         List<ExcelTemplate> excelTemplateList = excelService.selectAllTemplate(excelTemplate);
         for (ExcelTemplate e :excelTemplateList){
-            e.setTypeName(dictService.getValue(e.getTypeId()));
+//            e.setTypeName(dictService.getValue(e.getTypeId()));
         }
         return retMsg.Set(MsgType.SUCCESS, excelTemplateList);
     }
@@ -106,13 +108,26 @@ public class ExcelController extends BaseApi {
     }
 
 
-    @RequestMapping(value = "exportDataToExcel",method = RequestMethod.POST)
+    @RequestMapping(value = "exportDataToExcel")
     @ResponseBody
-    public void exportExcelToTable(
-            @RequestBody ExportExcel exportExcel,
+    public Object exportExcelToTable(
+            @RequestParam String fileName,
+            @RequestParam String tableName,
+            @RequestParam List<String> fieldList,
+            @RequestParam List<String> conditionsList,
+            @RequestParam List<String> idList,
             HttpServletResponse response
             )throws Exception{
-        exportDataService.ExportToExcel(response,exportExcel);
+        ExportExcel exportExcel = new ExportExcel();
+        exportExcel.setFileName(fileName);
+        exportExcel.setTableName(tableName);
+        exportExcel.setFieldList(fieldList);
+        exportExcel.setConditionsList(conditionsList);
+        exportExcel.setIdList(idList);
+        ExportExcelData excelData = exportDataService.ExportToExcel(exportExcel);
+
+        ExcelUtils.exportExcel(response,exportExcel.getFileName(),excelData);
+        return fileName;
     }
 
 
@@ -144,4 +159,12 @@ public class ExcelController extends BaseApi {
             data.put("excelColumnList",excelColumnList);
             return retMsg.Set(MsgType.SUCCESS,data);
     }
+
+
+    @RequestMapping(value="getTemplateTypeList",method = RequestMethod.GET)
+    @ResponseBody
+    public Object getTemplateTypeList()throws Exception{
+        return retMsg.Set(MsgType.SUCCESS,excelService.getTemplateTypeList());
+    }
+
 }

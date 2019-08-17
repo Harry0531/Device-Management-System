@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import  java.util.List;
+import java.util.Map;
 
 /**
       * @Description 字典管理api
@@ -40,7 +41,7 @@ public class DictController  extends BaseApi {
     @ResponseBody
     public  Object getDictTypeList()throws Exception{
         try {
-            List<DictType> data = dictService.selectDictTypeList();
+            List<String> data = dictService.selectDictTypeList();
             return retMsg.Set(MsgType.SUCCESS,data);
         }catch (Exception e){
             e.printStackTrace();
@@ -83,6 +84,22 @@ public class DictController  extends BaseApi {
     public  Object deleteDictByIds(@RequestBody List<Dict> dicts)throws Exception{
         try{
             if(dictService.deleteDictByIds(dicts)){
+                return retMsg.Set(MsgType.SUCCESS);
+            }else
+                return retMsg.Set(MsgType.ERROR);
+        }catch (Exception e){
+            e.printStackTrace();
+            return retMsg.Set(MsgType.ERROR);
+        }
+    }
+
+    @RequestMapping(value="deleteDictById",method = RequestMethod.POST)
+    @ResponseBody
+    public  Object deleteDictById(@RequestParam String dicts)throws Exception{
+        Dict dict  = new Dict();
+        dict.setId(dicts);
+        try{
+            if(dictService.deleteDictById(dict)){
                 return retMsg.Set(MsgType.SUCCESS);
             }else
                 return retMsg.Set(MsgType.ERROR);

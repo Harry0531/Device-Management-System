@@ -5,16 +5,15 @@
 
     <resultMap id="dictBean" type="com.management.admin.modules.sys.entity.Dict">
         <id property="id" column="id"/>
-        <result column="type_id" property="typeId"/>
         <result column="dic_property" property="dicProperty"/>
         <result column="dic_value" property="dicValue"/>
         <result column="typeName" property="typeName"/>
-        <result column="fatherName" property="fatherName"/>
+        <result column="father" property="fatherProperty"/>
         <result column="remark" property="remark"/>
-        <result column="father" property="fatherId"/>
         <result column="create_date" property="createDate"/>
         <result column="modify_date" property="modifyDate"/>
         <result column="del_flag" property="delFlag"/>
+        <result column="sort" property="sort"/>
     </resultMap>
 
     <insert id="insertDictType" parameterType="com.management.admin.modules.sys.entity.DictType" >
@@ -35,9 +34,10 @@
         )
     </insert>
 
-    <select id="selectDictTypeList" resultType="com.management.admin.modules.sys.entity.DictType">
-      select `table_name` as "tableName",type_name as "typeName",`id`,`create_time`,`modify_time`,`del_flag`
-      from data_dictionary_type
+    <select id="selectDictTypeList" resultType="String">
+      select `dic_property`
+      from data_dictionary
+      group by `dic_property`
     </select>
 
     <select id="selectSearchCount" parameterType="com.management.admin.modules.sys.entity.Dict" resultType="int">
@@ -46,81 +46,73 @@
             <if test="page.searchKey != '' and page.searchKey != null">
                 and a.dic_property like concat('%', #{page.searchKey}, '%')
             </if>
-            <if test="typeId != '' and typeId != null">
-                and a.type_id = #{typeId}
-            </if>
-            <if test="1 == 1">
-                and a.del_flag=0
-            </if>
+
         </where>
     </select>
 
     <select id="selectDictListByPage" parameterType="com.management.admin.modules.sys.entity.Dict"
             resultMap="dictBean">
         select a.*,
-        b.type_name as typeName,
         c.dic_value as fatherName
-         from data_dictionary a
-         LEFT JOIN data_dictionary_type b on a.type_id = b.id
-          LEFT JOIN data_dictionary c on a.father=c.id
+        from data_dictionary a
+        LEFT JOIN data_dictionary c on a.father=c.id
         <where>
             <if test="page.searchKey != '' and page.searchKey != null">
                 and   a.dic_property like concat('%', #{page.searchKey}, '%')
             </if>
-            <if test="typeId != '' and typeId != null">
-                and a.type_id = #{typeId}
-            </if>
-            <if test="1 == 1">
-                and a.del_flag=0
-            </if>
+
         </where>
-        ORDER BY a.`modify_time` DESC
+        ORDER BY a.`sort` DESC
         limit #{page.pageStart}, #{page.pageSize}
+        for update
     </select>
 
 
     <insert id="insertDict" parameterType="com.management.admin.modules.sys.entity.Dict" >
         insert into data_dictionary (
         `id`,
-        `type_id`,
+        `sort`,
         `dic_property`,
         `dic_value`,
         `dic_en_name`,
         `father`,
-        `remark`,
         `create_time`,
         `modify_time`,
-        `del_flag`
+        `del_flag`,
+        `remark`
         )values (
           #{id},
-          #{typeId},
+          #{sort},
           #{dicProperty},
           #{dicValue},
           #{enName},
-          #{fatherId},
-          #{remark},
+          #{fatherProperty},
           #{createTime},
           #{modifyTime},
-          #{delFlag}
+          #{delFlag},
+          #{remark}
         )
     </insert>
 
     <update id="deleteDictByIds" parameterType="com.management.admin.modules.sys.entity.Dict">
-        update data_dictionary set del_flag=1 where id in
+        update data_dictionary set `del_flag`=1-`del_flag` where id in
         <foreach collection="list" item="item" open="(" close=")" separator=",">
             #{item.id}
         </foreach>
     </update>
 
+    <update id="deleteDictById" parameterType="com.management.admin.modules.sys.entity.Dict">
+        update `data_dictionary` set `del_flag`=1-`del_flag` where `id`=#{id}
+    </update>
+
     <update id="updateDict" parameterType="com.management.admin.modules.sys.entity.Dict">
         update  data_dictionary
-        set `type_id`      = #{typeId},
-            `dic_property` = #{dicProperty},
+        set `dic_property` = #{dicProperty},
             `dic_value`    = #{dicValue},
-            `father`       = #{fatherId},
+            `father`       = #{fatherProperty},
             `modify_time`  = #{modifyTime},
-            `del_flag`     = #{delFlag},
-            `dic_en_name`  = #{enName}
+            `remark`       = #{remark},
+            `sort`         = #{sort}
         where id =#{id}
     </update>
 

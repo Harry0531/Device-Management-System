@@ -14,6 +14,9 @@ public class ColumnMapField extends DataEntity<ColumnMapField> {
     // 列信息
     private String columnName;      // 列名
     private Integer columnIndex; //列序号
+    //是否用字典
+    private Boolean isDict;
+    private String dict;
 
 
     public ColumnMapField(TableField tableField) {

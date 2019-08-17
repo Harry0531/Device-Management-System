@@ -11,7 +11,7 @@ public interface DictDao {
 
     int insertDictType(DictType dictType);
 
-    List<DictType> selectDictTypeList();
+    List<String> selectDictTypeList();
 
     //关于字典操作
     List<Dict> selectDictListByPage(Dict dict);
@@ -20,6 +20,7 @@ public interface DictDao {
     int insertDict(Dict dict);
 
     int deleteDictByIds(List<Dict> dicts);
+    int deleteDictById(Dict dict);
 
     int updateDict(Dict dict);
 
