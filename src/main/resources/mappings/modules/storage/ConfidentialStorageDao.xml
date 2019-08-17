@@ -113,6 +113,12 @@
             <if test="subject_code != '' and subject_code != null">
                 AND a.`subject_code` = #{subject_code}
             </if>
+            <if test="startTime != null and startTime !=''">
+                AND a.`enablation_time` &gt;=  #{startTime}
+            </if>
+            <if test="endTime != null and endTime !=''">
+                AND a.`enablation_time` &lt;=  #{endTime}
+            </if>
             <if test="1 == 1">
                 AND (a.`del_flag` = 0 AND a.`scrapped_flag` = 0)
             </if>
@@ -186,6 +192,12 @@
             </if>
             <if test="subject_code != '' and subject_code != null">
                 AND a.`subject_code` = #{subject_code}
+            </if>
+            <if test="startTime != null and startTime !=''">
+                AND a.`enablation_time` &gt;=  #{startTime}
+            </if>
+            <if test="endTime != null and endTime !=''">
+                AND a.`enablation_time` &lt;=  #{endTime}
             </if>
             <if test="1 == 1">
                 AND (a.`del_flag` = 0 AND a.`scrapped_flag` = 0)

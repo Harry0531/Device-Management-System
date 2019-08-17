@@ -12,7 +12,7 @@
     <el-collapse v-model="activeNames">
         <el-collapse-item name="search">
             <template slot="title">
-                筛选&nbsp; <i class="header-icon el-icon-search"></i>
+                条件筛选&nbsp; <i class="header-icon el-icon-search"></i>
             </template>
             <el-form :model="filters">
                 <el-form-item>
@@ -23,9 +23,6 @@
                                                 :label="item.value">{{item.label}}
                             </el-checkbox-button>
                         </el-checkbox-group>
-                        <span style="margin-left: 550px">
-                            <el-button type="primary" size="mini" @click="getList()">查找</el-button>
-                        </span>
                     </div>
                 </el-form-item>
                 <el-form-item>
@@ -69,6 +66,9 @@
                         </el-checkbox-group>
                     </div>
                 </el-form-item>
+            </el-form>
+
+            <div>
                 <div class="my-flex-div" style="padding-top: 6px;">
                     <p class="my-title">单位</p>
                     <div>
@@ -90,8 +90,26 @@
                         </el-select>
                     </div>
                 </div>
-
-            </el-form>
+                <div class="my-flex-div" style="padding-top: 6px;">
+                    <p class="my-title">启用时间</p>
+                    <div>
+                        <el-date-picker v-model="filters.condition.startTime"
+                                        placeholder="起始时间"
+                                        value-format="yyyy-MM-dd"
+                                        format="yyyy-MM-dd"></el-date-picker>
+                        <el-date-picker v-model="filters.condition.endTime"
+                                        placeholder="终止时间"
+                                        value-format="yyyy-MM-dd"
+                                        format="yyyy-MM-dd"></el-date-picker>
+                    </div>
+                </div>
+                <div style="margin-top: 6vh">
+                    <el-button type="primary" size="mini" @click="getList()">查找</el-button>
+                    <span style="margin-left: 10px">
+                        <el-button size="mini" @click="activeNames=[];">收起</el-button>
+                    </span>
+                </div>
+            </div>
         </el-collapse-item>
     </el-collapse>
 
@@ -110,7 +128,7 @@
     </div>
 
     <!--表格-->
-    <el-table :data="table.data" height="calc(100vh - 150px)" v-loading="table.loading"
+    <el-table :data="table.data" height="calc(100vh - 190px)" v-loading="table.loading"
               style="width: 100%;overflow-y: hidden;margin-top: 15px;" class="scroll-bar"
               @selection-change="onSelectionChange" stripe
               width="100%">

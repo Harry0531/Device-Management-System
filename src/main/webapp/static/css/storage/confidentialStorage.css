@@ -80,7 +80,7 @@
 }
 
 .el-collapse-item__header {
-    padding: 0 50px 0 50px;
+    padding: 0 50px 0 35px;
     color: rgb(144, 147, 153);
 }
 
@@ -102,6 +102,18 @@
     margin-block-end: 0 !important;
 }
 
-.el-input__inner{
+.el-input__inner {
     height: 28px !important;
+}
+
+.el-input__icon {
+    line-height: 28px !important;
+}
+
+.el-collapse-item__content .el-form {
+    width: 50vw;
+}
+
+.el-collapse-item__content {
+    display: flex !important;
 }

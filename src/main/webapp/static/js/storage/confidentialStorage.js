@@ -5,7 +5,9 @@ let defaultFiltersCondition = {
     secret_level: [],
     type: [],
     school: '',
-    subject: ''
+    subject: '',
+    startTime: '',
+    endTime: ''
 };
 
 let defaultDialog = {
@@ -91,7 +93,9 @@ let app = new Vue({
                 secret_level: '',
                 type: '',
                 department_code: '',
-                subject_code: ''
+                subject_code: '',
+                startTime: '',
+                endTime: ''
             }
         },
 
@@ -149,7 +153,9 @@ let app = new Vue({
                 scope: app.table.condition.scope,
                 secret_level: app.table.condition.secret_level,
                 department_code: app.table.condition.department_code,
-                subject_code: app.table.condition.subject_code
+                subject_code: app.table.condition.subject_code,
+                startTime: app.table.condition.startTime,
+                endTime: app.table.condition.endTime
             };
             ajaxPostJSON(this.urls.getList, data, function (result) {
                 app.table.loading = false;
@@ -268,6 +274,8 @@ let app = new Vue({
             this.table.condition.use_situation = this.filters.condition.use_situation[0];
             this.table.condition.department_code = this.filters.condition.school;
             this.table.condition.subject_code = this.filters.condition.subject;
+            this.table.condition.startTime = this.filters.condition.startTime;
+            this.table.condition.endTime = this.filters.condition.endTime;
             app.table.props.pageIndex = 1;
             this.refreshTable();
         },
@@ -384,9 +392,6 @@ let app = new Vue({
                     type: "danger"
                 });
             });
-        },
-        resetCondition: function () {
-
         }
     },
     mounted: function () {
