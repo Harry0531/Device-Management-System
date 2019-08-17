@@ -41,6 +41,7 @@ public class DeptService {
 
     public boolean insertDept(Dept dept) {
         dept.preInsert();
+        dept.setDept_property("部门");
         return deptDao.insertDept(dept) == 1;
     }
 
