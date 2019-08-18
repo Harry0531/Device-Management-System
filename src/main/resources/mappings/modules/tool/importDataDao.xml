@@ -25,4 +25,8 @@
     <select id="selectAllDictInfo" resultType="com.management.admin.modules.tool.entity.tiny.DictInfo">
         select id,`dic_property`as"dicProperty",`dic_value`as"dicValue" from data_dictionary union select id,`dept_name`as"dicProperty",`dept_property`as "dicValue" from department
     </select>
+
+    <select id="getPartList" resultType="com.management.admin.modules.tool.entity.tiny.PartInfo">
+        SELECT id,`dept_name`as "name",`dept_code`as"code" from department
+    </select>
 </mapper>

@@ -11,10 +11,7 @@ import com.management.admin.modules.tool.entity.ColumnMapField;
 import com.management.admin.modules.tool.entity.DynamicInsertParam;
 import com.management.admin.modules.tool.entity.ImportExcel;
 import com.management.admin.modules.tool.entity.ExcelTemplate;
-import com.management.admin.modules.tool.entity.tiny.DictInfo;
-import com.management.admin.modules.tool.entity.tiny.ExcelColumn;
-import com.management.admin.modules.tool.entity.tiny.TableField;
-import com.management.admin.modules.tool.entity.tiny.TemplateType;
+import com.management.admin.modules.tool.entity.tiny.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -43,6 +40,8 @@ public class ExcelService {
     @Autowired
     DictService dictService;
 
+    private List<PartInfo> partInfos;
+    private boolean isScrapped=false;
     /**
      * @param excelTemplate include all info
      * @return is successful
@@ -126,9 +125,13 @@ public class ExcelService {
 
         //获得字段对应列名map信息
         List<ColumnMapField> columnMapFieldList = columnMapFieldDao.selectByTemplateId(importExcel.getId());
+        partInfos =  importDataDao.getPartList();
 
-
-
+        if(importExcel.getTableName().equals("报废涉密计算机")||importExcel.getTableName().equals("报废涉密存储介质")||importExcel.getTableName().equals("报废信息设备")
+        ||importExcel.getTableName().equals("报废安全保密产品")||importExcel.getTableName().equals("报废USB Key")
+        ){
+            isScrapped=true;
+        }
 //        1.准备数据，来自excel表格之外
         List<List<Object>> data = new ArrayList<>();
 
@@ -148,15 +151,16 @@ public class ExcelService {
                 }
             }
         }
-
+        Map<String, Integer> hashMap = new LinkedHashMap<>();
         //数据库字段头序列
         List<String> fieldList = new ArrayList<>();
         fieldList.add("id");
         fieldList.add("create_time");
         fieldList.add("modify_time");
         fieldList.add("del_flag");
+        fieldList.add("scrapped_flag");
         for (ColumnMapField columnMapField : columnMapFieldList2) {
-            fieldList.add(columnMapField.getTableColumnName());
+            fieldList.add("`"+columnMapField.getTableColumnName()+"`");
         }
 
 
@@ -179,8 +183,11 @@ public class ExcelService {
             row.add(now);
             row.add(now);
             row.add(0);
+            if(isScrapped) row.add(1);
+            else row.add(0);
 
-            //处理每个map对应关系
+                //处理每个map对应关系
+
             for(int i=0;i<columnMapFieldList2.size();i++){
                 ColumnMapField columnMapField = columnMapFieldList2.get(i);  //取得单个映射
                 Object cellValue = null;
@@ -188,10 +195,19 @@ public class ExcelService {
                         int tmp=columnMapField.getColumnIndex();
                         Cell cell =dataRow.getCell(tmp);
                     cellValue = ExcelUtils.getCellValueByFieldType(cell, columnMapField.getFieldType());
-                    if(columnMapField.getIsDict()){
+                    //如果是部门或课题组
+                    if(columnMapField.getColumnName().equals("单位")||columnMapField.getColumnName().equals("科室/课题组")){
+                        String deName=cellValue.toString().split(" ")[1];
+                        String deCode=cellValue.toString().split(" ")[0];
+                        String uu =getUuidByNameAndCode(deName,deCode);
+                        cellValue=uu;
+                    }else if(columnMapField.getIsDict()){  //使用了字典
                         for(DictInfo dictInfo:dictInfos){
                             if(dictInfo.getDicProperty().equals(columnMapField.getDict()) &&cellValue.equals(dictInfo.getDicValue()))
+                            {
                                 cellValue=dictInfo.getId();
+                                break;
+                             }
                         }
                     }
                 }
@@ -222,7 +238,7 @@ public class ExcelService {
      */
     private boolean isFieldRetained(String fieldName) {
         String[] excludeColumns = new String[]{"id",  "create_date",
-                 "modify_date", "del_flag"};
+                 "modify_date", "del_flag","scrapped_flag"};
         for (String s : excludeColumns) {
             if (s.equals(fieldName))
                 return false;
@@ -232,5 +248,16 @@ public class ExcelService {
 
     public List<TemplateType> getTemplateTypeList(){
         return excelTemplateDao.getTypeList();
+    }
+
+
+    public String getUuidByNameAndCode(String Name,String Code){
+        for(int i=0;i<partInfos.size();i++){
+            PartInfo partInfo = partInfos.get(i);
+            if(partInfo.getName().equals(Name)&&partInfo.getCode().equals(Code)){
+                return partInfo.getId();
+            }
+        }
+        return "未找到对应字典项";
     }
 }

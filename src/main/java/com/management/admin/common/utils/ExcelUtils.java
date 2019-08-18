@@ -51,7 +51,9 @@ public class ExcelUtils {
                 case "datetime":
                 case "timestamp":
                 case "date":
-                    val = cell.getDateCellValue();
+                    default:
+                        cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+                        val = cell.getStringCellValue();
                     break;
             }
         } catch (Exception e) {

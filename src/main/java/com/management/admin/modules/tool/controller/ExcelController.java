@@ -10,6 +10,7 @@ import com.management.admin.modules.tool.entity.ExportExcel;
 import com.management.admin.modules.tool.entity.ImportExcel;
 import com.management.admin.modules.tool.entity.ExcelTemplate;
 import com.management.admin.modules.tool.entity.tiny.ExcelColumn;
+import com.management.admin.modules.tool.entity.tiny.TableField;
 import com.management.admin.modules.tool.service.ExcelService;
 import com.management.admin.modules.tool.service.ExportDataService;
 import org.apache.commons.io.FilenameUtils;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import  java.util.List;
 
@@ -65,9 +67,7 @@ public class ExcelController extends BaseApi {
             @RequestBody ExcelTemplate excelTemplate
             )throws Exception{
         List<ExcelTemplate> excelTemplateList = excelService.selectAllTemplate(excelTemplate);
-        for (ExcelTemplate e :excelTemplateList){
-//            e.setTypeName(dictService.getValue(e.getTypeId()));
-        }
+
         return retMsg.Set(MsgType.SUCCESS, excelTemplateList);
     }
 
@@ -112,18 +112,30 @@ public class ExcelController extends BaseApi {
     @ResponseBody
     public Object exportExcelToTable(
             @RequestParam String fileName,
-            @RequestParam String tableName,
-            @RequestParam List<String> fieldList,
+            @RequestParam String templateId,
+            @RequestParam List<String> fieldType,
+            @RequestParam List<String> fieldName,
             @RequestParam List<String> conditionsList,
             @RequestParam List<String> idList,
+            @RequestParam Boolean isScrapped,
+            @RequestParam String tableName,
             HttpServletResponse response
             )throws Exception{
+        List<TableField> tableFields=new ArrayList<>();
+        for(int i=0;i<fieldName.size();i++){
+            TableField tableField=new TableField();
+            tableField.setFieldName(fieldName.get(i));
+            tableField.setFieldType(fieldType.get(i));
+            tableFields.add(tableField);
+        }
         ExportExcel exportExcel = new ExportExcel();
         exportExcel.setFileName(fileName);
-        exportExcel.setTableName(tableName);
-        exportExcel.setFieldList(fieldList);
+        exportExcel.setTemplateId(templateId);
+        exportExcel.setFieldList(tableFields);
         exportExcel.setConditionsList(conditionsList);
         exportExcel.setIdList(idList);
+        exportExcel.setIScrapped(isScrapped);
+        exportExcel.setTableName(tableName);
         ExportExcelData excelData = exportDataService.ExportToExcel(exportExcel);
 
         ExcelUtils.exportExcel(response,exportExcel.getFileName(),excelData);

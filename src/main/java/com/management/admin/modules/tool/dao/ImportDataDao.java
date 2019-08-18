@@ -2,6 +2,7 @@ package com.management.admin.modules.tool.dao;
 
 import com.management.admin.modules.tool.entity.DynamicInsertParam;
 import com.management.admin.modules.tool.entity.tiny.DictInfo;
+import com.management.admin.modules.tool.entity.tiny.PartInfo;
 import com.management.admin.modules.tool.entity.tiny.TableField;
 import org.apache.ibatis.annotations.Param;
 
@@ -17,5 +18,7 @@ public interface ImportDataDao {
     List<TableField> selectFieldListByTableName(@Param("tableName") String tableName);
 
     List<DictInfo> selectAllDictInfo();
+
+    List<PartInfo> getPartList();
 
 }

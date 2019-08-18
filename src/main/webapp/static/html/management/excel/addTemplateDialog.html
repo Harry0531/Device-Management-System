@@ -39,9 +39,9 @@
 
 
            <p style="margin: 10px">选择类型</p>
-           <el-select v-model="templateEntity.TableName" clearable @change="handleSelectTypeChange">
-               <el-option v-for="item in dictType" :key="item.tableName" :label="item.typeName"
-                          :value="item.tableName"></el-option>
+           <el-select v-model="templateEntity.TypeName" clearable @change="handleSelectTypeChange">
+               <el-option v-for="item in dictType" :key="item.typeName" :label="item.typeName"
+                          :value="item.typeName"></el-option>
            </el-select>
 
            <el-upload
