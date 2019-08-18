@@ -3,7 +3,7 @@
 <mapper namespace="com.management.admin.modules.storage.dao.ConfidentialStorageDao">
     <select id="getSubFromDict" resultType="com.management.admin.modules.sys.entity.Dict">
         SELECT `id`, `dic_value` AS `dicValue` FROM `data_dictionary` WHERE
-            (`dic_en_name` = #{_parameter} AND (`dic_property` LIKE '存储介质%'))
+            `dic_property` = CONCAT('存储介质', #{name})
     </select>
 
     <select id="getSubFromDept" resultType="com.management.admin.modules.sys.entity.Dept">
@@ -17,10 +17,8 @@
     <insert id="insertStorage" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage">
         INSERT INTO `confidential_storage_device` (
             `id`,
-            `department_code`,
-            `department_name`,
-            `subject_code`,
-            `subject_name`,
+            `department`,
+            `subject`,
             `secret_number`,
             `type`,
             `model`,
@@ -41,9 +39,7 @@
         )VALUES (
             #{id},
             #{department_code},
-            #{department_name},
             #{subject_code},
-            #{subject_name},
             #{secret_number},
             #{type},
             #{model},
@@ -66,10 +62,8 @@
 
     <update id="updateStorage" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage">
         UPDATE `confidential_storage_device`
-        SET `department_code` = #{department_code},
-            `department_name` = #{department_name},
-            `subject_code` = #{subject_code},
-            `subject_name` = #{subject_name},
+        SET `department` = #{department},
+            `subject` = #{subject},
             `secret_number` = #{secret_number},
             `type` = #{type},
             `model` = #{model},
@@ -108,10 +102,10 @@
                 AND a.`use_situation` = #{use_situation}
             </if>
             <if test="department_code != '' and department_code != null">
-                AND a.`department_code` = #{department_code}
+                AND a.`department` = #{department_code}
             </if>
             <if test="subject_code != '' and subject_code != null">
-                AND a.`subject_code` = #{subject_code}
+                AND a.`subject` = #{subject_code}
             </if>
             <if test="startTime != null and startTime !=''">
                 AND a.`enablation_time` &gt;=  #{startTime}
@@ -127,6 +121,8 @@
 
     <resultMap id="storageBean" type="com.management.admin.modules.storage.entity.ConfidentialStorage">
         <id property="id" column="id"/>
+        <result column="department" property="department"/>
+        <result column="subject" property="subject"/>
         <result column="department_code" property="department_code"/>
         <result column="department_name" property="department_name"/>
         <result column="subject_code" property="subject_code"/>
@@ -135,7 +131,6 @@
         <result column="type" property="type"/>
         <result column="model" property="model"/>
         <result column="person" property="person"/>
-        <result column="department_code" property="department_code"/>
         <result column="secret_level" property="secret_level"/>
         <result column="serial_number" property="serial_number"/>
         <result column="place_location" property="place_location"/>
@@ -163,13 +158,21 @@
                c.`dic_value` AS `_secret_level`,
                d.`dic_value` AS `_usage`,
                e.`dic_value` AS `_scope`,
-               f.`dic_value` AS `_use_situation`
+               f.`dic_value` AS `_use_situation`,
+               g.`dept_name` AS `department_name`,
+               h.`dept_code` AS `department_code`,
+               i.`dept_name` AS `subject_name`,
+               j.`dept_code` AS `subject_code`
         FROM `confidential_storage_device` a
         LEFT JOIN `data_dictionary` b ON a.`type` = b.`id`
         LEFT JOIN `data_dictionary` c ON a.`secret_level` = c.`id`
         LEFT JOIN `data_dictionary` d ON a.`usage` = d.`id`
         LEFT JOIN `data_dictionary` e ON a.`scope` = e.`id`
         LEFT JOIN `data_dictionary` f ON a.`use_situation` = f.`id`
+        LEFT JOIN `department` g ON a.`department` = g.`id`
+        LEFT JOIN `department` h ON a.`department` = h.`id`
+        LEFT JOIN `department` i ON a.`subject` = i.`id`
+        LEFT JOIN `department` j ON a.`subject` = j.`id`
 
         <where>
             <if test="type != '' and type != null">
@@ -188,10 +191,10 @@
                 AND a.`use_situation` = #{use_situation}
             </if>
             <if test="department_code != '' and department_code != null">
-                AND a.`department_code` = #{department_code}
+                AND a.`department` = #{department_code}
             </if>
             <if test="subject_code != '' and subject_code != null">
-                AND a.`subject_code` = #{subject_code}
+                AND a.`subject` = #{subject_code}
             </if>
             <if test="startTime != null and startTime !=''">
                 AND a.`enablation_time` &gt;=  #{startTime}

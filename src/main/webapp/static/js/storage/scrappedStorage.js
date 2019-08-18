@@ -59,31 +59,31 @@ let app = new Vue({
     },
     methods: {
         getSub() {
-            ajaxPost(this.urls.getSub, {param: "scope"}, function (result) {
+            ajaxPost(this.urls.getSub, {param: "使用范围"}, function (result) {
                 app.filters.selectionList.scope.push({'value': '', 'label': '全选'});
                 result.forEach(function (r) {
                     app.filters.selectionList.scope.push({'value': r.id, 'label': r.dicValue});
                 });
             });
-            ajaxPost(this.urls.getSub, {param: "type"}, function (result) {
+            ajaxPost(this.urls.getSub, {param: "类型"}, function (result) {
                 app.filters.selectionList.type.push({'value': '', 'label': '全选'});
                 result.forEach(function (r) {
                     app.filters.selectionList.type.push({'value': r.id, 'label': r.dicValue});
                 });
             });
-            ajaxPost(this.urls.getSub, {param: "secret_level"}, function (result) {
+            ajaxPost(this.urls.getSub, {param: "密级"}, function (result) {
                 app.filters.selectionList.secret_level.push({'value': '', 'label': '全选'});
                 result.forEach(function (r) {
                     app.filters.selectionList.secret_level.push({'value': r.id, 'label': r.dicValue});
                 });
             });
-            ajaxPost(this.urls.getSub, {param: "usage"}, function (result) {
+            ajaxPost(this.urls.getSub, {param: "用途"}, function (result) {
                 app.filters.selectionList.usage.push({'value': '', 'label': '全选'});
                 result.forEach(function (r) {
                     app.filters.selectionList.usage.push({'value': r.id, 'label': r.dicValue});
                 });
             });
-            ajaxPost(this.urls.getSub, {param: "use_situation"}, function (result) {
+            ajaxPost(this.urls.getSub, {param: "使用情况"}, function (result) {
                 app.filters.selectionList.use_situation.push({'value': '', 'label': '全选'});
                 result.forEach(function (r) {
                     app.filters.selectionList.use_situation.push({'value': r.id, 'label': r.dicValue});

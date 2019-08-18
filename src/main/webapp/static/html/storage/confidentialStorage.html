@@ -133,10 +133,16 @@
               width="100%">
         <el-table-column type="selection" width="50" fixed></el-table-column>
 
-        <el-table-column label="单位" width="100" prop="department_name" align="center"
-                         header-align="center"></el-table-column>
-        <el-table-column label="科室/课题组" width="180" prop="subject_name" align="center"
-                         header-align="center"></el-table-column>
+        <el-table-column label="单位" width="180" align="center" header-align="center">
+            <template slot-scope="scope">
+                {{scope.row.department_code + ' ' + scope.row.department_name}}
+            </template>
+        </el-table-column>
+        <el-table-column label="科室/课题组" width="250" align="center" header-align="center">
+            <template slot-scope="scope">
+                {{scope.row.subject_code + ' ' + scope.row.subject_name}}
+            </template>
+        </el-table-column>
         <el-table-column label="保密编号" width="150" prop="secret_number" align="center"
                          header-align="center"></el-table-column>
         <el-table-column label="类型" width="80" prop="_type" align="center" header-align="center"></el-table-column>

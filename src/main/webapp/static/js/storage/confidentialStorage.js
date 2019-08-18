@@ -15,7 +15,11 @@ let defaultDialog = {
     loading: false,
     data: {
         id: '',
+        department: '',
+        department_code: '',
         department_name: '',
+        subject: '',
+        subject_code: '',
         subject_name: '',
         secret_number: '',
         type: '',
@@ -34,8 +38,6 @@ let defaultDialog = {
         _usage: '',
         _scope: '',
         _use_situation: '',
-        department_code: '',
-        subject_code: ''
     },
     selectionList: {
         type: [],
@@ -91,31 +93,31 @@ let app = new Vue({
     },
     methods: {
         getSub() {
-            ajaxPost(this.urls.getSub, {param: "scope"}, function (result) {
+            ajaxPost(this.urls.getSub, {param: "使用范围"}, function (result) {
                 app.filters.selectionList.scope.push({'value': '', 'label': '全选'});
                 result.forEach(function (r) {
                     app.filters.selectionList.scope.push({'value': r.id, 'label': r.dicValue});
                 });
             });
-            ajaxPost(this.urls.getSub, {param: "type"}, function (result) {
+            ajaxPost(this.urls.getSub, {param: "类型"}, function (result) {
                 app.filters.selectionList.type.push({'value': '', 'label': '全选'});
                 result.forEach(function (r) {
                     app.filters.selectionList.type.push({'value': r.id, 'label': r.dicValue});
                 });
             });
-            ajaxPost(this.urls.getSub, {param: "secret_level"}, function (result) {
+            ajaxPost(this.urls.getSub, {param: "密级"}, function (result) {
                 app.filters.selectionList.secret_level.push({'value': '', 'label': '全选'});
                 result.forEach(function (r) {
                     app.filters.selectionList.secret_level.push({'value': r.id, 'label': r.dicValue});
                 });
             });
-            ajaxPost(this.urls.getSub, {param: "usage"}, function (result) {
+            ajaxPost(this.urls.getSub, {param: "用途"}, function (result) {
                 app.filters.selectionList.usage.push({'value': '', 'label': '全选'});
                 result.forEach(function (r) {
                     app.filters.selectionList.usage.push({'value': r.id, 'label': r.dicValue});
                 });
             });
-            ajaxPost(this.urls.getSub, {param: "use_situation"}, function (result) {
+            ajaxPost(this.urls.getSub, {param: "使用情况"}, function (result) {
                 app.filters.selectionList.use_situation.push({'value': '', 'label': '全选'});
                 result.forEach(function (r) {
                     app.filters.selectionList.use_situation.push({'value': r.id, 'label': r.dicValue});
@@ -158,31 +160,31 @@ let app = new Vue({
             })
         },
         getDialogList: function () {
-            ajaxPost(this.urls.getSub, {param: "scope"}, function (result) {
+            ajaxPost(this.urls.getSub, {param: "使用范围"}, function (result) {
                 app.dialog.selectionList.scope = [];
                 result.forEach(function (r) {
                     app.dialog.selectionList.scope.push({'value': r.id, 'label': r.dicValue});
                 });
             });
-            ajaxPost(this.urls.getSub, {param: "type"}, function (result) {
+            ajaxPost(this.urls.getSub, {param: "类型"}, function (result) {
                 app.dialog.selectionList.type = [];
                 result.forEach(function (r) {
                     app.dialog.selectionList.type.push({'value': r.id, 'label': r.dicValue});
                 });
             });
-            ajaxPost(this.urls.getSub, {param: "secret_level"}, function (result) {
+            ajaxPost(this.urls.getSub, {param: "密级"}, function (result) {
                 app.dialog.selectionList.secret_level = [];
                 result.forEach(function (r) {
                     app.dialog.selectionList.secret_level.push({'value': r.id, 'label': r.dicValue});
                 });
             });
-            ajaxPost(this.urls.getSub, {param: "usage"}, function (result) {
+            ajaxPost(this.urls.getSub, {param: "用途"}, function (result) {
                 app.dialog.selectionList.usage = [];
                 result.forEach(function (r) {
                     app.dialog.selectionList.usage.push({'value': r.id, 'label': r.dicValue});
                 });
             });
-            ajaxPost(this.urls.getSub, {param: "use_situation"}, function (result) {
+            ajaxPost(this.urls.getSub, {param: "使用情况"}, function (result) {
                 app.dialog.selectionList.use_situation = [];
                 result.forEach(function (r) {
                     app.dialog.selectionList.use_situation.push({'value': r.id, 'label': r.dicValue});
@@ -212,7 +214,7 @@ let app = new Vue({
         },
         handleSchoolChange: function (v) {
             app.dialog.data.department_name = v.dept_name;
-            app.dialog.data.department_code = v.id;
+            app.dialog.data.department = v.id;
             console.log("data", app.dialog.data);
             ajaxPost(this.urls.getDeptSub, {id: v.id}, function (result) {
                 app.dialog.selectionList.subject = [];
@@ -225,16 +227,14 @@ let app = new Vue({
         },
         handleSubjectChange: function (v) {
             app.dialog.data.subject_name = v.dept_name;
-            app.dialog.data.subject_code = v.id;
+            app.dialog.data.subject = v.id;
         },
         insertOrUpdateStorage: function () {
             app.dialog.loading = true;
             let data = {
                 id: app.dialog.data.id,
-                department_name: app.dialog.data.department_name,
-                department_code: app.dialog.data.department_code,
-                subject_name: app.dialog.data.subject_name,
-                subject_code: app.dialog.data.subject_code,
+                department: app.dialog.data.department,
+                subject: app.dialog.data.subject,
                 secret_number: app.dialog.data.secret_number,
                 type: app.dialog.data.type,
                 model: app.dialog.data.model,
@@ -249,6 +249,7 @@ let app = new Vue({
                 remarks: app.dialog.data.remarks,
                 delFlag: 0
             };
+            console.log("insert", data);
             ajaxPostJSON(this.urls.insertOrUpdateStorage, data, function (d) {
                 app.dialog.loading = false;
                 app.dialog.visible = false;
@@ -268,7 +269,9 @@ let app = new Vue({
             let app = this;
             app.getDialogList();
             app.dialog.data.id = v["id"];
+            app.dialog.data.department = v["department"];
             app.dialog.data.department_name = v["department_name"];
+            app.dialog.data.subject = v["subject"];
             app.dialog.data.subject_name = v["subject_name"];
             app.dialog.data.secret_number = v["secret_number"];
             app.dialog.data.type = v["type"];
@@ -287,11 +290,10 @@ let app = new Vue({
             app.dialog.data._usage = v["_usage"];
             app.dialog.data._scope = v["_scope"];
             app.dialog.data._use_situation = v["_use_situation"];
-            app.dialog.data.department_code = v["department_code"];
-            app.dialog.data.subject_code = v["subject_code"];
             app.dialog.visible = true;
         },
         resetDialogData: function () {
+            console.log("reset");
             app.dialog = defaultDialog;
         },
         deleteByIds: function (list) {
@@ -345,8 +347,8 @@ let app = new Vue({
             }).then(() => {
                 let data = {
                     id: v["id"],
-                    department_name: v["department_name"],
-                    subject_name: v["subject_name"],
+                    department: v["department"],
+                    subject: v["subject"],
                     secret_number: v["secret_number"],
                     type: v["type"],
                     model: v["model"],
