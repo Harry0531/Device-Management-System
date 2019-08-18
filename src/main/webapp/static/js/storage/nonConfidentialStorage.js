@@ -14,7 +14,11 @@ let defaultDialog = {
     loading: false,
     data: {
         id: '',
+        department: '',
+        department_code: '',
         department_name: '',
+        subject: '',
+        subject_code: '',
         subject_name: '',
         number: '',
         type: '',
@@ -28,12 +32,9 @@ let defaultDialog = {
         use_situation: '',
         remarks: '',
         _type: '',
-        _secret_level: '',
         _usage: '',
         _scope: '',
         _use_situation: '',
-        department_code: '',
-        subject_code: ''
     },
     selectionList: {
         type: [],
@@ -50,13 +51,13 @@ let app = new Vue({
     data: {
         loading: false,
         urls: {
-            getSub: 'http://localhost:8444/api/sys/storage/confidential/getSub',
-            getDeptSub: 'http://localhost:8444/api/sys/storage/confidential/getDeptSub',
-            getList: 'http://localhost:8444/api/sys/storage/confidential/getList',
-            insertOrUpdateStorage: 'http://localhost:8444/api/sys/storage/confidential/insertOrUpdateStorage',
-            deleteListByIds: 'http://localhost:8444/api/sys/storage/confidential/deleteListByIds',
-            deleteAll: 'http://localhost:8444/api/sys/storage/confidential/deleteAll',
-            scrap: 'http://localhost:8444/api/sys/storage/confidential/scrap'
+            getSub: 'http://localhost:8444/api/sys/storage/nonConfidential/getSub',
+            getDeptSub: 'http://localhost:8444/api/sys/storage/nonConfidential/getDeptSub',
+            getList: 'http://localhost:8444/api/sys/storage/nonConfidential/getList',
+            insertOrUpdateStorage: 'http://localhost:8444/api/sys/storage/nonConfidential/insertOrUpdateStorage',
+            deleteListByIds: 'http://localhost:8444/api/sys/storage/nonConfidential/deleteListByIds',
+            deleteAll: 'http://localhost:8444/api/sys/storage/nonConfidential/deleteAll',
+            scrap: 'http://localhost:8444/api/sys/storage/nonConfidential/scrap'
         },
         activeNames: [],
         filters: {
@@ -64,7 +65,6 @@ let app = new Vue({
                 scope: [],
                 use_situation: [],
                 usage: [],
-                secret_level: [],
                 type: [],
                 school: [],
                 subject: []
@@ -193,7 +193,7 @@ let app = new Vue({
         },
         handleSchoolChange: function (v) {
             app.dialog.data.department_name = v.dept_name;
-            app.dialog.data.department_code = v.id;
+            app.dialog.data.department = v.id;
             console.log("data", app.dialog.data);
             ajaxPost(this.urls.getDeptSub, {id: v.id}, function (result) {
                 app.dialog.selectionList.subject = [];
@@ -201,21 +201,20 @@ let app = new Vue({
                     app.dialog.selectionList.subject.push(r);
                 })
             });
+            app.dialog.data.subject = '';
             app.dialog.data.subject_name = '';
             app.dialog.data.subject_code = '';
         },
         handleSubjectChange: function (v) {
             app.dialog.data.subject_name = v.dept_name;
-            app.dialog.data.subject_code = v.id;
+            app.dialog.data.subject = v.id;
         },
         insertOrUpdateStorage: function () {
             app.dialog.loading = true;
             let data = {
                 id: app.dialog.data.id,
-                department_name: app.dialog.data.department_name,
-                department_code: app.dialog.data.department_code,
-                subject_name: app.dialog.data.subject_name,
-                subject_code: app.dialog.data.subject_code,
+                department: app.dialog.data.department,
+                subject: app.dialog.data.subject,
                 number: app.dialog.data.number,
                 type: app.dialog.data.type,
                 model: app.dialog.data.model,
@@ -229,6 +228,7 @@ let app = new Vue({
                 remarks: app.dialog.data.remarks,
                 delFlag: 0
             };
+            console.log("insert",data);
             ajaxPostJSON(this.urls.insertOrUpdateStorage, data, function (d) {
                 app.dialog.loading = false;
                 app.dialog.visible = false;
@@ -248,7 +248,9 @@ let app = new Vue({
             let app = this;
             app.getDialogList();
             app.dialog.data.id = v["id"];
+            app.dialog.data.department = v["department"];
             app.dialog.data.department_name = v["department_name"];
+            app.dialog.data.subject = v["subject"];
             app.dialog.data.subject_name = v["subject_name"];
             app.dialog.data.number = v["number"];
             app.dialog.data.type = v["type"];
@@ -265,12 +267,29 @@ let app = new Vue({
             app.dialog.data._usage = v["_usage"];
             app.dialog.data._scope = v["_scope"];
             app.dialog.data._use_situation = v["_use_situation"];
-            app.dialog.data.department_code = v["department_code"];
-            app.dialog.data.subject_code = v["subject_code"];
             app.dialog.visible = true;
         },
         resetDialogData: function () {
-            app.dialog = defaultDialog;
+            app.dialog.data.id = '';
+            app.dialog.data.department = '';
+            app.dialog.data.department_name = '';
+            app.dialog.data.subject = '';
+            app.dialog.data.subject_name = '';
+            app.dialog.data.number = '';
+            app.dialog.data.type = '';
+            app.dialog.data.model = '';
+            app.dialog.data.person = '';
+            app.dialog.data.serial_number = '';
+            app.dialog.data.place_location = '';
+            app.dialog.data.usage = '';
+            app.dialog.data.scope = '';
+            app.dialog.data.enablation_time = '';
+            app.dialog.data.use_situation = '';
+            app.dialog.data.remarks = '';
+            app.dialog.data._type = '';
+            app.dialog.data._usage = '';
+            app.dialog.data._scope = '';
+            app.dialog.data._use_situation = '';
         },
         deleteByIds: function (list) {
             if (list.length === 0) {
@@ -313,48 +332,6 @@ let app = new Vue({
         onPageIndexChange: function (newIndex) {
             this.table.props.pageIndex = newIndex;
             this.refreshTable();
-        },
-        scrap: function (v) {
-            console.log(v);
-            app.$confirm('确认报废', '警告', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                let data = {
-                    id: v["id"],
-                    department_name: v["department_name"],
-                    subject_name: v["subject_name"],
-                    number: v["number"],
-                    type: v["type"],
-                    model: v["model"],
-                    person: v["person"],
-                    secret_level: v["secret_level"],
-                    serial_number: v["serial_number"],
-                    place_location: v["place_location"],
-                    usage: v["usage"],
-                    scope: v["scope"],
-                    enablation_time: v["enablation_time"],
-                    use_situation: v["use_situation"],
-                    remarks: v["remarks"],
-                    department_code: v["department_code"],
-                    subject_code: v["subject_code"],
-                    delFlag: v["delFlag"]
-                };
-                ajaxPostJSON(app.urls.scrap, data, function (result) {
-                    app.$message({
-                        message: "报废成功",
-                        type: "success"
-                    });
-                    app.table.props.pageIndex = 1;
-                    app.refreshTable();
-                });
-            }).catch(() => {
-                app.$message({
-                    message: "取消操作",
-                    type: "danger"
-                });
-            });
         }
     },
     mounted: function () {

@@ -222,6 +222,7 @@ let app = new Vue({
                     app.dialog.selectionList.subject.push(r);
                 })
             });
+            app.dialog.data.subject = '';
             app.dialog.data.subject_name = '';
             app.dialog.data.subject_code = '';
         },
@@ -293,8 +294,28 @@ let app = new Vue({
             app.dialog.visible = true;
         },
         resetDialogData: function () {
-            console.log("reset");
-            app.dialog = defaultDialog;
+            app.dialog.data.id = '';
+            app.dialog.data.department = '';
+            app.dialog.data.department_name = '';
+            app.dialog.data.subject = '';
+            app.dialog.data.subject_name = '';
+            app.dialog.data.secret_number = '';
+            app.dialog.data.type = '';
+            app.dialog.data.model = '';
+            app.dialog.data.person = '';
+            app.dialog.data.secret_level = '';
+            app.dialog.data.serial_number = '';
+            app.dialog.data.place_location = '';
+            app.dialog.data.usage = '';
+            app.dialog.data.scope = '';
+            app.dialog.data.enablation_time = '';
+            app.dialog.data.use_situation = '';
+            app.dialog.data.remarks = '';
+            app.dialog.data._type = '';
+            app.dialog.data._secret_level = '';
+            app.dialog.data._usage = '';
+            app.dialog.data._scope = '';
+            app.dialog.data._use_situation = '';
         },
         deleteByIds: function (list) {
             if (list.length === 0) {

@@ -33,6 +33,7 @@ public class NonConfidentialStorageService {
 
     public boolean updateStorage(NonConfidentialStorage nonConfidentialStorage) {
         nonConfidentialStorage.preUpdate();
+        nonConfidentialStorage.setSecret_level(nonConfidentialStorageDao.getNonConfidential());
         return nonConfidentialStorageDao.updateStorage(nonConfidentialStorage) == 1;
     }
 

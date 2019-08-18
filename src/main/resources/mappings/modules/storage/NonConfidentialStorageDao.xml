@@ -2,8 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.management.admin.modules.storage.dao.NonConfidentialStorageDao">
     <select id="getSubFromDict" resultType="com.management.admin.modules.sys.entity.Dict">
-        SELECT `id`, `dic_value` AS `dicValue` FROM `data_dictionary` WHERE
-            `dic_property` = CONCAT('非涉密存储介质', #{name})
+        SELECT `id`, `dic_value` AS `dicValue` FROM `data_dictionary`
+        <where>
+            <if test="name == '用途'">
+                AND `dic_property` = CONCAT('非涉密存储介质', #{name})
+            </if>
+            <if test="name != '用途'">
+                `dic_property` = CONCAT('存储介质', #{name})
+            </if>
+        </where>
     </select>
 
     <select id="getSubFromDept" resultType="com.management.admin.modules.sys.entity.Dept">
@@ -14,14 +21,12 @@
         SELECT `id`, `dept_name` FROM `department` WHERE (`dept_attach` = #{_parameter} AND `del_flag` = 0)
     </select>
 
-    <insert id="insertStorage" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage">
-        INSERT INTO `confidential_storage_device` (
+    <insert id="insertStorage" parameterType="com.management.admin.modules.storage.entity.NonConfidentialStorage">
+        INSERT INTO `non_confidential_storage_device` (
             `id`,
-            `department_code`,
-            `department_name`,
-            `subject_code`,
-            `subject_name`,
-            `secret_number`,
+            `department`,
+            `subject`,
+            `number`,
             `type`,
             `model`,
             `person`,
@@ -35,16 +40,12 @@
             `remarks`,
             `create_time`,
             `modify_time`,
-            `del_flag`,
-            `scrapped_flag`,
-            `scrap_time`
+            `del_flag`
         )VALUES (
             #{id},
-            #{department_code},
-            #{department_name},
-            #{subject_code},
-            #{subject_name},
-            #{secret_number},
+            #{department},
+            #{subject},
+            #{number},
             #{type},
             #{model},
             #{person},
@@ -58,19 +59,15 @@
             #{remarks},
             #{createTime},
             #{modifyTime},
-            #{delFlag},
-            #{scrapped_flag},
-            #{scrap_time}
+            #{delFlag}
         )
     </insert>
 
-    <update id="updateStorage" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage">
-        UPDATE `confidential_storage_device`
-        SET `department_code` = #{department_code},
-            `department_name` = #{department_name},
-            `subject_code` = #{subject_code},
-            `subject_name` = #{subject_name},
-            `secret_number` = #{secret_number},
+    <update id="updateStorage" parameterType="com.management.admin.modules.storage.entity.NonConfidentialStorage">
+        UPDATE `non_confidential_storage_device`
+        SET `department` = #{department},
+            `subject` = #{subject},
+            `number` = #{number},
             `type` = #{type},
             `model` = #{model},
             `person` = #{person},
@@ -83,17 +80,19 @@
             `use_situation` = #{use_situation},
             `remarks` = #{remarks},
             `modify_time` = #{modifyTime},
-            `del_flag` = #{delFlag},
-            `scrapped_flag` = #{scrapped_flag},
-            `scrap_time` = #{scrap_time}
+            `del_flag` = #{delFlag}
         WHERE id =#{id}
     </update>
 
-    <select id="selectSearchCount" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage" resultType="int">
-        SELECT COUNT(*) FROM `confidential_storage_device` a
+    <select id="selectSearchCount" parameterType="com.management.admin.modules.storage.entity.NonConfidentialStorage"
+            resultType="int">
+        SELECT COUNT(*) FROM `non_confidential_storage_device` a
         <where>
             <if test="type != '' and type != null">
                 AND a.`type` = #{type}
+            </if>
+            <if test="secret_level != '' and secret_level != null">
+                AND a.`secret_level` = #{secret_level}
             </if>
             <if test="usage != '' and usage != null">
                 AND a.`usage` = #{usage}
@@ -105,10 +104,10 @@
                 AND a.`use_situation` = #{use_situation}
             </if>
             <if test="department_code != '' and department_code != null">
-                AND a.`department_code` = #{department_code}
+                AND a.`department` = #{department_code}
             </if>
             <if test="subject_code != '' and subject_code != null">
-                AND a.`subject_code` = #{subject_code}
+                AND a.`subject` = #{subject_code}
             </if>
             <if test="startTime != null and startTime !=''">
                 AND a.`enablation_time` &gt;=  #{startTime}
@@ -122,16 +121,19 @@
         </where>
     </select>
 
-    <resultMap id="storageBean" type="com.management.admin.modules.storage.entity.NonConfidentialStorage">
+    <resultMap id="nonStorageBean" type="com.management.admin.modules.storage.entity.NonConfidentialStorage">
         <id property="id" column="id"/>
+        <result column="department" property="department"/>
+        <result column="subject" property="subject"/>
         <result column="department_code" property="department_code"/>
         <result column="department_name" property="department_name"/>
         <result column="subject_code" property="subject_code"/>
         <result column="subject_name" property="subject_name"/>
-        <result column="secret_number" property="secret_number"/>
+        <result column="number" property="number"/>
         <result column="type" property="type"/>
         <result column="model" property="model"/>
         <result column="person" property="person"/>
+        <result column="secret_level" property="secret_level"/>
         <result column="serial_number" property="serial_number"/>
         <result column="place_location" property="place_location"/>
         <result column="usage" property="usage"/>
@@ -140,6 +142,7 @@
         <result column="use_situation" property="use_situation"/>
         <result column="remarks" property="remarks"/>
         <result column="_type" property="_type"/>
+        <result column="_secret_level" property="_secret_level"/>
         <result column="_usage" property="_usage"/>
         <result column="_scope" property="_scope"/>
         <result column="_use_situation" property="_use_situation"/>
@@ -148,24 +151,35 @@
         <result column="del_flag" property="delFlag"/>
     </resultMap>
 
-    <select id="selectDictListByPage" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage"
-            resultMap="storageBean">
+    <select id="selectDictListByPage" parameterType="com.management.admin.modules.storage.entity.NonConfidentialStorage"
+            resultMap="nonStorageBean">
         SELECT a.*,
         b.`dic_value`AS `_type`,
         c.`dic_value` AS `_secret_level`,
         d.`dic_value` AS `_usage`,
         e.`dic_value` AS `_scope`,
-        f.`dic_value` AS `_use_situation`
-        FROM `confidential_storage_device` a
+        f.`dic_value` AS `_use_situation`,
+        g.`dept_name` AS `department_name`,
+        h.`dept_code` AS `department_code`,
+        i.`dept_name` AS `subject_name`,
+        j.`dept_code` AS `subject_code`
+        FROM `non_confidential_storage_device` a
         LEFT JOIN `data_dictionary` b ON a.`type` = b.`id`
         LEFT JOIN `data_dictionary` c ON a.`secret_level` = c.`id`
         LEFT JOIN `data_dictionary` d ON a.`usage` = d.`id`
         LEFT JOIN `data_dictionary` e ON a.`scope` = e.`id`
         LEFT JOIN `data_dictionary` f ON a.`use_situation` = f.`id`
+        LEFT JOIN `department` g ON a.`department` = g.`id`
+        LEFT JOIN `department` h ON a.`department` = h.`id`
+        LEFT JOIN `department` i ON a.`subject` = i.`id`
+        LEFT JOIN `department` j ON a.`subject` = j.`id`
 
         <where>
             <if test="type != '' and type != null">
                 AND a.`type` = #{type}
+            </if>
+            <if test="secret_level != '' and secret_level != null">
+                AND a.`secret_level` = #{secret_level}
             </if>
             <if test="usage != '' and usage != null">
                 AND a.`usage` = #{usage}
@@ -177,10 +191,10 @@
                 AND a.`use_situation` = #{use_situation}
             </if>
             <if test="department_code != '' and department_code != null">
-                AND a.`department_code` = #{department_code}
+                AND a.`department` = #{department_code}
             </if>
             <if test="subject_code != '' and subject_code != null">
-                AND a.`subject_code` = #{subject_code}
+                AND a.`subject` = #{subject_code}
             </if>
             <if test="startTime != null and startTime !=''">
                 AND a.`enablation_time` &gt;=  #{startTime}
@@ -196,8 +210,8 @@
         limit #{page.pageStart}, #{page.pageSize}
     </select>
 
-    <update id="deleteListByIds" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage">
-        UPDATE `confidential_storage_device` SET `del_flag` = 1 WHERE `id` IN
+    <update id="deleteListByIds" parameterType="com.management.admin.modules.storage.entity.NonConfidentialStorage">
+        UPDATE `non_confidential_storage_device` SET `del_flag` = 1 WHERE `id` IN
         <foreach collection="list" item="item" open="(" close=")" separator=",">
             #{item.id}
         </foreach>

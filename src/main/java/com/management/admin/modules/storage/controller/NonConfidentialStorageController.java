@@ -41,8 +41,10 @@ public class NonConfidentialStorageController extends BaseApi {
     @RequestMapping(value = "/insertOrUpdateStorage", method = RequestMethod.POST)
     @ResponseBody
     public Object insertStorage(@RequestBody NonConfidentialStorage nonConfidentialStorage) throws Exception {
+        System.out.println("insertorupdate");
         System.out.println(nonConfidentialStorage);
         if (nonConfidentialStorage.getId() == null || nonConfidentialStorage.getId().equals("")) {
+            System.out.println("insert");
             if (nonConfidentialStorageService.insertStorage(nonConfidentialStorage))
                 return retMsg.Set(MsgType.SUCCESS);
             else return retMsg.Set(MsgType.ERROR);

@@ -38,8 +38,8 @@
             `scrap_time`
         )VALUES (
             #{id},
-            #{department_code},
-            #{subject_code},
+            #{department},
+            #{subject},
             #{secret_number},
             #{type},
             #{model},

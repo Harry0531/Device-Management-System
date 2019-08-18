@@ -5,6 +5,8 @@ import lombok.Data;
 
 @Data
 public class NonConfidentialStorage extends DataEntity<NonConfidentialStorage> {
+    private String department;
+    private String subject;
     private String department_code;
     private String department_name;
     private String subject_code;
