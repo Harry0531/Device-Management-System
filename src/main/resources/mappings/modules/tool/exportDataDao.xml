@@ -2,10 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.management.admin.modules.tool.dao.ExportDataDao">
 
-    <select id="getDataList" parameterType="com.management.admin.modules.tool.dao.ExportDataDao" resultType="map">
+    <select id="getDataList" parameterType="com.management.admin.modules.tool.entity.ExportExcel" resultType="java.util.LinkedHashMap">
+			 set @x=0;
     		 select ${fieldSQL} from ${tableName}
     		 <where>
-
+				<if test="1 ==1">
+					and `del_flag`=0
+				</if>
+				<if test="iScrapped == true">
+					and `scrapped_flag`=1
+				</if>
 			 </where>
     	</select>
 

@@ -89,7 +89,7 @@ var app=new Vue({
                 templateName: app.templateEntity.templateName,
                 tableName: app.templateEntity.tableName,
                 filePath: app.templateEntity.filePath,
-                typeId: app.templateEntity.typeId,
+                typeId: app.templateEntity.TypeId,
                 columnMapFieldList: app.ColumnList.mapList
             }
             ajaxPostJSON(app.urls.insertExcelTemplate, data, function (v) {
@@ -127,13 +127,14 @@ var app=new Vue({
         handleSelectTypeChange: function (v) {
             var app = this;
             app.templateEntity.TypeId = v;
-            console.log(app.dictType);
             app.dictType.forEach(function (w) {
-                if (v["id"] === w["id"]) {
-                    app.templateEntity.tableName = w["tableName"]
-                    app.templateEntity.typeName = w["typeName"]
+                if (v=== w["typeName"]) {
+                    app.templateEntity.tableName = w["tableName"];
+                    app.templateEntity.typeName = w["typeName"];
+                    app.templateEntity.TypeId=w["id"];
                 }
             })
+            console.log(app.templateEntity);
         },
         getDictTypeData: function () {
             let app = this;
