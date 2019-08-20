@@ -102,7 +102,17 @@
                                         format="yyyy-MM-dd"></el-date-picker>
                     </div>
                 </div>
-                <div style="margin-top: 6vh">
+                <div class="my-flex-div" style="padding-top: 6px;">
+                    <p class="my-title">保密编号</p>
+                    <div>
+                        <el-input size="small" placeholder="输入保密编号" suffix-icon="el-icon-search"
+                                  style="width: 250px;margin-right: 10px;"
+                                  clearable v-model="table.props.searchKey"
+                                  @keyup.enter.native="table.props.pageIndex = 1;">
+                        </el-input>
+                    </div>
+                </div>
+                <div style="margin-top: 2vh">
                     <el-button type="primary" size="mini" @click="getList()">查找</el-button>
                     <span style="margin-left: 10px">
                         <el-button size="mini" @click="activeNames=[];">收起</el-button>

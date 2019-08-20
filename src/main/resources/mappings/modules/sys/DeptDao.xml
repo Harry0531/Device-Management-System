@@ -34,7 +34,7 @@
                 AND a.`id` != '0'
             </if>
         </where>
-        ORDER BY a.`modify_time` DESC
+        ORDER BY a.`dept_code`
         limit #{page.pageStart}, #{page.pageSize}
     </select>
 

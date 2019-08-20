@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.management.admin.modules.storage.dao.ConfidentialStorageDao">
+<mapper namespace="com.management.admin.modules.securityProduct.dao.SecurityProductDao">
     <select id="getSubFromDict" resultType="com.management.admin.modules.sys.entity.Dict">
         SELECT `id`, `dic_value` AS `dicValue` FROM `data_dictionary` WHERE
-            `dic_property` = CONCAT('存储介质', #{name})
+            `dic_property` = CONCAT('安全保密产品', #{name})
     </select>
 
     <select id="getSubFromDept" resultType="com.management.admin.modules.sys.entity.Dept">
@@ -14,7 +14,8 @@
         SELECT `id`, `dept_name` FROM `department` WHERE (`dept_attach` = #{_parameter} AND `del_flag` = 0)
     </select>
 
-    <insert id="insertStorage" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage">
+<!--    TODO INSERT & UPDATE-->
+    <insert id="insertProduct" parameterType="com.management.admin.modules.securityProduct.entity.SecurityProduct">
         INSERT INTO `confidential_storage_device` (
             `id`,
             `department`,
@@ -60,7 +61,7 @@
         )
     </insert>
 
-    <update id="updateStorage" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage">
+    <update id="updateProduct" parameterType="com.management.admin.modules.securityProduct.entity.SecurityProduct">
         UPDATE `confidential_storage_device`
         SET `department` = #{department},
             `subject` = #{subject},
@@ -83,11 +84,11 @@
         WHERE id =#{id}
     </update>
 
-    <select id="selectSearchCount" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage" resultType="int">
+    <select id="selectSearchCount" parameterType="com.management.admin.modules.securityProduct.entity.SecurityProduct" resultType="int">
         SELECT COUNT(*) FROM `confidential_storage_device` a
         <where>
             <if test="page.searchKey != '' and page.searchKey != null">
-                AND a.`secret_number` = #{page.searchKey}
+                AND (a.`secret_number` = #{page.searchKey} OR a.`asset_number` = #{page.searchKey})
             </if>
             <if test="type != '' and type != null">
                 AND a.`type` = #{type}
@@ -95,9 +96,6 @@
             <if test="secret_level != '' and secret_level != null">
                 AND a.`secret_level` = #{secret_level}
             </if>
-            <if test="usage != '' and usage != null">
-                AND a.`usage` = #{usage}
-                </if>
             <if test="scope != '' and scope != null">
                 AND a.`scope` = #{scope}
             </if>
@@ -122,7 +120,7 @@
         </where>
     </select>
 
-    <resultMap id="storageBean" type="com.management.admin.modules.storage.entity.ConfidentialStorage">
+    <resultMap id="productBean" type="com.management.admin.modules.securityProduct.entity.SecurityProduct">
         <id property="id" column="id"/>
         <result column="department" property="department"/>
         <result column="subject" property="subject"/>
@@ -131,13 +129,14 @@
         <result column="subject_code" property="subject_code"/>
         <result column="subject_name" property="subject_name"/>
         <result column="secret_number" property="secret_number"/>
+        <result column="asset_number" property="asset_number"/>
         <result column="type" property="type"/>
-        <result column="model" property="model"/>
+        <result column="product_version" property="product_version"/>
         <result column="person" property="person"/>
         <result column="secret_level" property="secret_level"/>
         <result column="serial_number" property="serial_number"/>
         <result column="place_location" property="place_location"/>
-        <result column="usage" property="usage"/>
+        <result column="buy_time" property="buy_time"/>
         <result column="scope" property="scope"/>
         <result column="enablation_time" property="enablation_time"/>
         <result column="use_situation" property="use_situation"/>
@@ -154,22 +153,20 @@
         <result column="del_flag" property="delFlag"/>
     </resultMap>
 
-    <select id="selectDictListByPage" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage"
-            resultMap="storageBean">
+    <select id="selectDictListByPage" parameterType="com.management.admin.modules.securityProduct.entity.SecurityProduct"
+            resultMap="productBean">
         SELECT a.*,
-               b.`dic_value`AS `_type`,
-               c.`dic_value` AS `_secret_level`,
-               d.`dic_value` AS `_usage`,
-               e.`dic_value` AS `_scope`,
-               f.`dic_value` AS `_use_situation`,
-               g.`dept_name` AS `department_name`,
-               h.`dept_code` AS `department_code`,
-               i.`dept_name` AS `subject_name`,
-               j.`dept_code` AS `subject_code`
+        b.`dic_value`AS `_type`,
+        c.`dic_value` AS `_secret_level`,
+        e.`dic_value` AS `_scope`,
+        f.`dic_value` AS `_use_situation`,
+        g.`dept_name` AS `department_name`,
+        h.`dept_code` AS `department_code`,
+        i.`dept_name` AS `subject_name`,
+        j.`dept_code` AS `subject_code`
         FROM `confidential_storage_device` a
         LEFT JOIN `data_dictionary` b ON a.`type` = b.`id`
         LEFT JOIN `data_dictionary` c ON a.`secret_level` = c.`id`
-        LEFT JOIN `data_dictionary` d ON a.`usage` = d.`id`
         LEFT JOIN `data_dictionary` e ON a.`scope` = e.`id`
         LEFT JOIN `data_dictionary` f ON a.`use_situation` = f.`id`
         LEFT JOIN `department` g ON a.`department` = g.`id`
@@ -179,16 +176,13 @@
 
         <where>
             <if test="page.searchKey != '' and page.searchKey != null">
-                AND a.`secret_number` = #{page.searchKey}
+                AND (a.`secret_number` = #{page.searchKey} OR a.`asset_number` = #{page.searchKey})
             </if>
             <if test="type != '' and type != null">
                 AND a.`type` = #{type}
             </if>
             <if test="secret_level != '' and secret_level != null">
                 AND a.`secret_level` = #{secret_level}
-            </if>
-            <if test="usage != '' and usage != null">
-                AND a.`usage` = #{usage}
             </if>
             <if test="scope != '' and scope != null">
                 AND a.`scope` = #{scope}
@@ -216,8 +210,8 @@
         limit #{page.pageStart}, #{page.pageSize}
     </select>
 
-    <update id="deleteListByIds" parameterType="com.management.admin.modules.storage.entity.ConfidentialStorage">
-        UPDATE `confidential_storage_device` SET `del_flag` = 1 WHERE `id` IN
+    <update id="deleteListByIds" parameterType="com.management.admin.modules.securityProduct.entity.SecurityProduct">
+        UPDATE `security_product` SET `del_flag` = 1 WHERE `id` IN
         <foreach collection="list" item="item" open="(" close=")" separator=",">
             #{item.id}
         </foreach>
@@ -225,6 +219,6 @@
 
     <select id="getScrap" resultType="String">
         SELECT `id` FROM `data_dictionary` WHERE
-            (`dic_value` = '报废' AND `dic_property` = '存储介质使用情况')
+            (`dic_value` = '报废' AND `dic_property` = '安全保密产品使用情况')
     </select>
 </mapper>
