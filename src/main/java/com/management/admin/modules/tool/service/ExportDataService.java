@@ -38,6 +38,7 @@ public class ExportDataService {
     private boolean isScrapped=false;
 
     public ExportExcelData ExportToExcel(ExportExcel exportExcel){
+        isScrapped=false;
         //设置查询字段SQL
         String sql = "@x:=ifnull(@x,0)+1 as \"num\"";
         List<TableField> fieldList=exportExcel.getFieldList();
@@ -45,7 +46,20 @@ public class ExportDataService {
             sql += ",`" + tableField.getFieldType() + "`";
         }
         exportExcel.setFieldSQL(sql);
-
+        //设置查询的id
+        List<String>  idList=exportExcel.getIdList();
+        if(idList.size()!=0) {
+            sql = "(";
+            for (String i : idList) {
+                if (idList.indexOf(i) == 0) {
+                    sql += "\""+ i+"\"";
+                } else {
+                    sql += ",\"" + i+"\"";
+                }
+            }
+            sql+=")";
+            exportExcel.setSelectSql(sql);
+        }
         List<ColumnMapField> columnMapFields = columnMapFieldDao.selectByTemplateId(exportExcel.getTemplateId());
         List<Boolean> isDict = new ArrayList<>();
         for(int i = 0 ; i <fieldList.size();i++){

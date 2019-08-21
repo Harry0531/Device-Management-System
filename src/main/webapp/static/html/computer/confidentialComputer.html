@@ -145,7 +145,7 @@
                    style="margin-left: 10px;">手工录入
         </el-button>
         <!--todo Excel操作-->
-        <el-button size="small" type="primary" @click="exportData.visible=true" style="margin-left: 10px;">导出到Excel
+        <el-button size="small" type="primary" @click="exportData.visible=true;" style="margin-left: 10px;">导出到Excel
         </el-button>
         <el-button size="small" type="danger" @click="deleteByIds(table.selectionList)"
                    style="margin-left: 10px;">删除选中
@@ -365,7 +365,7 @@
     </el-dialog>
 
     <el-dialog title="请选择导出列" :visible.sync="exportData.visible">
-        <iframe :src="exportData.src" frameborder="0" width="600px" height="400px"></iframe>
+        <iframe :src="exportData.src" frameborder="0" width="600px" height="400px"  id="export"></iframe>
     </el-dialog>
 </div>
 </body>

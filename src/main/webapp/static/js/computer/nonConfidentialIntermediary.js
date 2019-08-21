@@ -413,6 +413,10 @@ let app = new Vue({
 });
 
 function getExportConditions() {
+    let ID=[];
+    app.table.selectionList.forEach(function (v) {
+        ID.push(v["id"]);
+    });
     let data={
         fileName:"非涉密中间机",
         templateId:"6866eb8491d94b81a96acb51cf50646f",
@@ -474,7 +478,7 @@ function getExportConditions() {
             }
         ],
         conditionsList:[],
-        idList:[],
+        idList:ID,
         isScrapped:false,
         tableName:"non_confidential_intermediary"
     }

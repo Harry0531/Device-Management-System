@@ -117,6 +117,7 @@ public class ExcelService {
     }
 
     public boolean importExcelToTable(ImportExcel importExcel) throws IOException {
+        isScrapped=false;
         //数据excel名字
         String dataExcelPath=SystemPath.getRootPath()+SystemPath.getTemporaryPath()+ importExcel.getExcelDataName();
 

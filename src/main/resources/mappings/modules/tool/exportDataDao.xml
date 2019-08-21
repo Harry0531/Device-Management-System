@@ -12,6 +12,12 @@
 				<if test="iScrapped == true">
 					and `scrapped_flag`=1
 				</if>
+				 <if test="iScrapped == false">
+					 and `scrapped_flag`=0
+				 </if>
+				<if test="selectSql!=null and selectSql !=''">
+					and id in ${selectSql}
+				</if>
 			 </where>
     	</select>
 

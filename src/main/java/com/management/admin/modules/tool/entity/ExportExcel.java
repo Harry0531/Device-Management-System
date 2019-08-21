@@ -31,4 +31,5 @@ public class ExportExcel {
     * */
     private String fieldSQL;
 
+    private String selectSql;
 }

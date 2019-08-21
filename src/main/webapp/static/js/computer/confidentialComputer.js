@@ -485,6 +485,7 @@ let app = new Vue({
                 app.scrapDialog.visible=false;
             })
         },
+
     },
     mounted: function () {
         this.getSub();
@@ -525,6 +526,10 @@ let app = new Vue({
 });
 
 function getExportConditions() {
+    let ID=[];
+    app.table.selectionList.forEach(function (v) {
+        ID.push(v["id"]);
+    });
     let data={
         fileName:"导出测试1",
         templateId:"ab81d835f0b146d98b4f5e06e0f651c0",
@@ -586,9 +591,9 @@ function getExportConditions() {
             }
         ],
         conditionsList:[],
-        idList:[],
+        idList:ID,
         isScrapped:false,
         tableName:"confidential_computer"
-    }
+    };
     return data;
 }

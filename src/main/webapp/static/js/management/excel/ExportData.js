@@ -66,6 +66,7 @@ var ex = new Vue({
         },
         startExport:function () {
             let app=this;
+            app.getExportData();
             var selectList=[];
             app.exportInfo["fieldList"].forEach(function (v) {
                 if(app.ExportList.indexOf(v["fieldType"]) !== -1){
