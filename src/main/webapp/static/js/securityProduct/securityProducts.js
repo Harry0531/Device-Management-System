@@ -59,7 +59,7 @@ let app = new Vue({
             getSub: 'http://localhost:8444/api/sys/product/product/getSub',
             getDeptSub: 'http://localhost:8444/api/sys/product/product/getDeptSub',
             getList: 'http://localhost:8444/api/sys/product/product/getList',
-            insertOrUpdateProduct: 'http://localhost:8444/api/sys/product/product/insertOrUpdateproduct',
+            insertOrUpdateProduct: 'http://localhost:8444/api/sys/product/product/insertOrUpdateProduct',
             deleteListByIds: 'http://localhost:8444/api/sys/product/product/deleteListByIds',
             deleteAll: 'http://localhost:8444/api/sys/product/product/deleteAll',
             scrap: 'http://localhost:8444/api/sys/product/product/scrap'
@@ -262,6 +262,7 @@ let app = new Vue({
             app.dialog.data.subject = v["subject"];
             app.dialog.data.subject_name = v["subject_name"];
             app.dialog.data.secret_number = v["secret_number"];
+            app.dialog.data.asset_number = v["asset_number"];
             app.dialog.data.type = v["type"];
             app.dialog.data.product_version = v["product_version"];
             app.dialog.data.manufacturer = v["manufacturer"];
@@ -358,28 +359,30 @@ let app = new Vue({
                 type: 'warning'
             }).then(() => {
                 let data = {
-                    id: v["id"],
-                    department: v["department"],
-                    subject: v["subject"],
-                    secret_number: v["secret_number"],
-                    asset_number: v["asset_number"],
-                    type: v["type"],
-                    product_version: v["product_version"],
-                    manufacturer: v["manufacturer"],
-                    certificate_number: v["certificate_number"],
-                    certificate_validity: v["certificate_validity"],
-                    serial_number: v["serial_number"],
-                    secret_level: v["secret_level"],
-                    person: v["person"],
-                    place_location: v["place_location"],
-                    scope: v["scope"],
-                    enablation_time: v["enablation_time"],
-                    use_situation: v["use_situation"],
-                    remarks: v["remarks"],
-                    department_code: v["department_code"],
-                    subject_code: v["subject_code"],
-                    delFlag: v["delFlag"]
-                };
+                        id: v["id"],
+                        department: v["department"],
+                        subject: v["subject"],
+                        secret_number: v["secret_number"],
+                        asset_number: v["asset_number"],
+                        type: v["type"],
+                        product_version: v["product_version"],
+                        manufacturer: v["manufacturer"],
+                        certificate_number: v["certificate_number"],
+                        certificate_validity: v["certificate_validity"],
+                        serial_number: v["serial_number"],
+                        secret_level: v["secret_level"],
+                        person: v["person"],
+                        place_location: v["place_location"],
+                        scope: v["scope"],
+                        buy_time: v["buy_time"],
+                        enablation_time: v["enablation_time"],
+                        use_situation: v["use_situation"],
+                        remarks: v["remarks"],
+                        department_code: v["department_code"],
+                        subject_code: v["subject_code"],
+                        delFlag: v["delFlag"]
+                    }
+                ;
                 ajaxPostJSON(app.urls.scrap, data, function (result) {
                     app.$message({
                         message: "报废成功",

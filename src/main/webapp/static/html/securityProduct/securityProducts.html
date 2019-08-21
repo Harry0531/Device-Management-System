@@ -25,6 +25,7 @@
                         </el-radio-group>
                     </div>
                 </el-form-item>
+                <div style="height: 24px"></div>
                 <el-form-item>
                     <div class="my-flex-div">
                         <p class="my-title">密级</p>
@@ -260,7 +261,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="购置时间" :required="true">
-                <el-date-picker v-model="dialog.data.enablation_time"
+                <el-date-picker v-model="dialog.data.buy_time"
                                 placeholder="选择日期"
                                 value-format="yyyy-MM-dd"
                                 format="yyyy-MM-dd"></el-date-picker>
@@ -287,7 +288,7 @@
         </el-form>
         <div slot="footer">
             <el-button size="medium" @click="dialog.visible=false">取消</el-button>
-            <el-button size="medium" type="primary" style="margin-left: 10px;" @click="insertOrUpdateStorage"
+            <el-button size="medium" type="primary" style="margin-left: 10px;" @click="insertOrUpdateProduct"
                        :disabled=isInsertStorageDisable>提交
             </el-button>
         </div>

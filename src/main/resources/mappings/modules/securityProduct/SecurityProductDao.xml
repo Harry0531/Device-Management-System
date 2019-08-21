@@ -14,21 +14,24 @@
         SELECT `id`, `dept_name` FROM `department` WHERE (`dept_attach` = #{_parameter} AND `del_flag` = 0)
     </select>
 
-<!--    TODO INSERT & UPDATE-->
     <insert id="insertProduct" parameterType="com.management.admin.modules.securityProduct.entity.SecurityProduct">
-        INSERT INTO `confidential_storage_device` (
+        INSERT INTO `security_products` (
             `id`,
             `department`,
             `subject`,
             `secret_number`,
+            `asset_number`,
             `type`,
-            `model`,
-            `person`,
-            `secret_level`,
+            `product_version`,
+            `manufacturer`,
+            `certificate_number`,
+            `certificate_validity`,
             `serial_number`,
+            `secret_level`,
+            `person`,
             `place_location`,
-            `usage`,
             `scope`,
+            `buy_time`,
             `enablation_time`,
             `use_situation`,
             `remarks`,
@@ -42,14 +45,18 @@
             #{department},
             #{subject},
             #{secret_number},
+            #{asset_number},
             #{type},
-            #{model},
-            #{person},
-            #{secret_level},
+            #{product_version},
+            #{manufacturer},
+            #{certificate_number},
+            #{certificate_validity},
             #{serial_number},
+            #{secret_level},
+            #{person},
             #{place_location},
-            #{usage},
             #{scope},
+            #{buy_time},
             #{enablation_time},
             #{use_situation},
             #{remarks},
@@ -62,18 +69,22 @@
     </insert>
 
     <update id="updateProduct" parameterType="com.management.admin.modules.securityProduct.entity.SecurityProduct">
-        UPDATE `confidential_storage_device`
+        UPDATE `security_products`
         SET `department` = #{department},
             `subject` = #{subject},
             `secret_number` = #{secret_number},
+            `asset_number` = #{asset_number},
             `type` = #{type},
-            `model` = #{model},
-            `person` = #{person},
-            `secret_level` = #{secret_level},
+            `product_version` = #{product_version},
+            `manufacturer` = #{manufacturer},
+            `certificate_number` = #{certificate_number},
+            `certificate_validity` = #{certificate_validity},
             `serial_number` = #{serial_number},
+            `secret_level` = #{secret_level},
+            `person` = #{person},
             `place_location` = #{place_location},
-            `usage` = #{usage},
             `scope` = #{scope},
+            `buy_time` = #{buy_time},
             `enablation_time` = #{enablation_time},
             `use_situation` = #{use_situation},
             `remarks` = #{remarks},
@@ -85,7 +96,7 @@
     </update>
 
     <select id="selectSearchCount" parameterType="com.management.admin.modules.securityProduct.entity.SecurityProduct" resultType="int">
-        SELECT COUNT(*) FROM `confidential_storage_device` a
+        SELECT COUNT(*) FROM `security_products` a
         <where>
             <if test="page.searchKey != '' and page.searchKey != null">
                 AND (a.`secret_number` = #{page.searchKey} OR a.`asset_number` = #{page.searchKey})
@@ -164,7 +175,7 @@
         h.`dept_code` AS `department_code`,
         i.`dept_name` AS `subject_name`,
         j.`dept_code` AS `subject_code`
-        FROM `confidential_storage_device` a
+        FROM `security_products` a
         LEFT JOIN `data_dictionary` b ON a.`type` = b.`id`
         LEFT JOIN `data_dictionary` c ON a.`secret_level` = c.`id`
         LEFT JOIN `data_dictionary` e ON a.`scope` = e.`id`
@@ -211,7 +222,7 @@
     </select>
 
     <update id="deleteListByIds" parameterType="com.management.admin.modules.securityProduct.entity.SecurityProduct">
-        UPDATE `security_product` SET `del_flag` = 1 WHERE `id` IN
+        UPDATE `security_products` SET `del_flag` = 1 WHERE `id` IN
         <foreach collection="list" item="item" open="(" close=")" separator=",">
             #{item.id}
         </foreach>
