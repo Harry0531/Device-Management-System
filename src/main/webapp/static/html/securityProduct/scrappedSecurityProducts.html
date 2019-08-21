@@ -8,7 +8,196 @@
     <link rel="stylesheet" href="../../css/securityProduct/scrappedSecurityProducts.css">
 </head>
 <body>
-<h1>报废安全保密产品</h1>
+<div id="app" v-cloak style="background: white;height: 100%;overflow: hidden;">
+    <el-collapse v-model="activeNames">
+        <el-collapse-item name="search">
+            <template slot="title">
+                条件筛选&nbsp; <i class="header-icon el-icon-search"></i>
+            </template>
+            <el-form :model="filters">
+                <el-form-item>
+                    <div class="my-flex-div">
+                        <p class="my-title">类型</p>
+                        <el-radio-group v-model="filters.condition.type" size="mini">
+                            <el-radio-button v-for="item in filters.selectionList.type"
+                                             :label="item.value">{{item.label}}
+                            </el-radio-button>
+                        </el-radio-group>
+                    </div>
+                </el-form-item>
+                <div style="height: 24px"></div>
+                <el-form-item>
+                    <div class="my-flex-div">
+                        <p class="my-title">密级</p>
+                        <el-radio-group v-model="filters.condition.secret_level" size="mini">
+                            <el-radio-button v-for="item in filters.selectionList.secret_level"
+                                             :label="item.value">{{item.label}}
+                            </el-radio-button>
+                        </el-radio-group>
+                    </div>
+                </el-form-item>
+                <el-form-item>
+                    <div class="my-flex-div">
+                        <p class="my-title">使用范围</p>
+                        <el-radio-group v-model="filters.condition.scope" size="mini">
+                            <el-radio-button v-for="item in filters.selectionList.scope"
+                                             :label="item.value">{{item.label}}
+                            </el-radio-button>
+                        </el-radio-group>
+                    </div>
+                </el-form-item>
+                <el-form-item>
+                    <div class="my-flex-div">
+                        <p class="my-title">使用情况</p>
+                        <el-radio-group v-model="filters.condition.use_situation" size="mini">
+                            <el-radio-button v-for="item in filters.selectionList.use_situation"
+                                             :label="item.value">{{item.label}}
+                            </el-radio-button>
+                        </el-radio-group>
+                    </div>
+                </el-form-item>
+            </el-form>
+
+            <div>
+                <div class="my-flex-div" style="padding-top: 6px;">
+                    <p class="my-title">单位</p>
+                    <div>
+                        <el-select v-model="filters.condition.school" placeholder="选择学院"
+                                   :loading="loading" @change="getDeptSub($event)" size="medium" clearable>
+                            <el-option
+                                    v-for="item in filters.selectionList.school"
+                                    :key="item.id"
+                                    :label="item.dept_name"
+                                    :value="item.id"></el-option>
+                        </el-select>
+                        <el-select v-model="filters.condition.subject" placeholder="请先选择学院"
+                                   :loading="loading" clearable size="small">
+                            <el-option
+                                    v-for="item in filters.selectionList.subject"
+                                    :key="item.id"
+                                    :label="item.dept_name"
+                                    :value="item.id"></el-option>
+                        </el-select>
+                    </div>
+                </div>
+                <div class="my-flex-div" style="padding-top: 6px;">
+                    <p class="my-title">报废时间</p>
+                    <div>
+                        <el-date-picker v-model="filters.condition.startTime"
+                                        placeholder="起始时间"
+                                        value-format="yyyy-MM-dd"
+                                        format="yyyy-MM-dd"></el-date-picker>
+                        <el-date-picker v-model="filters.condition.endTime"
+                                        placeholder="终止时间"
+                                        value-format="yyyy-MM-dd"
+                                        format="yyyy-MM-dd"></el-date-picker>
+                    </div>
+                </div>
+                <div class="my-flex-div" style="padding-top: 6px;">
+                    <p class="my-title">编号</p>
+                    <div>
+                        <el-input size="small" placeholder="输入保密编号或固定资产编号" suffix-icon="el-icon-search"
+                                  style="width: 250px;margin-right: 10px;"
+                                  clearable v-model="table.props.searchKey"
+                                  @keyup.enter.native="table.props.pageIndex = 1;">
+                        </el-input>
+                    </div>
+                </div>
+                <div style="margin-top: 2vh">
+                    <el-button type="primary" size="mini" @click="getList()">查找</el-button>
+                    <span style="margin-left: 10px">
+                        <el-button size="mini" @click="activeNames=[];">收起</el-button>
+                    </span>
+                </div>
+            </div>
+        </el-collapse-item>
+    </el-collapse>
+
+    <!--操作栏-->
+    <div style="padding: 15px 20px 0 15px;">
+        <!--todo Excel操作-->
+        <el-button size="small" type="primary" @click="dialog.visible = true" style="margin-left: 10px;"
+                   disabled>导出到Excel
+        </el-button>
+    </div>
+
+    <!--表格-->
+    <el-table :data="table.data" height="calc(100vh - 190px)" v-loading="table.loading"
+              style="width: 100%;overflow-y: hidden;margin-top: 15px;" class="scroll-bar"
+              @selection-change="onSelectionChange" stripe
+              width="100%">
+        <el-table-column type="selection" width="50" fixed></el-table-column>
+
+        <el-table-column label="单位" width="180" align="center" header-align="center">
+            <template slot-scope="scope">
+                {{scope.row.department_code + ' ' + scope.row.department_name}}
+            </template>
+        </el-table-column>
+        <el-table-column label="科室/课题组" width="250" align="center" header-align="center">
+            <template slot-scope="scope">
+                {{scope.row.subject_code + ' ' + scope.row.subject_name}}
+            </template>
+        </el-table-column>
+        <el-table-column label="保密编号" width="150" prop="secret_number" align="center" header-align="center"></el-table-column>
+        <el-table-column label="固定资产编号" width="150" prop="asset_number" align="center" header-align="center"></el-table-column>
+        <el-table-column label="类型" width="80" prop="_type" align="center" header-align="center"></el-table-column>
+        <el-table-column label="产品名称及版本号" width="150" prop="product_version" align="center" header-align="center"></el-table-column>
+        <el-table-column label="生产厂家" width="100" prop="manufacturer" align="center" header-align="center"></el-table-column>
+        <el-table-column label="检测整数编号" width="150" prop="certificate_number" align="center" header-align="center"></el-table-column>
+        <el-table-column label="检测证书有效期" width="100" prop="certificate_validity" align="center" header-align="center"></el-table-column>
+        <el-table-column label="序列号" width="200" prop="serial_number" align="center" header-align="center"></el-table-column>
+        <el-table-column label="密级" width="80" prop="_secret_level" align="center" header-align="center"></el-table-column>
+        <el-table-column label="责任人" width="100" prop="person" align="center" header-align="center"></el-table-column>
+        <el-table-column label="放置地点" width="200" prop="place_location" align="center" header-align="center"></el-table-column>
+        <el-table-column label="使用范围" width="150" prop="_scope" align="center" header-align="center"></el-table-column>
+        <el-table-column label="启用时间" width="100" prop="enablation_time" align="center" header-align="center"></el-table-column>
+        <el-table-column label="使用情况" width="100" prop="_use_situation" align="center" header-align="center"></el-table-column>
+        <el-table-column label="报废时间" width="100" prop="scrap_time" align="center" header-align="center"></el-table-column>
+        <el-table-column label="备注" width="250" prop="remarks" align="center" header-align="center"></el-table-column>
+
+        <el-table-column label="操作" header-align="center" align="center" fixed="right" width="120">
+            <template slot-scope="scope">
+                <el-button type="danger" size="mini" style="position:relative;bottom: 1px;margin-left: 6px;"
+                           @click="showDialog(scope.row)" :disabled="scope.row.scrapped_flag === 1">
+                    <span>{{scope.row.scrapped_flag === 1 ? '已' : ''}}报废</span>
+                </el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+
+    <!--底栏-->
+    <el-pagination style="text-align: center;margin: 8px auto;"
+                   @size-change="onPageSizeChange"
+                   @current-change="onPageIndexChange"
+                   :current-page="table.props.pageIndex"
+                   :page-sizes="table.props.pageSizes"
+                   :page-size="table.props.pageSize"
+                   :total="table.props.total"
+                   layout="total, sizes, prev, pager, next, jumper">
+    </el-pagination>
+
+    <!--编辑对话框-->
+    <el-dialog title="报废" :visible.sync="dialog.visible" heigth="700">
+        <el-form label-position="left" label-width="140px" style="padding: 0 100px;"
+                 v-loading="dialog.loading" status-icon>
+            <el-form-item label="报废时间">
+                <el-date-picker v-model="dialog.data.scrap_time"
+                                :placeholder=visitDate
+                                value-format="yyyy-MM-dd"
+                                format="yyyy-MM-dd"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="备注">
+                <el-input v-model="dialog.data.remarks"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer">
+            <el-button size="medium" @click="dialog.visible=false">取 消</el-button>
+            <el-button size="medium" type="danger" @click="scrap"
+                       style="margin-left: 10px;">报 废
+            </el-button>
+        </div>
+    </el-dialog>
+</div>
 </body>
 <script src="../../js/securityProduct/scrappedSecurityProducts.js"></script>
 </html>

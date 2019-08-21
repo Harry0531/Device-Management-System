@@ -188,7 +188,7 @@
     </el-pagination>
 
     <!--编辑对话框-->
-    <el-dialog title="报废" :visible.sync="dialog.visible" heigth="700" @closed="resetDialogData">
+    <el-dialog title="报废" :visible.sync="dialog.visible" heigth="700">
         <el-form label-position="left" label-width="140px" style="padding: 0 100px;"
                  v-loading="dialog.loading" status-icon>
             <el-form-item label="报废时间">
