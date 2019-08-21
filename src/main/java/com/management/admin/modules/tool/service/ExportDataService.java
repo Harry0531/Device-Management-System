@@ -39,7 +39,7 @@ public class ExportDataService {
 
     public ExportExcelData ExportToExcel(ExportExcel exportExcel){
         //设置查询字段SQL
-        String sql = "@x:=ifnull(@x,0)+1 as \"number\"";
+        String sql = "@x:=ifnull(@x,0)+1 as \"num\"";
         List<TableField> fieldList=exportExcel.getFieldList();
         for (TableField tableField : fieldList) {
             sql += ",`" + tableField.getFieldType() + "`";

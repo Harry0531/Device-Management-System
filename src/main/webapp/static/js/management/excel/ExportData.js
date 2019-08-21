@@ -9,7 +9,7 @@ var ex = new Vue({
         },
         FieldList:[],
         ExportList:[],
-        titles:["请选择导出列","已选中"],
+        titles:["未选中","已选中"],
         exportInfo:{}
     },
     methods:{
@@ -51,7 +51,7 @@ var ex = new Vue({
         // },
         getExportData:function () {
             let app=this;
-           let con = getExportConditions();
+           let con = window.parent.getExportConditions();
            let data={
                fileName:con["fileName"],
                templateId:con["templateId"],
@@ -84,12 +84,13 @@ var ex = new Vue({
             }
 
         postcall(app.urls.exportToExcel,data);
+        app.ExportList=[]
         },
 
     },
     mounted:function () {
         this.getExportData();
-        // this.getTableColumn();
+
     }
 })
 
@@ -118,72 +119,4 @@ function postcall(url, params, target) {
 
      tempform.submit();
     document.body.removeChild(tempform);
-}
-function getExportConditions() {
-    let data={
-        fileName:"导出测试1",
-        templateId:"f45f9396b321488180cc7de2af8b535c",
-        fieldList:[
-            {
-                fieldName:"单位",
-                fieldType:"department"
-            },{
-                fieldName:"科室/课题组",
-                fieldType:"subject"
-            },{
-                fieldName:"类型",
-                fieldType:"type",
-            },{
-                fieldName:"保密编号",
-                fieldType:"secret_number"
-            },{
-                fieldName:"固定资产编号",
-                fieldType:"asset_number"
-            },{
-                fieldName:"负责人",
-                fieldType:"person"
-            },{
-                fieldName:"密级",
-                fieldType:"secret_level"
-            },{
-                fieldName:"品牌型号",
-                fieldType:"model"
-            },{
-                fieldName:"操作系统版本",
-                fieldType:"os_version"
-            },{
-                fieldName:"操作系统安装时间",
-                fieldType:"os_install_time"
-            },{
-                fieldName:"硬盘序列号",
-                fieldType:"serial_number"
-            },{
-                fieldName:"mac地址",
-                fieldType:"mac_address"
-            },{
-                fieldName:"光驱",
-                fieldType:"cd_drive"
-            },{
-                fieldName:"用途",
-                fieldType:"usage"
-            },{
-                fieldName:"放置地点",
-                fieldType:"place_location"
-            },{
-                fieldName:"启用时间",
-                fieldType:"enablation_time"
-            },{
-                fieldName:"使用情况",
-                fieldType:"use_situation"
-            },{
-                fieldName:"备注",
-                fieldType:"remarks"
-            }
-        ],
-        conditionsList:[],
-        idList:[],
-        isScrapped:false,
-        tableName:"confidential_computer"
-    }
-    return data;
 }

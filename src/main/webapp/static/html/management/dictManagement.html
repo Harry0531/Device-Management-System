@@ -23,7 +23,7 @@
                          style="margin-right:  40px;">
                 <span>批量禁用</span>
             </el-button>
-            <el-select prefix-icon="el-icon-search" placeholder="请筛选字典类型" v-model="table.props.searchKey"  filterable clearable @change="handleSelectTypeChange2">
+            <el-select size="small" prefix-icon="el-icon-search" placeholder="请筛选字典类型" v-model="table.props.searchKey"  filterable clearable @change="handleSelectTypeChange2">
                     <el-option v-for="item in dictType" :key="item" :label="item"
                                :value="item"></el-option>
                 </el-select>

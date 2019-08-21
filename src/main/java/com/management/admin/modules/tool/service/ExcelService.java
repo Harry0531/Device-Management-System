@@ -127,8 +127,8 @@ public class ExcelService {
         List<ColumnMapField> columnMapFieldList = columnMapFieldDao.selectByTemplateId(importExcel.getId());
         partInfos =  importDataDao.getPartList();
 
-        if(importExcel.getTableName().equals("报废涉密计算机")||importExcel.getTableName().equals("报废涉密存储介质")||importExcel.getTableName().equals("报废信息设备")
-        ||importExcel.getTableName().equals("报废安全保密产品")||importExcel.getTableName().equals("报废USB Key")
+        if(excelTemplate.getTypeName().equals("报废涉密计算机")||excelTemplate.getTypeName().equals("报废涉密存储介质")||excelTemplate.getTypeName().equals("报废信息设备")
+        ||excelTemplate.getTypeName().equals("报废安全保密产品")||excelTemplate.getTypeName().equals("报废USB Key")
         ){
             isScrapped=true;
         }

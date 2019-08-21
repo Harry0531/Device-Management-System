@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.management.admin.modules.computer.Dao.NoneConfidentialIntermediaryDao">
+        <select id="getSubFromDict" resultType="com.management.admin.modules.sys.entity.Dict">
+            SELECT `id`, `dic_value` AS `dicValue` FROM `data_dictionary` WHERE
+                `dic_property` = CONCAT('非涉密中间机', #{name}) order by `sort` DESC
+        </select>
+
+        <select id="getSubFromDept" resultType="com.management.admin.modules.sys.entity.Dept">
+            SELECT `id`, `dept_name` FROM `department` WHERE (`dept_type` = 0 AND `del_flag` = 0)
+        </select>
+
+        <select id="getDeptSub" resultType="com.management.admin.modules.sys.entity.Dept">
+            SELECT `id`, `dept_name` FROM `department` WHERE (`dept_attach` = #{_parameter} AND `del_flag` = 0)
+        </select>
+
+        <insert id="insertComputer" parameterType="com.management.admin.modules.computer.Entity.NoneConfidentialIntermediary">
+            INSERT INTO `non_confidential_intermediary` (
+                `id`,
+                `department`,
+                `subject`,
+                `number`,
+                `type`,
+                `model`,
+                `person`,
+                `secret_level`,
+                `serial_number`,
+                `place_location`,
+                `usage`,
+                `enablation_time`,
+                `use_situation`,
+                `remarks`,
+                `create_time`,
+                `modify_time`,
+                `del_flag`,
+                `asset_number`,
+                `os_version`,
+                `os_install_time`,
+                `mac_address`,
+                `cd_drive`
+            )VALUES (
+                #{id},
+                #{department},
+                #{subject},
+                #{number},
+                #{type},
+                #{model},
+                #{person},
+                #{secret_level},
+                #{serial_number},
+                #{place_location},
+                #{usage},
+                #{enablation_time},
+                #{use_situation},
+                #{remarks},
+                #{createTime},
+                #{modifyTime},
+                #{delFlag},
+                #{asset_number},
+                #{os_version},
+                #{os_install_time},
+                #{mac_address},
+                #{cd_drive}
+            )
+        </insert>
+
+        <update id="updateComputer" parameterType="com.management.admin.modules.computer.Entity.NoneConfidentialIntermediary">
+            UPDATE `non_confidential_intermediary`
+            SET `department` = #{department},
+                `subject` = #{subject},
+                `number` = #{number},
+                `type` = #{type},
+                `model` = #{model},
+                `person` = #{person},
+                `secret_level` = #{secret_level},
+                `serial_number` = #{serial_number},
+                `place_location` = #{place_location},
+                `usage` = #{usage},
+                `enablation_time` = #{enablation_time},
+                `use_situation` = #{use_situation},
+                `remarks` = #{remarks},
+                `modify_time` = #{modifyTime},
+                `del_flag` = #{delFlag},
+                `asset_number` = #{asset_number},
+                `os_version` =#{os_version},
+                `os_install_time`=#{os_install_time},
+                `mac_address` =#{mac_address},
+                `cd_drive` =#{cd_drive}
+            WHERE id =#{id}
+        </update>
+
+        <select id="selectSearchCount" parameterType="com.management.admin.modules.computer.Entity.NoneConfidentialIntermediary" resultType="int">
+            SELECT COUNT(*) FROM `non_confidential_intermediary` a
+            <where>
+                <if test="type != '' and type != null">
+                    AND a.`type` = #{type}
+                </if>
+                <if test="secret_level != '' and secret_level != null">
+                    AND a.`secret_level` = #{secret_level}
+                </if>
+                <if test="cd_drive != '' and cd_drive != null">
+                    AND a.`cd_drive` = #{cd_drive}
+                </if>
+                <if test="os_version != '' and os_version != null">
+                    AND a.`os_version` = #{os_version}
+                </if>
+                <if test="use_situation != '' and use_situation != null">
+                    AND a.`use_situation` = #{use_situation}
+                </if>
+                <if test="department_code != '' and department_code != null">
+                    AND a.`department` = #{department_code}
+                </if>
+                <if test="subject_code != '' and subject_code != null">
+                    AND a.`subject` = #{subject_code}
+                </if>
+                <if test="startTime != null and startTime !=''">
+                    AND a.`enablation_time` &gt;=  #{startTime}
+                </if>
+                <if test="endTime != null and endTime !=''">
+                    AND a.`enablation_time` &lt;=  #{endTime}
+                </if>
+                <if test="1 == 1">
+                    AND a.`del_flag` = 0
+                </if>
+                <if test="page.searchKey!=null and page.searchKey!=''">
+                    AND a.`number` like concat('%', #{page.searchKey}, '%') OR a.`asset_number` like concat('%', #{page.searchKey}, '%')
+                </if>
+            </where>
+        </select>
+
+        <resultMap id="computerBean" type="com.management.admin.modules.computer.Entity.NoneConfidentialIntermediary">
+            <id property="id" column="id"/>
+            <result column="department" property="department"/>
+            <result column="subject" property="subject"/>
+            <result column="department_code" property="department_code"/>
+            <result column="department_name" property="department_name"/>
+            <result column="subject_code" property="subject_code"/>
+            <result column="subject_name" property="subject_name"/>
+            <result column="number" property="number"/>
+            <result column="type" property="type"/>
+            <result column="model" property="model"/>
+            <result column="person" property="person"/>
+            <result column="secret_level" property="secret_level"/>
+            <result column="serial_number" property="serial_number"/>
+            <result column="place_location" property="place_location"/>
+            <result column="usage" property="usage"/>
+
+            <result column="enablation_time" property="enablation_time"/>
+            <result column="use_situation" property="use_situation"/>
+            <result column="remarks" property="remarks"/>
+            <result column="_type" property="_type"/>
+            <result column="_secret_level" property="_secret_level"/>
+            <result column="_usage" property="_usage"/>
+            <result column="_use_situation" property="_use_situation"/>
+            <result column="create_date" property="createDate"/>
+            <result column="modify_date" property="modifyDate"/>
+            <result column="del_flag" property="delFlag"/>
+
+
+            <result column="asset_number" property="asset_number"/>
+            <result column="os_version" property="os_version"/>
+            <result column="os_install_time" property="os_install_time"/>
+            <result column="mac_address" property="mac_address"/>
+            <result column="cd_drive" property="cd_drive"/>
+            <result column="_os_version" property="_os_version"/>
+            <result column="_cd_drive" property="_cd_drive"/>
+        </resultMap>
+
+        <select id="selectDictListByPage" parameterType="com.management.admin.modules.computer.Entity.NoneConfidentialIntermediary"
+                resultMap="computerBean">
+            SELECT a.*,
+                   b.`dic_value`AS `_type`,
+                   c.`dic_value` AS `_secret_level`,
+                   d.`dic_value` AS `_usage`,
+                   e.`dic_value` AS `os_version`,
+                   f.`dic_value` AS `_use_situation`,
+                   g.`dept_name` AS `department_name`,
+                   h.`dept_code` AS `department_code`,
+                   i.`dept_name` AS `subject_name`,
+                   j.`dept_code` AS `subject_code`,
+                   k.`dic_value` AS `_cd_drive`,
+                   m.`dic_value` AS `_os_version`
+            FROM `non_confidential_intermediary` a
+            LEFT JOIN `data_dictionary` b ON a.`type` = b.`id`
+            LEFT JOIN `data_dictionary` c ON a.`secret_level` = c.`id`
+            LEFT JOIN `data_dictionary` d ON a.`usage` = d.`id`
+            LEFT JOIN `data_dictionary` e ON a.`os_version` = e.`id`
+            LEFT JOIN `data_dictionary` f ON a.`use_situation` = f.`id`
+            LEFT JOIN `department` g ON a.`department` = g.`id`
+            LEFT JOIN `department` h ON a.`department` = h.`id`
+            LEFT JOIN `department` i ON a.`subject` = i.`id`
+            LEFT JOIN `department` j ON a.`subject` = j.`id`
+            LEFT JOIN `data_dictionary`k on a.`cd_drive`=k.`id`
+            LEFT JOIN `data_dictionary`m on a.`os_version`=m.`id`
+            <where>
+                <if test="type != '' and type != null">
+                    AND a.`type` = #{type}
+                </if>
+                <if test="secret_level != '' and secret_level != null">
+                    AND a.`secret_level` = #{secret_level}
+                </if>
+                <if test="usage != '' and usage != null">
+                    AND a.`usage` = #{usage}
+                </if>
+                <if test="use_situation != '' and use_situation != null">
+                    AND a.`use_situation` = #{use_situation}
+                </if>
+                <if test="department_code != '' and department_code != null">
+                    AND a.`department` = #{department_code}
+                </if>
+                <if test="subject_code != '' and subject_code != null">
+                    AND a.`subject` = #{subject_code}
+                </if>
+                <if test="startTime != null and startTime !=''">
+                    AND a.`enablation_time` &gt;=  #{startTime}
+                </if>
+                <if test="cd_drive != '' and cd_drive != null">
+                    AND a.`cd_drive` = #{cd_drive}
+                </if>
+                <if test="os_version != '' and os_version != null">
+                    AND a.`os_version` = #{os_version}
+                </if>
+                <if test="endTime != null and endTime !=''">
+                    AND a.`enablation_time` &lt;=  #{endTime}
+                </if>
+                <if test="1 == 1">
+                    AND a.`del_flag` = 0
+                </if>
+                <if test="page.searchKey!=null and page.searchKey!=''">
+                    AND a.`secret_number` like concat('%', #{page.searchKey}, '%') OR a.`asset_number` like concat('%', #{page.searchKey}, '%')
+                </if>
+            </where>
+            ORDER BY a.`create_time` DESC
+            limit #{page.pageStart}, #{page.pageSize}
+        </select>
+
+        <update id="deleteListByIds" parameterType="com.management.admin.modules.computer.Entity.NoneConfidentialIntermediary">
+            UPDATE `non_confidential_intermediary` SET `del_flag` = 1 WHERE `id` IN
+            <foreach collection="list" item="item" open="(" close=")" separator=",">
+                #{item.id}
+            </foreach>
+        </update>
+
+
+    </mapper>

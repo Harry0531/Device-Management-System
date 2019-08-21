@@ -58,7 +58,7 @@
         LEFT JOIN data_dictionary c on a.father=c.id
         <where>
             <if test="page.searchKey != '' and page.searchKey != null">
-                and   a.dic_property like concat('%', #{page.searchKey}, '%')
+                and   a.`dic_property`=#{page.searchKey}
             </if>
 
         </where>
