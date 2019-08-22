@@ -139,10 +139,7 @@ let app = new Vue({
                     message: "操作成功",
                     type: "success"
                 });
-                app.resetDialogData();
                 app.getList();
-                app.filters.value1 = '';
-                app.filters.value2 = '';
             })
         },
         getList: function (index) {
@@ -155,9 +152,6 @@ let app = new Vue({
             app.dialog.data.remarks = v["remarks"];
             app.dialog.data.scrap_time = v["scrap_time"];
             app.dialog.visible = true;
-        },
-        resetDialogData: function () {
-            app.dialog = defaultDialog;
         },
         onSelectionChange: function (val) {
             this.table.selectionList = val;

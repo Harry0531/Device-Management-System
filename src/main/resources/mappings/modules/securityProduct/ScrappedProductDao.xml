@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.management.admin.modules.securityProduct.dao.ScrappedProductDao">
+    <select id="getSubFromDict" resultType="com.management.admin.modules.sys.entity.Dict">
+        SELECT `id`, `dic_value` AS `dicValue` FROM `data_dictionary` WHERE
+            `dic_property` = CONCAT('安全保密产品', #{name})
+    </select>
+
+    <select id="getSubFromDept" resultType="com.management.admin.modules.sys.entity.Dept">
+        SELECT `id`, `dept_name` FROM `department` WHERE (`dept_type` = 0 AND `del_flag` = 0)
+    </select>
+
+    <select id="getDeptSub" resultType="com.management.admin.modules.sys.entity.Dept">
+        SELECT `id`, `dept_name` FROM `department` WHERE (`dept_attach` = #{_parameter} AND `del_flag` = 0)
+    </select>
+
+    <select id="selectSearchCount" parameterType="com.management.admin.modules.securityProduct.entity.SecurityProduct" resultType="int">
+        SELECT COUNT(*) FROM `security_products` a
+        <where>
+            <if test="page.searchKey != '' and page.searchKey != null">
+                AND (a.`secret_number` = #{page.searchKey} OR a.`asset_number` = #{page.searchKey})
+            </if>
+            <if test="type != '' and type != null">
+                AND a.`type` = #{type}
+            </if>
+            <if test="secret_level != '' and secret_level != null">
+                AND a.`secret_level` = #{secret_level}
+            </if>
+            <if test="scope != '' and scope != null">
+                AND a.`scope` = #{scope}
+            </if>
+            <if test="use_situation != '' and use_situation != null">
+                AND a.`use_situation` = #{use_situation}
+            </if>
+            <if test="department_code != '' and department_code != null">
+                AND a.`department` = #{department_code}
+            </if>
+            <if test="subject_code != '' and subject_code != null">
+                AND a.`subject` = #{subject_code}
+            </if>
+            <if test="startTime != null and startTime !=''">
+                AND a.`enablation_time` &gt;=  #{startTime}
+            </if>
+            <if test="endTime != null and endTime !=''">
+                AND a.`enablation_time` &lt;=  #{endTime}
+            </if>
+            <if test="1 == 1">
+                AND a.`del_flag` = 0
+            </if>
+        </where>
+    </select>
+
+    <resultMap id="productBean" type="com.management.admin.modules.securityProduct.entity.SecurityProduct">
+        <id property="id" column="id"/>
+        <result column="department" property="department"/>
+        <result column="subject" property="subject"/>
+        <result column="department_code" property="department_code"/>
+        <result column="department_name" property="department_name"/>
+        <result column="subject_code" property="subject_code"/>
+        <result column="subject_name" property="subject_name"/>
+        <result column="secret_number" property="secret_number"/>
+        <result column="asset_number" property="asset_number"/>
+        <result column="type" property="type"/>
+        <result column="product_version" property="product_version"/>
+        <result column="person" property="person"/>
+        <result column="secret_level" property="secret_level"/>
+        <result column="serial_number" property="serial_number"/>
+        <result column="place_location" property="place_location"/>
+        <result column="buy_time" property="buy_time"/>
+        <result column="scope" property="scope"/>
+        <result column="enablation_time" property="enablation_time"/>
+        <result column="use_situation" property="use_situation"/>
+        <result column="remarks" property="remarks"/>
+        <result column="scrapped_flag" property="scrapped_flag"/>
+        <result column="scrap_time" property="scrap_time"/>
+        <result column="_type" property="_type"/>
+        <result column="_secret_level" property="_secret_level"/>
+        <result column="_usage" property="_usage"/>
+        <result column="_scope" property="_scope"/>
+        <result column="_use_situation" property="_use_situation"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="del_flag" property="delFlag"/>
+    </resultMap>
+
+    <select id="selectDictListByPage" parameterType="com.management.admin.modules.securityProduct.entity.SecurityProduct"
+            resultMap="productBean">
+        SELECT a.*,
+        b.`dic_value`AS `_type`,
+        c.`dic_value` AS `_secret_level`,
+        e.`dic_value` AS `_scope`,
+        f.`dic_value` AS `_use_situation`,
+        g.`dept_name` AS `department_name`,
+        h.`dept_code` AS `department_code`,
+        i.`dept_name` AS `subject_name`,
+        j.`dept_code` AS `subject_code`
+        FROM `security_products` a
+        LEFT JOIN `data_dictionary` b ON a.`type` = b.`id`
+        LEFT JOIN `data_dictionary` c ON a.`secret_level` = c.`id`
+        LEFT JOIN `data_dictionary` e ON a.`scope` = e.`id`
+        LEFT JOIN `data_dictionary` f ON a.`use_situation` = f.`id`
+        LEFT JOIN `department` g ON a.`department` = g.`id`
+        LEFT JOIN `department` h ON a.`department` = h.`id`
+        LEFT JOIN `department` i ON a.`subject` = i.`id`
+        LEFT JOIN `department` j ON a.`subject` = j.`id`
+
+        <where>
+            <if test="page.searchKey != '' and page.searchKey != null">
+                AND (a.`secret_number` = #{page.searchKey} OR a.`asset_number` = #{page.searchKey})
+            </if>
+            <if test="type != '' and type != null">
+                AND a.`type` = #{type}
+            </if>
+            <if test="secret_level != '' and secret_level != null">
+                AND a.`secret_level` = #{secret_level}
+            </if>
+            <if test="scope != '' and scope != null">
+                AND a.`scope` = #{scope}
+            </if>
+            <if test="use_situation != '' and use_situation != null">
+                AND a.`use_situation` = #{use_situation}
+            </if>
+            <if test="department_code != '' and department_code != null">
+                AND a.`department` = #{department_code}
+            </if>
+            <if test="subject_code != '' and subject_code != null">
+                AND a.`subject` = #{subject_code}
+            </if>
+            <if test="startTime != null and startTime !=''">
+                AND a.`enablation_time` &gt;=  #{startTime}
+            </if>
+            <if test="endTime != null and endTime !=''">
+                AND a.`enablation_time` &lt;=  #{endTime}
+            </if>
+            <if test="1 == 1">
+                AND a.`del_flag` = 0
+            </if>
+        </where>
+        ORDER BY a.`create_time` DESC
+        limit #{page.pageStart}, #{page.pageSize}
+    </select>
+
+    <select id="getScrap" resultType="String">
+        SELECT `id` FROM `data_dictionary` WHERE
+            (`dic_value` = '报废' AND `dic_property` = '安全保密产品使用情况')
+    </select>
+
+    <update id="scrapProduct" parameterType="com.management.admin.modules.securityProduct.entity.SecurityProduct">
+        UPDATE `security_products`
+        SET `use_situation` = #{use_situation},
+            `remarks` = #{remarks},
+            `scrapped_flag` = #{scrapped_flag},
+            `scrap_time` = #{scrap_time}
+        WHERE id =#{id}
+    </update>
+</mapper>
