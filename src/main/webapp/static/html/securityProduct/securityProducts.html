@@ -118,9 +118,8 @@
         <el-button size="small" @click="dialog.visible=true;getDialogList()" type="primary" plain
                    style="margin-left: 10px;">手工录入
         </el-button>
-        <!--todo Excel操作-->
-        <el-button size="small" type="primary" @click="" style="margin-left: 10px;"
-                   disabled>导出到Excel
+        <el-button size="small" type="primary" @click="exportData.visible=true"
+                   style="margin-left: 10px;">导出到Excel
         </el-button>
         <el-button size="small" type="danger" @click="deleteByIds(table.selectionList)"
                    style="margin-left: 10px;">删除选中
@@ -292,6 +291,11 @@
                        :disabled=isInsertStorageDisable>提交
             </el-button>
         </div>
+    </el-dialog>
+
+    <!--导出-->
+    <el-dialog title="请选择导出列" :visible.sync="exportData.visible">
+        <iframe :src="exportData.src" frameborder="0" width="600px" height="400px"></iframe>
     </el-dialog>
 </div>
 </body>

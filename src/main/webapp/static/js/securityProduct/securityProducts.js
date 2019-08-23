@@ -28,7 +28,7 @@ let defaultDialog = {
         certificate_number: '',
         certificate_validity: '',
         serial_number: '',
-        secret_level: '',
+        secret_level: 'a434016d651e4f29a176f271fa4f04e1',
         person: '',
         place_location: '',
         scope: '',
@@ -37,7 +37,7 @@ let defaultDialog = {
         use_situation: '',
         remarks: '',
         _type: '',
-        _secret_level: '',
+        _secret_level: '涉密专用',
         _scope: '',
         _use_situation: '',
     },
@@ -85,11 +85,14 @@ let app = new Vue({
                 searchKey: '',
                 pageIndex: 1,
                 pageSize: 10,
-                pageSizes: [5, 10, 20, 40],
+                pageSizes: [5, 10, 20, 40, 99999],
                 total: 0
             }
         },
-
+        exportData: {
+            visible: false,
+            src: "../management/excel/ExportData.html"
+        }
     },
     methods: {
         getSub() {
@@ -428,3 +431,76 @@ let app = new Vue({
         }
     }
 });
+
+function getExportConditions() {
+    let ID = [];
+    app.table.selectionList.forEach(function (v) {
+        ID.push(v["id"]);
+    });
+    let data = {
+        fileName: "安全保密产品",
+        templateId: "ab81d835f0b146d98b4f5e06e0f651c0",//todo 编号！！！
+        fieldList: [
+            {
+                fieldName: "单位",
+                fieldType: "department"
+            }, {
+                fieldName: "科室/课题组",
+                fieldType: "subject"
+            }, {
+                fieldName: "保密编号",
+                fieldType: "secret_number"
+            }, {
+                fieldName: "固定资产编号",
+                fieldType: "asset_number"
+            }, {
+                fieldName: "类型",
+                fieldType: "type",
+            }, {
+                fieldName: "产品名称及版本号",
+                fieldType: "product_version"
+            }, {
+                fieldName: "生产厂家",
+                fieldType: "manufacturer"
+            }, {
+                fieldName: "检测证书编号",
+                fieldType: "certificate_number"
+            }, {
+                fieldName: "检测证书有效期",
+                fieldType: "certificate_validity"
+            }, {
+                fieldName: "序列号",
+                fieldType: "serial_number"
+            }, {
+                fieldName: "密级",
+                fieldType: "secret_level"
+            }, {
+                fieldName: "责任人",
+                fieldType: "person"
+            }, {
+                fieldName: "放置地点",
+                fieldType: "place_location"
+            }, {
+                fieldName: "使用范围",
+                fieldType: "scope"
+            }, {
+                fieldName: "购置时间",
+                fieldType: "buy_time"
+            }, {
+                fieldName: "启用时间",
+                fieldType: "enablation_time"
+            }, {
+                fieldName: "使用情况",
+                fieldType: "use_situation"
+            }, {
+                fieldName: "备注",
+                fieldType: "remarks"
+            }
+        ],
+        conditionsList: [],
+        idList: ID,
+        isScrapped: false,
+        tableName: "security_products"
+    };
+    return data;
+}

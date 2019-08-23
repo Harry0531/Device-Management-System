@@ -115,9 +115,8 @@
 
     <!--操作栏-->
     <div style="padding: 15px 20px 0 15px;">
-        <!--todo Excel操作-->
-        <el-button size="small" type="primary" @click="dialog.visible = true" style="margin-left: 10px;"
-                   disabled>导出到Excel
+        <el-button size="small" type="primary" @click="exportData.visible=true"
+                   style="margin-left: 10px;">导出到Excel
         </el-button>
     </div>
 
@@ -196,6 +195,11 @@
                        style="margin-left: 10px;">报 废
             </el-button>
         </div>
+    </el-dialog>
+
+    <!--导出-->
+    <el-dialog title="请选择导出列" :visible.sync="exportData.visible">
+        <iframe :src="exportData.src" frameborder="0" width="600px" height="400px"></iframe>
     </el-dialog>
 </div>
 </body>

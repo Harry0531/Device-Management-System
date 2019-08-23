@@ -26,13 +26,13 @@ let defaultDialog = {
         person: '',
         serial_number: '',
         place_location: '',
-        usage: '',
+        usage: 'f5cbbde1206549328b5bb95597b43f22',
         scope: '',
         enablation_time: '',
         use_situation: '',
         remarks: '',
         _type: '',
-        _usage: '',
+        _usage: '办公/科研',
         _scope: '',
         _use_situation: '',
     },
@@ -80,11 +80,14 @@ let app = new Vue({
                 searchKey: '',
                 pageIndex: 1,
                 pageSize: 10,
-                pageSizes: [5, 10, 20, 40],
+                pageSizes: [5, 10, 20, 40, 99999],
                 total: 0
             }
         },
-
+        exportData: {
+            visible: false,
+            src: "../management/excel/ExportData.html"
+        }
     },
     methods: {
         getSub() {
@@ -228,7 +231,7 @@ let app = new Vue({
                 remarks: app.dialog.data.remarks,
                 delFlag: 0
             };
-            console.log("insert",data);
+            console.log("insert", data);
             ajaxPostJSON(this.urls.insertOrUpdateStorage, data, function (d) {
                 app.dialog.loading = false;
                 app.dialog.visible = false;
@@ -358,3 +361,64 @@ let app = new Vue({
         }
     }
 });
+
+function getExportConditions() {
+    let ID = [];
+    app.table.selectionList.forEach(function (v) {
+        ID.push(v["id"]);
+    });
+    let data = {
+        fileName: "非涉密存储介质",
+        templateId: "ab81d835f0b146d98b4f5e06e0f651c0",//todo 编号！！！
+        fieldList: [
+            {
+                fieldName: "单位",
+                fieldType: "department"
+            }, {
+                fieldName: "科室/课题组",
+                fieldType: "subject"
+            }, {
+                fieldName: "编号",
+                fieldType: "number"
+            }, {
+                fieldName: "类型",
+                fieldType: "type",
+            }, {
+                fieldName: "型号",
+                fieldType: "model"
+            }, {
+                fieldName: "责任人",
+                fieldType: "person"
+            }, {
+                fieldName: "密级",
+                fieldType: "secret_level"
+            }, {
+                fieldName: "序列号",
+                fieldType: "serial_number"
+            }, {
+                fieldName: "放置地点",
+                fieldType: "place_location"
+            }, {
+                fieldName: "用途",
+                fieldType: "usage"
+            }, {
+                fieldName: "使用范围",
+                fieldType: "scope"
+            }, {
+                fieldName: "启用时间",
+                fieldType: "enablation_time"
+            }, {
+                fieldName: "使用情况",
+                fieldType: "use_situation"
+            }, {
+                fieldName: "备注",
+                fieldType: "remarks"
+            }
+        ],
+        conditionsList: [],
+        idList: ID,
+        isScrapped: false,
+        tableName: "non_confidential_storage_device"
+    };
+    return data;
+}

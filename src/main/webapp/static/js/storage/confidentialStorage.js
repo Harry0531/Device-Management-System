@@ -85,11 +85,14 @@ let app = new Vue({
                 searchKey: '',
                 pageIndex: 1,
                 pageSize: 10,
-                pageSizes: [5, 10, 20, 40],
+                pageSizes: [5, 10, 20, 40, 99999],
                 total: 0
             }
         },
-
+        exportData: {
+            visible: false,
+            src: "../management/excel/ExportData.html"
+        }
     },
     methods: {
         getSub() {
@@ -250,7 +253,6 @@ let app = new Vue({
                 remarks: app.dialog.data.remarks,
                 delFlag: 0
             };
-            console.log("insert", data);
             ajaxPostJSON(this.urls.insertOrUpdateStorage, data, function (d) {
                 app.dialog.loading = false;
                 app.dialog.visible = false;
@@ -360,7 +362,6 @@ let app = new Vue({
             this.refreshTable();
         },
         scrap: function (v) {
-            console.log(v);
             app.$confirm('确认报废', '警告', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -427,3 +428,64 @@ let app = new Vue({
         }
     }
 });
+
+function getExportConditions() {
+    let ID = [];
+    app.table.selectionList.forEach(function (v) {
+        ID.push(v["id"]);
+    });
+    let data = {
+        fileName: "涉密存储介质",
+        templateId: "ab81d835f0b146d98b4f5e06e0f651c0",//todo 编号！！！
+        fieldList: [
+            {
+                fieldName: "单位",
+                fieldType: "department"
+            }, {
+                fieldName: "科室/课题组",
+                fieldType: "subject"
+            }, {
+                fieldName: "保密编号",
+                fieldType: "secret_number"
+            }, {
+                fieldName: "类型",
+                fieldType: "type",
+            }, {
+                fieldName: "型号",
+                fieldType: "model"
+            }, {
+                fieldName: "责任人",
+                fieldType: "person"
+            }, {
+                fieldName: "密级",
+                fieldType: "secret_level"
+            }, {
+                fieldName: "序列号",
+                fieldType: "serial_number"
+            }, {
+                fieldName: "放置地点",
+                fieldType: "place_location"
+            }, {
+                fieldName: "用途",
+                fieldType: "usage"
+            }, {
+                fieldName: "使用范围",
+                fieldType: "scope"
+            }, {
+                fieldName: "启用时间",
+                fieldType: "enablation_time"
+            }, {
+                fieldName: "使用情况",
+                fieldType: "use_situation"
+            }, {
+                fieldName: "备注",
+                fieldType: "remarks"
+            }
+        ],
+        conditionsList: [],
+        idList: ID,
+        isScrapped: false,
+        tableName: "confidential_storage_device"
+    };
+    return data;
+}

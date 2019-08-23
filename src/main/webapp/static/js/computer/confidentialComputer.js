@@ -7,8 +7,8 @@ let defaultFiltersCondition = {
     subject: '',
     startTime: '',
     endTime: '',
-    cd_drive:'',
-    os_version:'',
+    cd_drive: '',
+    os_version: '',
 };
 
 let defaultDialog = {
@@ -38,14 +38,14 @@ let defaultDialog = {
         _usage: '',
         _scope: '',
         _use_situation: '',
-        asset_number:'',
-        os_version:``,
-        os_install_time:``,
-        mac_address:``,
-        cd_drive:'',
-        _cd_drive:'',
-        _os_version:'',
-        scrap_time:''
+        asset_number: '',
+        os_version: ``,
+        os_install_time: ``,
+        mac_address: ``,
+        cd_drive: '',
+        _cd_drive: '',
+        _os_version: '',
+        scrap_time: ''
     },
     selectionList: {
         type: [],
@@ -54,14 +54,14 @@ let defaultDialog = {
         use_situation: [],
         subject: [],
         department: [],
-        os_version:[],
-        cd_drive:[]
+        os_version: [],
+        cd_drive: []
     }
 };
 
-let defaultScrapDialog={
-    loading:false,
-    visible:false,
+let defaultScrapDialog = {
+    loading: false,
+    visible: false,
 }
 let app = new Vue({
     el: '#app',
@@ -85,8 +85,8 @@ let app = new Vue({
                 type: [],
                 school: [],
                 subject: [],
-                os_version:[],
-                cd_drive:[]
+                os_version: [],
+                cd_drive: []
             },
             condition: defaultFiltersCondition
         },
@@ -99,14 +99,14 @@ let app = new Vue({
                 searchKey: '',
                 pageIndex: 1,
                 pageSize: 10,
-                pageSizes: [5, 10, 20, 40],
+                pageSizes: [5, 10, 20, 40, 99999],
                 total: 0
             }
         },
-        scrapDialog:defaultScrapDialog,
-        exportData:{
-            visible:false,
-            src:"../management/excel/ExportData.html"
+        scrapDialog: defaultScrapDialog,
+        exportData: {
+            visible: false,
+            src: "../management/excel/ExportData.html"
         }
 
     },
@@ -176,9 +176,9 @@ let app = new Vue({
                 subject_code: this.filters.condition.subject,
                 startTime: this.filters.condition.startTime,
                 endTime: this.filters.condition.endTime,
-                os_version:this.filters.condition.os_version,
-                cd_drive:this.filters.condition.cd_drive,
-                searchKey:this.filters.condition.searchKey
+                os_version: this.filters.condition.os_version,
+                cd_drive: this.filters.condition.cd_drive,
+                searchKey: this.filters.condition.searchKey
             };
             ajaxPostJSON(this.urls.getList, data, function (result) {
                 app.table.loading = false;
@@ -218,7 +218,7 @@ let app = new Vue({
                 });
             });
             ajaxPost(this.urls.getSub, {param: "操作系统版本"}, function (result) {
-                app.dialog.selectionList.os_version= [];
+                app.dialog.selectionList.os_version = [];
                 result.forEach(function (r) {
                     app.dialog.selectionList.os_version.push({'value': r.id, 'label': r.dicValue});
                 });
@@ -246,8 +246,8 @@ let app = new Vue({
         handleOsVersionChange: function (v) {
             app.dialog.data.os_version = v;
         },
-        handleCdDriveChange:function(v){
-            app.dialog.data.cd_drive=v;
+        handleCdDriveChange: function (v) {
+            app.dialog.data.cd_drive = v;
         },
         handleSchoolChange: function (v) {
             app.dialog.data.department_name = v.dept_name;
@@ -285,9 +285,9 @@ let app = new Vue({
                 use_situation: app.dialog.data.use_situation,
                 remarks: app.dialog.data.remarks,
                 delFlag: 0,
-                asset_number:app.dialog.data.asset_number,
-                os_version:app.dialog.data.os_version,
-                os_install_time:app.dialog.data.os_install_time,
+                asset_number: app.dialog.data.asset_number,
+                os_version: app.dialog.data.os_version,
+                os_install_time: app.dialog.data.os_install_time,
                 mac_address: app.dialog.data.mac_address,
                 cd_drive: app.dialog.data.cd_drive
             };
@@ -331,14 +331,14 @@ let app = new Vue({
             app.dialog.data._usage = v["_scope"];
             app.dialog.data._use_situation = v["_use_situation"];
             app.dialog.visible = true;
-            app.dialog.data.asset_number=v["asset_number"];
-            app.dialog.data.os_version=v["os_version"];
-            app.dialog.data.os_install_time=v["os_install_time"];
-            app.dialog.data.mac_address=v["mac_address"];
-            app.dialog.data.cd_drive=v["cd_drive"];
-            app.dialog.data._cd_drive=v["_cd_drive"];
-            app.dialog.data._os_version=v["_os_version"];
-            app.dialog.data.scrap_time=v["scrap_time"];
+            app.dialog.data.asset_number = v["asset_number"];
+            app.dialog.data.os_version = v["os_version"];
+            app.dialog.data.os_install_time = v["os_install_time"];
+            app.dialog.data.mac_address = v["mac_address"];
+            app.dialog.data.cd_drive = v["cd_drive"];
+            app.dialog.data._cd_drive = v["_cd_drive"];
+            app.dialog.data._os_version = v["_os_version"];
+            app.dialog.data.scrap_time = v["scrap_time"];
 
         },
         resetDialogData: function () {
@@ -362,14 +362,14 @@ let app = new Vue({
             app.dialog.data._secret_level = '';
             app.dialog.data._usage = '';
             app.dialog.data._use_situation = '';
-            app.dialog.data.asset_number='';
-            app.dialog.data.os_version='';
-            app.dialog.data.os_install_time='';
-            app.dialog.data.mac_address='';
-            app.dialog.data.cd_drive='';
-            app.dialog.data._cd_drive='';
-            app.dialog.data._os_version='';
-            app.dialog.data.scrap_time='';
+            app.dialog.data.asset_number = '';
+            app.dialog.data.os_version = '';
+            app.dialog.data.os_install_time = '';
+            app.dialog.data.mac_address = '';
+            app.dialog.data.cd_drive = '';
+            app.dialog.data._cd_drive = '';
+            app.dialog.data._os_version = '';
+            app.dialog.data.scrap_time = '';
         },
         deleteByIds: function (list) {
             if (list.length === 0) {
@@ -435,14 +435,14 @@ let app = new Vue({
             app.dialog.data._secret_level = v["_secret_level"];
             app.dialog.data._usage = v["_scope"];
             app.dialog.data._use_situation = v["_use_situation"];
-            app.dialog.data.asset_number=v["asset_number"];
-            app.dialog.data.os_version=v["os_version"];
-            app.dialog.data.os_install_time=v["os_install_time"];
-            app.dialog.data.mac_address=v["mac_address"];
-            app.dialog.data.cd_drive=v["cd_drive"];
-            app.dialog.data._cd_drive=v["_cd_drive"];
-            app.dialog.data._os_version=v["_os_version"];
-            app.dialog.data.scrap_time=v["scrap_time"];
+            app.dialog.data.asset_number = v["asset_number"];
+            app.dialog.data.os_version = v["os_version"];
+            app.dialog.data.os_install_time = v["os_install_time"];
+            app.dialog.data.mac_address = v["mac_address"];
+            app.dialog.data.cd_drive = v["cd_drive"];
+            app.dialog.data._cd_drive = v["_cd_drive"];
+            app.dialog.data._os_version = v["_os_version"];
+            app.dialog.data.scrap_time = v["scrap_time"];
             app.scrapDialog.visible = true;
         },
         scrap: function () {
@@ -463,12 +463,12 @@ let app = new Vue({
                 use_situation: app.dialog.data.use_situation,
                 remarks: app.dialog.data.remarks,
                 delFlag: 0,
-                asset_number:app.dialog.data.asset_number,
-                os_version:app.dialog.data.os_version,
-                os_install_time:app.dialog.data.os_install_time,
+                asset_number: app.dialog.data.asset_number,
+                os_version: app.dialog.data.os_version,
+                os_install_time: app.dialog.data.os_install_time,
                 mac_address: app.dialog.data.mac_address,
                 cd_drive: app.dialog.data.cd_drive,
-                scrap_time:app.dialog.data.scrap_time
+                scrap_time: app.dialog.data.scrap_time
             };
             ajaxPostJSON(this.urls.scrap, data, function (d) {
                 app.dialog.loading = false;
@@ -481,8 +481,8 @@ let app = new Vue({
                 app.getList();
                 app.filters.value1 = '';
                 app.filters.value2 = '';
-                app.scrapDialog.loading=false;
-                app.scrapDialog.visible=false;
+                app.scrapDialog.loading = false;
+                app.scrapDialog.visible = false;
             })
         },
 
@@ -515,85 +515,85 @@ let app = new Vue({
             )
         },
         visitDate: function () {
-                let nowDate = new Date();
-                let year = nowDate.getFullYear();
-                let month = nowDate.getMonth() + 1;
-                let day = nowDate.getDate();
-                return year + "-" + month + "-" + day;
+            let nowDate = new Date();
+            let year = nowDate.getFullYear();
+            let month = nowDate.getMonth() + 1;
+            let day = nowDate.getDate();
+            return year + "-" + month + "-" + day;
         }
 
     }
 });
 
 function getExportConditions() {
-    let ID=[];
+    let ID = [];
     app.table.selectionList.forEach(function (v) {
         ID.push(v["id"]);
     });
-    let data={
-        fileName:"导出测试1",
-        templateId:"ab81d835f0b146d98b4f5e06e0f651c0",
-        fieldList:[
+    let data = {
+        fileName: "导出测试1",
+        templateId: "ab81d835f0b146d98b4f5e06e0f651c0",
+        fieldList: [
             {
-                fieldName:"单位",
-                fieldType:"department"
-            },{
-                fieldName:"科室/课题组",
-                fieldType:"subject"
-            },{
-                fieldName:"类型",
-                fieldType:"type",
-            },{
-                fieldName:"保密编号",
-                fieldType:"secret_number"
-            },{
-                fieldName:"固定资产编号",
-                fieldType:"asset_number"
-            },{
-                fieldName:"负责人",
-                fieldType:"person"
-            },{
-                fieldName:"密级",
-                fieldType:"secret_level"
-            },{
-                fieldName:"品牌型号",
-                fieldType:"model"
-            },{
-                fieldName:"操作系统版本",
-                fieldType:"os_version"
-            },{
-                fieldName:"操作系统安装时间",
-                fieldType:"os_install_time"
-            },{
-                fieldName:"硬盘序列号",
-                fieldType:"serial_number"
-            },{
-                fieldName:"mac地址",
-                fieldType:"mac_address"
-            },{
-                fieldName:"光驱",
-                fieldType:"cd_drive"
-            },{
-                fieldName:"用途",
-                fieldType:"usage"
-            },{
-                fieldName:"放置地点",
-                fieldType:"place_location"
-            },{
-                fieldName:"启用时间",
-                fieldType:"enablation_time"
-            },{
-                fieldName:"使用情况",
-                fieldType:"use_situation"
-            },{
-                fieldName:"备注",
-                fieldType:"remarks"
+                fieldName: "单位",
+                fieldType: "department"
+            }, {
+                fieldName: "科室/课题组",
+                fieldType: "subject"
+            }, {
+                fieldName: "类型",
+                fieldType: "type",
+            }, {
+                fieldName: "保密编号",
+                fieldType: "secret_number"
+            }, {
+                fieldName: "固定资产编号",
+                fieldType: "asset_number"
+            }, {
+                fieldName: "负责人",
+                fieldType: "person"
+            }, {
+                fieldName: "密级",
+                fieldType: "secret_level"
+            }, {
+                fieldName: "品牌型号",
+                fieldType: "model"
+            }, {
+                fieldName: "操作系统版本",
+                fieldType: "os_version"
+            }, {
+                fieldName: "操作系统安装时间",
+                fieldType: "os_install_time"
+            }, {
+                fieldName: "硬盘序列号",
+                fieldType: "serial_number"
+            }, {
+                fieldName: "mac地址",
+                fieldType: "mac_address"
+            }, {
+                fieldName: "光驱",
+                fieldType: "cd_drive"
+            }, {
+                fieldName: "用途",
+                fieldType: "usage"
+            }, {
+                fieldName: "放置地点",
+                fieldType: "place_location"
+            }, {
+                fieldName: "启用时间",
+                fieldType: "enablation_time"
+            }, {
+                fieldName: "使用情况",
+                fieldType: "use_situation"
+            }, {
+                fieldName: "备注",
+                fieldType: "remarks"
             }
         ],
-        conditionsList:[],
-        idList:ID,
-        isScrapped:false,
-        tableName:"confidential_computer"
+        conditionsList: [],
+        idList: ID,
+        isScrapped: false,
+        tableName: "confidential_computer"
     };
     return data;
 }

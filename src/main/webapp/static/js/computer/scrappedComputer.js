@@ -99,7 +99,7 @@ let app = new Vue({
                 searchKey: '',
                 pageIndex: 1,
                 pageSize: 10,
-                pageSizes: [5, 10, 20, 40],
+                pageSizes: [5, 10, 20, 40, 99999],
                 total: 0
             }
         },
