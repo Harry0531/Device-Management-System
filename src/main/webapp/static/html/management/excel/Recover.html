@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../../plugins/elementui/index.css">
+    <style>
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+<div id="app" v-cloak v-loading="loading">
+
+    <el-upload
+            style="margin:20px 0 10px 0 "
+            drag
+            action="http://localhost:8444/api/tool/file/uploadFile"
+            :on-success="onUploadSuccess"
+            :before-upload="beforeUpload"
+            :default-file-list="defaultFileList"
+            multiple>
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+    </el-upload>
+    <el-button  size="small" type="success" @click="backup" style="margin-left:20px;margin-right: 70px">备份数据</el-button>
+    <el-button size="small" type="warning" @click="recover" style="margin-left: 70px">恢复数据</el-button>
+</div>
+</body>
+<script src="../../../plugins/vue/vue.js"></script>
+<script src="../../../plugins/jquery/jquery-3.3.1.min.js"></script>
+<script src="../../../plugins/elementui/index.js"></script>
+<script src="../../../js/utils.js"></script>
+<script src="../../../js/management/excel/Recover.js"></script>
+</html>

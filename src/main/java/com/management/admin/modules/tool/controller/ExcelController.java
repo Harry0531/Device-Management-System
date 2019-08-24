@@ -100,8 +100,12 @@ public class ExcelController extends BaseApi {
     @ResponseBody
     public Object importExcelToTable(@RequestBody ImportExcel importExcel) {
         try {
-            excelService.importExcelToTable(importExcel);
-            return retMsg.Set(MsgType.SUCCESS);
+            HashMap<String,Object>status=excelService.importExcelToTable(importExcel);
+            if(status!=null){
+                return retMsg.Set(MsgType.SUCCESS,status);
+            }else{
+                return retMsg.Set(MsgType.ERROR);
+            }
         } catch (IOException e) {
             return retMsg.Set(MsgType.ERROR);
         }
