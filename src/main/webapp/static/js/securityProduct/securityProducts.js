@@ -304,6 +304,7 @@ let app = new Vue({
             app.dialog.data.person = '';
             app.dialog.data.place_location = '';
             app.dialog.data.scope = '';
+            app.dialog.data.buy_time = '';
             app.dialog.data.enablation_time = '';
             app.dialog.data.use_situation = '';
             app.dialog.data.remarks = '';
@@ -407,7 +408,7 @@ let app = new Vue({
         this.refreshTable();
     },
     computed: {
-        isInsertStorageDisable: function () {
+        isInsertProductDisable: function () {
             let app = this;
             return !(
                 app.dialog.data.department_name

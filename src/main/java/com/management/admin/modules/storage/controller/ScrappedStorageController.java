@@ -8,7 +8,11 @@ import com.management.admin.modules.storage.service.ScrappedStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
+/**
+ * @Description 报废涉密计算机
+ * @author zch
+ * @date 2019/8/18 22:28
+ */
 @RequestMapping("/api/sys/storage/scrapped")
 @Controller
 public class ScrappedStorageController extends BaseApi {

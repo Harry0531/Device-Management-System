@@ -8,7 +8,11 @@ import com.management.admin.modules.securityProduct.service.ScrappedProductServi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
+/**
+ * @Description 安全保密产品
+ * @author zch
+ * @date 2019/8/21 22:29
+ */
 @RequestMapping("/api/sys/product/scrapped")
 @Controller
 public class ScrappedProductController extends BaseApi {
