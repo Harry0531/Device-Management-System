@@ -24,7 +24,7 @@ let app = new Vue({
         beforeUpload: function (file) {
             let suffix = file.name.split('.').pop();
             if (suffix !== 'xlsx') {
-                window.parent.parent.parent.app.showMessage('仅支持xlsx文件', 'error');
+                app.$message({message:'仅支持xlsx文件', type:'error'});
                 return false;
             }
         },
@@ -83,9 +83,26 @@ let app = new Vue({
             ajaxPostJSON(this.urls.importExcelToTable, this.formData, function (d) {
                 app.loading.importing = false;
                 app.$message({
-                    message:"导入成功",
+                    message:"成功导入"+d.data["success"]+"条记录",
                     type:"success"
                 });
+
+                setTimeout(function () {
+                    if(d.data["failed"]!=null){
+                        let s="";
+                        d.data["failed"].forEach(function (v) {
+                            s+=""+v.toString()+",";
+                        })
+                        s=s.substr(0,s.length-1);
+                        console.log(s);
+                        app.$message({
+                            message:"其中第"+s+"条导入失败",
+                            type:"error"
+                        });
+                    }
+                },1000)
+
+
             },function(d){
                 app.loading.importing = false;
                 app.$message({

@@ -87,7 +87,7 @@ public class ExportDataService {
             for(int j =0;j<fieldList.size();j++){
                 if(isDict.get(j)){//如果使用了字典
                     if(fieldList.get(j).getFieldName().equals("单位")||fieldList.get(j).getFieldName().equals("科室/课题组"))
-                    temp.set(j+1,getCodeByUUID(temp.get(j+1).toString())+" "+getNameByUUID(temp.get(j+1).toString()));
+                        temp.set(j+1,getCodeByUUID(temp.get(j+1).toString())+" "+getNameByUUID(temp.get(j+1).toString()));
                     else{
                         for(DictInfo dictInfo:dictInfos){
                             if(dictInfo.getId().equals(temp.get(j+1).toString())) {

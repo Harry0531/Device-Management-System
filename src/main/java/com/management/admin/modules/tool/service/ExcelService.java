@@ -116,7 +116,7 @@ public class ExcelService {
         return excelTemplateDao.selectAllTemplate(conditions);
     }
 
-    public boolean importExcelToTable(ImportExcel importExcel) throws IOException {
+    public HashMap<String, Object> importExcelToTable(ImportExcel importExcel) throws IOException {
         isScrapped=false;
         //数据excel名字
         String dataExcelPath=SystemPath.getRootPath()+SystemPath.getTemporaryPath()+ importExcel.getExcelDataName();
@@ -175,7 +175,12 @@ public class ExcelService {
 //        3.处理表格数据
         List<DictInfo>dictInfos =importDataDao.selectAllDictInfo();
 
+        Integer successRow =0;
+        List<Integer> failRow = new ArrayList<>();
         for(int rowIndex = 1; rowIndex <=sheet.getLastRowNum();rowIndex++){ //忽略第一行
+
+            Boolean isWrong = false;
+
             Row dataRow = sheet.getRow(rowIndex);   //获取一行的数据
 
             //对应前面四个固定值
@@ -201,24 +206,51 @@ public class ExcelService {
                         String deName=cellValue.toString().split(" ")[1];
                         String deCode=cellValue.toString().split(" ")[0];
                         String uu =getUuidByNameAndCode(deName,deCode);
-                        cellValue=uu;
-                    }else if(columnMapField.getIsDict()){  //使用了字典
+                        if(uu.equals("wrong")){
+                            isWrong = true;
+                            break;
+                        }
+                    }else if(columnMapField.getIsDict()){
+                        //使用了字典
+                        Boolean findDict=false;
                         for(DictInfo dictInfo:dictInfos){
                             if(dictInfo.getDicProperty().equals(columnMapField.getDict()) &&cellValue.equals(dictInfo.getDicValue()))
                             {
                                 cellValue=dictInfo.getId();
+                                findDict=true;
                                 break;
                              }
                         }
+                        if(!findDict){
+                            isWrong=true;
+                            break;
+                        }
                     }
                 }
+                if(isWrong) break;
                 row.add(cellValue);
             }
-            data.add(row);
+            if(isWrong){
+                failRow.add(rowIndex);
+            }else{
+                data.add(row);
+                successRow++;
+            }
+
         }//for
         dynamicInsertParam.setData(data);
+
+        HashMap<String,Object> status =new HashMap<>();
+        status.put("success",successRow);
+        status.put("failed",failRow);
         // 4.进行插入，并返回是否成功
-        return importDataDao.dynamicInsert(dynamicInsertParam) == dynamicInsertParam.getData().size();
+        try {
+            importDataDao.dynamicInsert(dynamicInsertParam);
+            return status;
+        }catch (Exception e){
+            return null;
+        }
+
     }
 
     /**
@@ -259,6 +291,6 @@ public class ExcelService {
                 return partInfo.getId();
             }
         }
-        return "未找到对应字典项";
+        return "wrong";
     }
 }
