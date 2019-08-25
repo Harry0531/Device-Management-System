@@ -1,48 +1,44 @@
-package com.management.admin.modules.securityProduct.controller;
+package com.management.admin.modules.usb.controller;
 
 import com.management.admin.common.persistence.Page;
 import com.management.admin.common.web.BaseApi;
 import com.management.admin.common.web.MsgType;
-import com.management.admin.modules.securityProduct.entity.SecurityProduct;
-import com.management.admin.modules.securityProduct.service.ScrappedProductService;
+import com.management.admin.modules.usb.entity.Usb;
+import com.management.admin.modules.usb.service.ScrappedUsbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-/**
- * @Description 安全保密产品
- * @author zch
- * @date 2019/8/21 22:29
- */
-@RequestMapping("/api/sys/product/scrapped")
+
+@RequestMapping("/api/sys/usb/scrapped")
 @Controller
-public class ScrappedProductController extends BaseApi {
+public class ScrappedUsbController extends BaseApi {
     @Autowired
-    private ScrappedProductService scrappedProductService;
+    private ScrappedUsbService scrappedUsbService;
 
     @RequestMapping(value = "/getSub", method = RequestMethod.POST)
     @ResponseBody
     public Object getSub(@RequestParam String param) throws Exception {
         System.out.println(param);
         if (param.equals("dept")) {
-            return scrappedProductService.getSubFromDept();
+            return scrappedUsbService.getSubFromDept();
         } else {
-            return scrappedProductService.getSubFromDict(param);
+            return scrappedUsbService.getSubFromDict(param);
         }
     }
 
     @RequestMapping(value = "/getDeptSub", method = RequestMethod.POST)
     @ResponseBody
     public Object getDeptSub(@RequestParam String id) throws Exception {
-        return scrappedProductService.getDeptSub(id);
+        return scrappedUsbService.getDeptSub(id);
     }
 
     @RequestMapping(value = "/getList", method = RequestMethod.POST)
     @ResponseBody
-    public Object getList(@RequestBody SecurityProduct securityProduct) throws Exception {
+    public Object getList(@RequestBody Usb usb) throws Exception {
         try {
-            Page<SecurityProduct> page = new Page<>();
-            page.setResultList(scrappedProductService.selectDictListByPage(securityProduct));
-            page.setTotal(scrappedProductService.selectSearchCount(securityProduct));
+            Page<Usb> page = new Page<>();
+            page.setResultList(scrappedUsbService.selectDictListByPage(usb));
+            page.setTotal(scrappedUsbService.selectSearchCount(usb));
             return retMsg.Set(MsgType.SUCCESS, page);
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,8 +48,8 @@ public class ScrappedProductController extends BaseApi {
 
     @RequestMapping(value = "/scrap", method = RequestMethod.POST)
     @ResponseBody
-    public Object scrap(@RequestBody SecurityProduct securityProduct) throws Exception {
-        if(scrappedProductService.scrap(securityProduct))
+    public Object scrap(@RequestBody Usb usb) throws Exception {
+        if(scrappedUsbService.scrap(usb))
             return retMsg.Set(MsgType.SUCCESS);
         return retMsg.Set(MsgType.ERROR);
     }
