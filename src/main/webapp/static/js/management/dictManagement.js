@@ -38,7 +38,8 @@ var app = new Vue({
                 delFlag:"",
                 dis:false
             }
-        }
+        },
+        options:[]
     },
     methods: {
         //刷新表格数据
@@ -53,6 +54,43 @@ var app = new Vue({
                 app.table.loading = false;
                 app.table.data = d.data.resultList;
                 app.table.props.total = d.data.total;
+
+            })
+            let dataAll = {
+                page:{
+                    searchKey: '',
+                    pageIndex: 1,
+                    pageSize: 99999,
+                    pageSizes: [5, 10, 20, 40],
+                    total: 0
+                }
+            };
+            app.options=[];
+            ajaxPostJSON(app.urls.getDictList,dataAll,function (d) {
+                d.data.resultList.forEach(function (v) {
+                    let pos=-1;
+                    app.options.forEach(function (h) {
+                        if(h["label"] === v["dicProperty"]){
+                            pos=app.options.indexOf(h);
+                        }
+                    })
+                    if(pos === -1 ){
+                        app.options.push({
+                            label:v["dicProperty"],
+                            value:v["dicProperty"],
+                            children:[{
+                                label:v["dicValue"],
+                                value:v["dicValue"]
+                            }]
+                        })
+                    }else{
+                        app.options[pos].children.push({
+                            label:v["dicValue"],
+                            value:v["dicValue"]
+                        })
+                    }
+
+                })
             })
         },
         //得到数据字典类型
@@ -126,7 +164,7 @@ var app = new Vue({
         },
         handleSelectFatherTypeChange:function(v){
             var app=this;
-            app.dialog.data.fatherProperty=v;
+            app.dialog.data.fatherProperty=v.toString();
         },
         insertOrUpdateDict: function () {
             let app = this;
