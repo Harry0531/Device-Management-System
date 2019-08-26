@@ -62,7 +62,8 @@ let defaultDialog = {
 let defaultScrapDialog = {
     loading: false,
     visible: false,
-}
+};
+
 let app = new Vue({
     el: '#app',
     data: {
@@ -309,7 +310,6 @@ let app = new Vue({
         },
         updateDialog: function (v) {
             let app = this;
-            app.getDialogList();
             app.dialog.data.id = v["id"];
             app.dialog.data.department = v["department"];
             app.dialog.data.department_name = v["department_name"];
@@ -330,7 +330,6 @@ let app = new Vue({
             app.dialog.data._secret_level = v["_secret_level"];
             app.dialog.data._usage = v["_scope"];
             app.dialog.data._use_situation = v["_use_situation"];
-            app.dialog.visible = true;
             app.dialog.data.asset_number = v["asset_number"];
             app.dialog.data.os_version = v["os_version"];
             app.dialog.data.os_install_time = v["os_install_time"];
@@ -339,7 +338,14 @@ let app = new Vue({
             app.dialog.data._cd_drive = v["_cd_drive"];
             app.dialog.data._os_version = v["_os_version"];
             app.dialog.data.scrap_time = v["scrap_time"];
-
+            ajaxPost(this.urls.getDeptSub, {id: app.dialog.data.department}, function (result) {
+                app.dialog.selectionList.subject = [];
+                result.forEach(function (r) {
+                    app.dialog.selectionList.subject.push(r);
+                })
+            });
+            app.getDialogList();
+            app.dialog.visible = true;
         },
         resetDialogData: function () {
             app.dialog.data.id = '';

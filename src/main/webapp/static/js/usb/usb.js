@@ -272,7 +272,6 @@ let app = new Vue({
         },
         updateDialog: function (v) {
             let app = this;
-            app.getDialogList();
             app.dialog.data.id = v["id"];
             app.dialog.data.department = v["department"];
             app.dialog.data.department_name = v["department_name"];
@@ -296,6 +295,13 @@ let app = new Vue({
             app.dialog.data._secret_level = v["_secret_level"];
             app.dialog.data._scope = v["_scope"];
             app.dialog.data._use_situation = v["_use_situation"];
+            ajaxPost(this.urls.getDeptSub, {id: app.dialog.data.department}, function (result) {
+                app.dialog.selectionList.subject = [];
+                result.forEach(function (r) {
+                    app.dialog.selectionList.subject.push(r);
+                })
+            });
+            app.getDialogList();
             app.dialog.visible = true;
         },
         resetDialogData: function () {
