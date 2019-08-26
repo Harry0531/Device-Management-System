@@ -65,6 +65,7 @@ var app = new Vue({
                     total: 0
                 }
             };
+            app.options=[];
             ajaxPostJSON(app.urls.getDictList,dataAll,function (d) {
                 d.data.resultList.forEach(function (v) {
                     let pos=-1;
