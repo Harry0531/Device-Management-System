@@ -103,11 +103,16 @@
                 <el-input v-model="dialog.data.dicValue"></el-input>
             </el-form-item>
             <el-form-item label="父字典" style="margin-left: 30px" >
-                <el-select v-model="dialog.data.fatherProperty"  filterable clearable @change="handleSelectFatherTypeChange" style="margin-left:-8px">
-                    <el-option v-for="item in dictType" :key="item" :label="item"
-                               :value="item"></el-option>
-                </el-select>
+                <!--<el-select v-model="dialog.data.fatherProperty"  filterable clearable @change="handleSelectFatherTypeChange" style="margin-left:-8px">-->
+                    <!--<el-option v-for="item in dictType" :key="item" :label="item"-->
+                               <!--:value="item"></el-option>-->
+                <!--</el-select>-->
+
+                <el-cascader :options="options" @change="handleSelectFatherTypeChange"  filterable style="margin-left:-8px"> ></el-cascader>
+
             </el-form-item>
+
+
             <el-form-item label="排序" :required="true" style="margin-left: 27px">
                 <el-input v-model="dialog.data.sort" style="margin-left: -2px"></el-input>
             </el-form-item>
