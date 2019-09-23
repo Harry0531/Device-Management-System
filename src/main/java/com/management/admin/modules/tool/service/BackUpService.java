@@ -36,7 +36,7 @@ public class BackUpService {
     @Autowired
     BackUpDao backUpDao;
 
-    public void backup(HttpServletResponse response){
+    public void backup(String department,HttpServletResponse response){
         // 告诉浏览器用什么软件可以打开此文件
         response.setHeader("content-Type", "application/vnd.ms-excel");
         // 下载文件的默认名称
@@ -89,7 +89,12 @@ public class BackUpService {
                     field+=wh;
                 }else field+=","+wh;
             }
-            List<Map<String,Object>>  dataList = backUpDao.getTableData(field,tables.get(z));
+            List<Map<String,Object>>  dataList =new ArrayList<>();
+            if(tables.get(z).equals("data_dictionary")||tables.get(z).equals("data_dictionary_type")||tables.get(z).equals("department")||tables.get(z).equals("excel_template")||tables.get(z).equals("excel_template_map")){
+                dataList =  backUpDao.getTableData(field,tables.get(z),"");
+            }else{
+                dataList = backUpDao.getTableData(field,tables.get(z),department);
+            }
             List<List<Object>> data =new ArrayList<>();
             for(Map<String,Object> i :dataList){
                 List<Object> temp=new ArrayList<>(i.values());

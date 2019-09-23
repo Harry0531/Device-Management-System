@@ -32,7 +32,7 @@ var app = new Vue({
                 id:"",
                 dicProperty:"",
                 dicValue:"",
-                fatherProperty:"",
+                fatherProperty:[],
                 sort:"",
                 remarks:"",
                 delFlag:"",
@@ -110,11 +110,6 @@ var app = new Vue({
             this.table.props.pageIndex = newIndex;
             this.refreshTable();
         },
-        //打开修改弹窗
-        openDialog_updateEntity: function (row) {
-            this.dialog.updateEntity.visible = true;
-            this.dialog.updateEntity.formData = JSON.parse(JSON.stringify(row));
-        },
         // 处理选中的行变化
         onSelectionChange: function (val) {
             this.table.selectionList = val;
@@ -164,7 +159,8 @@ var app = new Vue({
         },
         handleSelectFatherTypeChange:function(v){
             var app=this;
-            app.dialog.data.fatherProperty=v.toString();
+            console.log(v);
+            app.dialog.data.fatherProperty=v;
         },
         insertOrUpdateDict: function () {
             let app = this;
@@ -172,7 +168,7 @@ var app = new Vue({
             let data = {
                 dicProperty:app.dialog.data.dicProperty,
                 dicValue:app.dialog.data.dicValue,
-                fatherProperty:app.dialog.data.fatherProperty,
+                fatherProperty:app.dialog.data.fatherProperty.toString(),
                 sort:app.dialog.data.sort,
                 remark:app.dialog.data.remarks,
                 id:app.dialog.data.id,
@@ -196,7 +192,7 @@ var app = new Vue({
                     id:"",
                     dicProperty:"",
                     dicValue:"",
-                    fatherProperty:"",
+                    fatherProperty:[],
                     sort:"",
                     remarks:"",
                     delFlag:"",
@@ -209,12 +205,13 @@ var app = new Vue({
             app.dialog.data.id=v["id"];
             app.dialog.data.dicProperty=v["dicProperty"];
             app.dialog.data.dicValue=v["dicValue"];
-            app.dialog.data.fatherProperty=v["fatherProperty"];
+            app.dialog.data.fatherProperty=v["fatherProperty"].split(",");
             app.dialog.data.sort=v["sort"];
             app.dialog.data.remarks=v["remark"];
             app.dialog.data.delFlag=v["delFlag"];
             app.dialog.data.dis=true;
             app.dialog.visible=true;
+
         },
         disable:function (v) {
             var app=this;

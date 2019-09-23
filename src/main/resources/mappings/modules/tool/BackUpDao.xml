@@ -4,6 +4,11 @@
 
     <select id="getTableData" parameterType="String" resultType="java.util.LinkedHashMap">
     		 select ${param1} from ${param2}
+			  <where>
+				  <if test="department != null and department !=''">
+					and `department`=#{param3}
+				  </if>
+			  </where>
     	</select>
 
 	<insert id="recover" parameterType="String">

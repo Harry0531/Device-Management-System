@@ -5,7 +5,7 @@ import java.util.Map;
 
 public interface BackUpDao {
 
-    List<Map<String,Object>> getTableData(String tableName,String field);
+    List<Map<String,Object>> getTableData(String field,String tableName,String department);
 
     void recover(String sql);
 

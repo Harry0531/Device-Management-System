@@ -108,7 +108,7 @@
                                <!--:value="item"></el-option>-->
                 <!--</el-select>-->
 
-                <el-cascader :options="options" @change="handleSelectFatherTypeChange"  filterable style="margin-left:-8px"> ></el-cascader>
+                <el-cascader :options="options" @change="handleSelectFatherTypeChange" v-model="dialog.data.fatherProperty"  filterable style="margin-left:-8px"> ></el-cascader>
 
             </el-form-item>
 

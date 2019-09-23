@@ -22,9 +22,10 @@ public class BackUpController extends BaseApi {
     @ResponseBody
     @RequestMapping("backup")
     public  void backup(
-            HttpServletResponse response
+            HttpServletResponse response,
+            @RequestParam String department
     ){
-        backUpService.backup(response);
+        backUpService.backup(department,response);
     }
 
     @ResponseBody

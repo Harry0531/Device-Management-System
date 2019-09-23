@@ -3,7 +3,12 @@ let app = new Vue({
     data: {
         loading:false,
         tmpFileName:"",
-        defaultFileList: []
+        defaultFileList: [],
+        department:[],
+        selectDep:"",
+        urls: {
+            getSub: 'http://localhost:8444/api/sys/info/confidential/getSub',
+        },
     },
     methods:{
         beforeUpload: function (file) {
@@ -37,10 +42,18 @@ let app = new Vue({
             })
         },
         backup:function () {
-            window.open("http://localhost:8444/api/tool/backup/backup");
+            window.open("http://localhost:8444/api/tool/backup/backup"+"?department="+app.selectDep);
         }
     },
     mounted: function () {
-
+        ajaxPost(this.urls.getSub, {param: "dept"}, function (result) {
+            app.department = [{
+                id:"",
+                dept_name:"全部"
+            }];
+            result.forEach(function (r) {
+                app.department.push(r);
+            })
+        })
     }
 });
