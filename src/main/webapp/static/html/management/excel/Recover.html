@@ -21,13 +21,15 @@
 
     <el-form ref="form" :model="formData" label-width="150px" style="padding: 34px 24px;" size="small"
              label-position="left">
-        <el-form-item label="选择单位">
+
+            <el-form-item label="选择单位">
             <el-select v-model="selectDep" @change="handleSchoolChange">
                 <el-option v-for="item in department"
                            :key="item.id"
                            :label="item.dept_name"
                            :value="item.id"></el-option>
             </el-select>
+                <el-button  size="small" type="success" @click="backup" style="margin-left:20px;margin-right: 70px">导出数据</el-button>
         </el-form-item>
 
         <el-form-item label="上传数据文件">
@@ -47,8 +49,8 @@
 
         </el-form-item>
         <el-form-item>
-            <el-button  size="small" type="success" @click="backup" style="margin-left:20px;margin-right: 70px">导出数据</el-button>
-            <el-button size="small" type="warning" @click="recover" style="margin-left: 70px">恢复数据</el-button>
+
+            <el-button size="small" type="warning" @click="recover">恢复数据</el-button>
         </el-form-item>
 
     </el-form>

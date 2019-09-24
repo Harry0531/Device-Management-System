@@ -453,6 +453,13 @@ let app = new Vue({
         },
         scrap: function () {
             app.scrapDialog.loading = true;
+            if( app.dialog.data.scrap_time === ""|| app.dialog.data.scrap_time == null){
+                app.$message({
+                    type:"error",
+                    message:"未选择报废时间"
+                })
+                return ;
+            }
             let data = {
                 id: app.dialog.data.id,
                 department: app.dialog.data.department,
