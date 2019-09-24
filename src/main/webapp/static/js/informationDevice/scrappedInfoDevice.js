@@ -28,6 +28,7 @@ let app = new Vue({
             getSub: 'http://localhost:8444/api/sys/info/scrapped/getSub',
             getDeptSub: 'http://localhost:8444/api/sys/info/scrapped/getDeptSub',
             getList: 'http://localhost:8444/api/sys/info/scrapped/getList',
+            deleteListByIds:'http://localhost:8444/api/sys/info/scrapped/deleteListByIds',
             scrap: 'http://localhost:8444/api/sys/info/scrapped/scrap'
         },
         activeNames: [],
@@ -129,33 +130,9 @@ let app = new Vue({
                 app.table.props.total = result.data.total;
             })
         },
-        scrap: function () {
-            app.dialog.loading = true;
-            let data = {
-                id: app.dialog.data.id,
-                remarks: app.dialog.data.remarks,
-                scrap_time: app.dialog.data.scrap_time
-            };
-            ajaxPostJSON(this.urls.scrap, data, function (d) {
-                app.dialog.loading = false;
-                app.dialog.visible = false;
-                app.$message({
-                    message: "操作成功",
-                    type: "success"
-                });
-                app.getList();
-            })
-        },
         getList: function (index) {
             app.table.props.pageIndex = 1;
             this.refreshTable();
-        },
-        showDialog: function (v) {
-            let app = this;
-            app.dialog.data.id = v["id"];
-            app.dialog.data.remarks = v["remarks"];
-            app.dialog.data.scrap_time = v["scrap_time"];
-            app.dialog.visible = true;
         },
         onSelectionChange: function (val) {
             this.table.selectionList = val;
@@ -167,6 +144,70 @@ let app = new Vue({
         onPageIndexChange: function (newIndex) {
             this.table.props.pageIndex = newIndex;
             this.refreshTable();
+        },
+        deleteByIds: function (list) {
+            if (list.length === 0) {
+                app.$message({
+                    message: "未选中任何项",
+                    type: "danger"
+                });
+                return;
+            }
+            app.$confirm('确认删除选中的项', '警告', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                let data = list;
+                let app = this;
+                app.table.loading = true;
+                ajaxPostJSON(app.urls.deleteListByIds, data, function (d) {
+                    app.$message({
+                        message: "删除成功",
+                        type: "success"
+                    });
+                    app.table.props.pageIndex = 1;
+                    app.refreshTable();
+                })
+            }).catch(() => {
+                app.$message({
+                    message: "取消删除",
+                    type: "danger"
+                });
+            });
+        },
+        showDialog: function (v) {
+            let app = this;
+            app.dialog.data.id = v["id"];
+            app.dialog.data.remarks = v["remarks"];
+            app.dialog.data.scrap_time = v["scrap_time"];
+            app.dialog.visible = true;
+        },
+        scrap:function () {
+            app.dialog.loading = true;
+            if( app.dialog.data.scrap_time === ""|| app.dialog.data.scrap_time == null){
+                app.$message({
+                    type:"error",
+                    message:"未选择报废时间"
+                });
+                app.dialog.loading = false;
+                return;
+            }
+            let data = {
+                id: app.dialog.data.id,
+                scrap_time: app.dialog.data.scrap_time,
+                remarks: app.dialog.data.remarks
+            };
+            ajaxPost(app.urls.scrap, data, function (result) {
+                app.$message({
+                    message: "更新成功",
+                    type: "success"
+                });
+                app.table.props.pageIndex = 1;
+                app.refreshTable();
+                app.dialog.loading = false;
+                app.dialog.visible = false;
+            });
         }
     },
     mounted: function () {

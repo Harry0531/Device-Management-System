@@ -13,4 +13,5 @@ public interface ScrappedStorageDao {
     int selectSearchCount(ConfidentialStorage confidentialStorage);
     String getScrap();
     int scrapStorage(ConfidentialStorage confidentialStorage);
+    int deleteListByIds(List<ConfidentialStorage> list);
 }

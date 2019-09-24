@@ -13,4 +13,5 @@ public interface ScrappedInfoDeviceDao {
     int selectSearchCount(InfoDevice infoDevice);
     String getScrap();
     int scrapInfo(InfoDevice infoDevice);
+    int deleteListByIds(List<InfoDevice> list);
 }

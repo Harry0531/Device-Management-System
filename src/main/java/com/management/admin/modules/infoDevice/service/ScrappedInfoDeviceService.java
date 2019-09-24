@@ -7,6 +7,8 @@ import com.management.admin.modules.sys.entity.Dept;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +16,8 @@ import java.util.List;
 public class ScrappedInfoDeviceService {
     @Autowired
     private ScrappedInfoDeviceDao scrappedInfoDeviceDao;
+    @Autowired
+    private InfoDeviceDao infoDeviceDao;
 
     public List<String> getSubFromDict(String param) {
         return scrappedInfoDeviceDao.getSubFromDict(param);
@@ -35,21 +39,21 @@ public class ScrappedInfoDeviceService {
         return scrappedInfoDeviceDao.selectSearchCount(infoDevice);
     }
 
-    public boolean scrap(InfoDevice infoDevice) {
-        //设报废标记
+    public boolean scrap(String id, String scrapTime, String remarks) throws ParseException {
+        InfoDevice infoDevice = infoDeviceDao.getInfoDeviceById(id);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date scrap_time = sdf.parse(scrapTime);
+
+        infoDevice.preUpdate();
         infoDevice.setScrapped_flag(1);
+        infoDevice.setScrap_time(scrap_time);
+        infoDevice.setUse_situation(infoDeviceDao.getScrap());
+        infoDevice.setRemarks(remarks);
+        return infoDeviceDao.updateInfo(infoDevice) == 1;
+    }
 
-        //判断报废时间
-        Date date = infoDevice.getScrap_time();
-        System.out.println(date);
-        infoDevice.preScrap();
-        if (date != null)
-            infoDevice.setScrap_time(date);
-
-        //找到报废状态字典id
-        infoDevice.setUse_situation(scrappedInfoDeviceDao.getScrap());
-
-        //报废
-        return scrappedInfoDeviceDao.scrapInfo(infoDevice) == 1;
+    public boolean deleteListByIds(List<InfoDevice> list) {
+        return list.size() == 0 || scrappedInfoDeviceDao.deleteListByIds(list) == list.size();
     }
 }

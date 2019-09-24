@@ -127,6 +127,9 @@
         <el-button size="small" type="primary" @click="exportData.visible=true"
                    style="margin-left: 10px;">导出到Excel
         </el-button>
+        <el-button size="small" type="danger" @click="deleteByIds(table.selectionList)"
+                   style="margin-left: 10px;">删除选中
+        </el-button>
     </div>
 
     <!--表格-->
@@ -134,6 +137,7 @@
               style="width: 100%;overflow-y: hidden;margin-top: 15px;" class="scroll-bar"
               @selection-change="onSelectionChange" stripe
               width="100%">
+        <el-table-column type="selection" width="50" fixed></el-table-column>
         <el-table-column label="单位" width="180" align="center" header-align="center">
             <template slot-scope="scope">
                 {{scope.row.department_code + ' ' + scope.row.department_name}}
@@ -165,11 +169,15 @@
                          header-align="center"></el-table-column>
         <el-table-column label="备注" width="250" prop="remarks" align="center" header-align="center"></el-table-column>
 
-        <el-table-column label="操作" header-align="center" align="center" fixed="right" width="120">
+        <el-table-column label="操作" header-align="center" align="center" fixed="right" width="250">
             <template slot-scope="scope">
+                <el-button type="warning" size="mini" style="position:relative;bottom: 1px;" plain
+                           @click="showDialog(scope.row)">
+                    <span>编辑</span>
+                </el-button>
                 <el-button type="danger" size="mini" style="position:relative;bottom: 1px;margin-left: 6px;"
-                           @click="showDialog(scope.row)" :disabled="scope.row.scrapped_flag === 1">
-                    <span>{{scope.row.scrapped_flag === 1 ? '已' : ''}}报废</span>
+                           @click="deleteByIds([{id: scope.row.id}])">
+                    <span>删除</span>
                 </el-button>
             </template>
         </el-table-column>
@@ -187,7 +195,7 @@
     </el-pagination>
 
     <!--编辑对话框-->
-    <el-dialog title="报废" :visible.sync="dialog.visible" heigth="700">
+    <el-dialog title="更新" :visible.sync="dialog.visible" heigth="700">
         <el-form label-position="left" label-width="140px" style="padding: 0 100px;"
                  v-loading="dialog.loading" status-icon>
             <el-form-item label="报废时间">
@@ -203,7 +211,7 @@
         <div slot="footer">
             <el-button size="medium" @click="dialog.visible=false">取 消</el-button>
             <el-button size="medium" type="danger" @click="scrap"
-                       style="margin-left: 10px;">报 废
+                       style="margin-left: 10px;">更 新
             </el-button>
         </div>
     </el-dialog>

@@ -2,10 +2,13 @@ package com.management.admin.modules.usb.service;
 
 import com.management.admin.modules.sys.entity.Dept;
 import com.management.admin.modules.usb.dao.ScrappedUsbDao;
+import com.management.admin.modules.usb.dao.UsbDao;
 import com.management.admin.modules.usb.entity.Usb;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +16,8 @@ import java.util.List;
 public class ScrappedUsbService {
     @Autowired
     private ScrappedUsbDao scrappedUsbDao;
+    @Autowired
+    private UsbDao usbDao;
 
     public List<String> getSubFromDict(String param) {
         return scrappedUsbDao.getSubFromDict(param);
@@ -34,21 +39,21 @@ public class ScrappedUsbService {
         return scrappedUsbDao.selectSearchCount(usb);
     }
 
-    public boolean scrap(Usb usb) {
-        //设报废标记
+    public boolean deleteListByIds(List<Usb> list) {
+        return list.size() == 0 || scrappedUsbDao.deleteListByIds(list) == list.size();
+    }
+
+    public boolean scrap(String id, String scrapTime, String remarks) throws ParseException {
+        Usb usb = usbDao.getUsbById(id);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date scrap_time = sdf.parse(scrapTime);
+
+        usb.preUpdate();
         usb.setScrapped_flag(1);
-
-        //判断报废时间
-        Date date = usb.getScrap_time();
-        System.out.println(date);
-        usb.preScrap();
-        if (date != null)
-            usb.setScrap_time(date);
-
-        //找到报废状态字典id
-       usb.setUse_situation(scrappedUsbDao.getScrap());
-
-        //报废
-        return scrappedUsbDao.scrapUsb(usb) == 1;
+        usb.setScrap_time(scrap_time);
+        usb.setUse_situation(usbDao.getScrap());
+        usb.setRemarks(remarks);
+        return usbDao.updateUsb(usb) == 1;
     }
 }

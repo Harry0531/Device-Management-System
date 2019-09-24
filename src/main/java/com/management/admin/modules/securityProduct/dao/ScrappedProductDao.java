@@ -13,4 +13,5 @@ public interface ScrappedProductDao {
     int selectSearchCount(SecurityProduct securityProduct);
     String getScrap();
     int scrapProduct(SecurityProduct securityProduct);
+    int deleteListByIds(List<SecurityProduct> list);
 }

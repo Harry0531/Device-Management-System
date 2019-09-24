@@ -8,6 +8,9 @@ import com.management.admin.modules.storage.service.ScrappedStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 /**
  * @Description 报废涉密计算机
  * @author zch
@@ -50,10 +53,27 @@ public class ScrappedStorageController extends BaseApi {
         }
     }
 
+    @RequestMapping(value = "/deleteListByIds", method = RequestMethod.POST)
+    @ResponseBody
+    public Object deleteListByIds(@RequestBody List<ConfidentialStorage> list) throws Exception {
+        try {
+            if (scrappedStorageService.deleteListByIds(list)) {
+                return retMsg.Set(MsgType.SUCCESS);
+            } else
+                return retMsg.Set(MsgType.ERROR);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return retMsg.Set(MsgType.ERROR);
+        }
+    }
+
     @RequestMapping(value = "/scrap", method = RequestMethod.POST)
     @ResponseBody
-    public Object scrap(@RequestBody ConfidentialStorage confidentialStorage) throws Exception {
-        if(scrappedStorageService.scrap(confidentialStorage))
+    public Object scrap(@RequestParam("id") String id,
+                        @RequestParam("scrap_time") String scrapTime,
+                        @RequestParam("remarks") String remarks
+    ) throws Exception {
+        if(scrappedStorageService.scrap(id, scrapTime, remarks))
             return retMsg.Set(MsgType.SUCCESS);
         return retMsg.Set(MsgType.ERROR);
     }

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequestMapping("/api/sys/info/scrapped")
 @Controller
 public class ScrappedInfoDeviceController extends BaseApi {
@@ -46,10 +48,27 @@ public class ScrappedInfoDeviceController extends BaseApi {
         }
     }
 
+    @RequestMapping(value = "/deleteListByIds", method = RequestMethod.POST)
+    @ResponseBody
+    public Object deleteListByIds(@RequestBody List<InfoDevice> list) throws Exception {
+        try {
+            if (scrappedInfoDeviceService.deleteListByIds(list)) {
+                return retMsg.Set(MsgType.SUCCESS);
+            } else
+                return retMsg.Set(MsgType.ERROR);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return retMsg.Set(MsgType.ERROR);
+        }
+    }
+
     @RequestMapping(value = "/scrap", method = RequestMethod.POST)
     @ResponseBody
-    public Object scrap(@RequestBody InfoDevice infoDevice) throws Exception {
-        if(scrappedInfoDeviceService.scrap(infoDevice))
+    public Object scrap(@RequestParam("id") String id,
+                        @RequestParam("scrap_time") String scrapTime,
+                        @RequestParam("remarks") String remarks
+    ) throws Exception {
+        if(scrappedInfoDeviceService.scrap(id, scrapTime,remarks))
             return retMsg.Set(MsgType.SUCCESS);
         return retMsg.Set(MsgType.ERROR);
     }

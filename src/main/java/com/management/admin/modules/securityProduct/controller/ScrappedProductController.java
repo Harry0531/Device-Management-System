@@ -8,6 +8,9 @@ import com.management.admin.modules.securityProduct.service.ScrappedProductServi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 /**
  * @Description 安全保密产品
  * @author zch
@@ -50,10 +53,27 @@ public class ScrappedProductController extends BaseApi {
         }
     }
 
+    @RequestMapping(value = "/deleteListByIds", method = RequestMethod.POST)
+    @ResponseBody
+    public Object deleteListByIds(@RequestBody List<SecurityProduct> list) throws Exception {
+        try {
+            if (scrappedProductService.deleteListByIds(list)) {
+                return retMsg.Set(MsgType.SUCCESS);
+            } else
+                return retMsg.Set(MsgType.ERROR);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return retMsg.Set(MsgType.ERROR);
+        }
+    }
+
     @RequestMapping(value = "/scrap", method = RequestMethod.POST)
     @ResponseBody
-    public Object scrap(@RequestBody SecurityProduct securityProduct) throws Exception {
-        if(scrappedProductService.scrap(securityProduct))
+    public Object scrap(@RequestParam("id") String id,
+                        @RequestParam("scrap_time") String scrapTime,
+                        @RequestParam("remarks") String remarks
+    ) throws Exception {
+        if(scrappedProductService.scrap(id, scrapTime,remarks))
             return retMsg.Set(MsgType.SUCCESS);
         return retMsg.Set(MsgType.ERROR);
     }
