@@ -384,10 +384,10 @@ let app = new Vue({
         },
         scrap: function () {
             app.scrapDialog.loading = true;
-            if( app.scrapDialog.data.scrap_time === ""|| app.scrapDialog.data.scrap_time == null){
+            if (app.scrapDialog.data.scrap_time === "" || app.scrapDialog.data.scrap_time == null) {
                 app.$message({
-                    type:"error",
-                    message:"未选择报废时间"
+                    type: "error",
+                    message: "未选择报废时间"
                 });
                 app.scrapDialog.loading = false;
                 return;
