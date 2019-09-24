@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RequestMapping("/api/sys/info/confidential")
@@ -83,8 +84,11 @@ public class InfoDeviceController extends BaseApi {
 
     @RequestMapping(value = "/scrap", method = RequestMethod.POST)
     @ResponseBody
-    public Object scrap(@RequestBody InfoDevice infoDevice) throws Exception {
-        if(infoDeviceService.scrap(infoDevice))
+    public Object scrap(@RequestParam("id") String id,
+                        @RequestParam("scrap_time") String scrapTime,
+                        @RequestParam("remarks") String remarks
+    ) throws Exception {
+        if(infoDeviceService.scrap(id, scrapTime,remarks))
             return retMsg.Set(MsgType.SUCCESS);
         return retMsg.Set(MsgType.ERROR);
     }

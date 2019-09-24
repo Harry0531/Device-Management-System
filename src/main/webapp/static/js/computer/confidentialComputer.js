@@ -457,8 +457,9 @@ let app = new Vue({
                 app.$message({
                     type:"error",
                     message:"未选择报废时间"
-                })
-                return ;
+                });
+                app.scrapDialog.loading = false;
+                return;
             }
             let data = {
                 id: app.dialog.data.id,

@@ -248,4 +248,8 @@
         SELECT `id` FROM `data_dictionary` WHERE
             (`dic_value` = '报废' AND `dic_property` = '信息设备使用情况')
     </select>
+
+    <select id="getInfoDeviceById" resultMap="infoBean">
+        SELECT * FROM `confidential_information_device` where `id` = #{id}
+    </select>
 </mapper>

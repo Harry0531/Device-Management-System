@@ -166,7 +166,7 @@
                     <span>编辑</span>
                 </el-button>
                 <el-button type="warning" size="mini" style="position:relative;bottom: 1px;margin-left: 6px;"
-                           @click="scrap(scope.row)">
+                           @click="showScrapDialog(scope.row)">
                     <span>报废</span>
                 </el-button>
                 <el-button type="danger" size="mini" style="position:relative;bottom: 1px;margin-left: 6px;"
@@ -289,6 +289,27 @@
             <el-button size="medium" @click="dialog.visible=false">取消</el-button>
             <el-button size="medium" type="primary" style="margin-left: 10px;" @click="insertOrUpdateProduct"
                        :disabled=isInsertProductDisable>提交
+            </el-button>
+        </div>
+    </el-dialog>
+
+    <el-dialog title="报废" :visible.sync="scrapDialog.visible" heigth="700" @closed="resetScrapDialog">
+        <el-form label-position="left" label-width="140px" style="padding: 0 100px;"
+                 v-loading="scrapDialog.loading" status-icon>
+            <el-form-item label="报废时间">
+                <el-date-picker v-model="scrapDialog.data.scrap_time"
+                                :placeholder=visitDate
+                                value-format="yyyy-MM-dd"
+                                format="yyyy-MM-dd"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="备注">
+                <el-input v-model="scrapDialog.data.remarks"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer">
+            <el-button size="medium" @click="scrapDialog.visible=false">取 消</el-button>
+            <el-button size="medium" type="danger" @click="scrap"
+                       style="margin-left: 10px;">报 废
             </el-button>
         </div>
     </el-dialog>

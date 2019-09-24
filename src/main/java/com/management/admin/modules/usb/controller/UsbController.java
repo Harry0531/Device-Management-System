@@ -82,8 +82,11 @@ public class UsbController extends BaseApi {
 
     @RequestMapping(value = "/scrap", method = RequestMethod.POST)
     @ResponseBody
-    public Object scrap(@RequestBody Usb usb) throws Exception {
-        if(usbService.scrap(usb))
+    public Object scrap(@RequestParam("id") String id,
+                        @RequestParam("scrap_time") String scrapTime,
+                        @RequestParam("remarks") String remarks
+    ) throws Exception {
+        if(usbService.scrap(id, scrapTime, remarks))
             return retMsg.Set(MsgType.SUCCESS);
         return retMsg.Set(MsgType.ERROR);
     }

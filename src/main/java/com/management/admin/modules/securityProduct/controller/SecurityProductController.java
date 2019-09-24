@@ -10,9 +10,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 /**
- * @Description 报废安全保密产品
  * @author zch
+ * @Description 报废安全保密产品
  * @date 2019/8/21 22:29
  */
 @RequestMapping("/api/sys/product/product")
@@ -81,8 +82,11 @@ public class SecurityProductController extends BaseApi {
 
     @RequestMapping(value = "/scrap", method = RequestMethod.POST)
     @ResponseBody
-    public Object scrap(@RequestBody SecurityProduct securityProduct) throws Exception {
-        if(securityProductService.scrap(securityProduct))
+    public Object scrap(@RequestParam("id") String id,
+                        @RequestParam("scrap_time") String scrapTime,
+                        @RequestParam("remarks") String remarks
+    ) throws Exception {
+        if (securityProductService.scrap(id, scrapTime, remarks))
             return retMsg.Set(MsgType.SUCCESS);
         return retMsg.Set(MsgType.ERROR);
     }

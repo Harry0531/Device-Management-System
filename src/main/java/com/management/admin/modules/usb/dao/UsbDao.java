@@ -15,4 +15,5 @@ public interface UsbDao {
     int selectSearchCount(Usb usb);
     int deleteListByIds(List<Usb> list);
     String getScrap();
+    Usb getUsbById(String id);
 }

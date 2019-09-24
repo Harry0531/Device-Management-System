@@ -17,4 +17,5 @@ public interface InfoDeviceDao {
     int deleteListByIds(List<InfoDevice> list);
     String getScrap();
     String findLabel(String id);
+    InfoDevice getInfoDeviceById(String id);
 }

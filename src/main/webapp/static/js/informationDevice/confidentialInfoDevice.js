@@ -53,6 +53,16 @@ let defaultDialog = {
     }
 };
 
+let defaultScrapDialog = {
+    visible: false,
+    loading: false,
+    data: {
+        id: '',
+        scrap_time: '',
+        remarks: ''
+    }
+};
+
 let app = new Vue({
     el: '#app',
     data: {
@@ -81,6 +91,7 @@ let app = new Vue({
             condition: defaultFiltersCondition
         },
         dialog: defaultDialog,
+        scrapDialog: defaultScrapDialog,
         table: {
             loading: false,
             selectionList: [],
@@ -387,49 +398,43 @@ let app = new Vue({
             this.table.props.pageIndex = newIndex;
             this.refreshTable();
         },
-        scrap: function (v) {
-            app.$confirm('确认报废', '警告', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                let data = {
-                    id: v["id"],
-                    department: v["department"],
-                    subject: v["subject"],
-                    secret_number: v["secret_number"],
-                    asset_number: v["asset_number"],
-                    type: v["type"],
-                    device_name: v["device_name"],
-                    person: v["person"],
-                    secret_level: v["secret_level"],
-                    connect_number: v["connect_number"],
-                    model: v["model"],
-                    device_number: v["device_number"],
-                    disk_number: v["disk_number"],
-                    usage: v["usage"],
-                    place_location: v["place_location"],
-                    use_situation: v["use_situation"],
-                    enablation_time: v["enablation_time"],
-                    remarks: v["remarks"],
-                    department_code: v["department_code"],
-                    subject_code: v["subject_code"],
-                    delFlag: v["delFlag"]
-                };
-                ajaxPostJSON(app.urls.scrap, data, function (result) {
-                    app.$message({
-                        message: "报废成功",
-                        type: "success"
-                    });
-                    app.table.props.pageIndex = 1;
-                    app.refreshTable();
-                });
-            }).catch(() => {
+        scrap: function () {
+            app.scrapDialog.loading = true;
+            if( app.scrapDialog.data.scrap_time === ""|| app.scrapDialog.data.scrap_time == null){
                 app.$message({
-                    message: "取消操作",
-                    type: "danger"
+                    type:"error",
+                    message:"未选择报废时间"
                 });
+                app.scrapDialog.loading = false;
+                return;
+            }
+            let data = {
+                id: app.scrapDialog.data.id,
+                scrap_time: app.scrapDialog.data.scrap_time,
+                remarks: app.scrapDialog.data.remarks
+            };
+            ajaxPost(app.urls.scrap, data, function (result) {
+                app.$message({
+                    message: "报废成功",
+                    type: "success"
+                });
+                app.table.props.pageIndex = 1;
+                app.refreshTable();
+                app.scrapDialog.loading = false;
+                app.scrapDialog.visible = false;
             });
+
+        },
+        showScrapDialog: function (v) {
+            app.scrapDialog.data.id = v["id"];
+            app.scrapDialog.data.scrap_time = '';
+            app.scrapDialog.data.remarks = '';
+            app.scrapDialog.visible = true;
+        },
+        resetScrapDialog: function () {
+            app.scrapDialog.data.id = '';
+            app.scrapDialog.data.scrap_time = '';
+            app.scrapDialog.data.remarks = '';
         }
     },
     mounted: function () {

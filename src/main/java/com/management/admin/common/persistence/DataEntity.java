@@ -2,6 +2,7 @@ package com.management.admin.common.persistence;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.management.admin.common.utils.IdGen;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -29,6 +30,7 @@ public class DataEntity<T> {
     private Integer delFlag;        // 是否被删除
     @Column(name = "scrap_time")
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date scrap_time;        //报废时间
 
     @Transient

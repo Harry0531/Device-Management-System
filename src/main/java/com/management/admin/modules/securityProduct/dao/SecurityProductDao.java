@@ -15,4 +15,5 @@ public interface SecurityProductDao {
     int selectSearchCount(SecurityProduct securityProduct);
     int deleteListByIds(List<SecurityProduct> list);
     String getScrap();
+    SecurityProduct getSecurityProductById(String id);
 }

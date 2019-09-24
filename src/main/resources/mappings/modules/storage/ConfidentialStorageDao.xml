@@ -227,4 +227,8 @@
         SELECT `id` FROM `data_dictionary` WHERE
             (`dic_value` = '报废' AND `dic_property` = '存储介质使用情况')
     </select>
+
+    <select id="getConfidentialStorageById" resultMap="storageBean">
+        select * from `confidential_storage_device` where `id`=#{id}
+    </select>
 </mapper>

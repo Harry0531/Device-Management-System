@@ -232,4 +232,8 @@
         SELECT `id` FROM `data_dictionary` WHERE
             (`dic_value` = '报废' AND `dic_property` = '安全保密产品使用情况')
     </select>
+
+    <select id="getSecurityProductById" resultMap="productBean">
+        select * from `security_products` where `id`=#{id}
+    </select>
 </mapper>

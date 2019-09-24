@@ -6,6 +6,9 @@ import com.management.admin.modules.sys.entity.Dept;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -13,7 +16,7 @@ public class InfoDeviceService {
     @Autowired
     private InfoDeviceDao infoDeviceDao;
 
-    public List<String> getDeviceName(String type){
+    public List<String> getDeviceName(String type) {
         return infoDeviceDao.getDeviceName(type);
     }
 
@@ -51,14 +54,21 @@ public class InfoDeviceService {
         return list.size() == 0 || infoDeviceDao.deleteListByIds(list) == list.size();
     }
 
-    public boolean scrap(InfoDevice infoDevice) {
-        infoDevice.preScrap();
+    public boolean scrap(String id, String scrapTime, String remarks) throws ParseException {
+        InfoDevice infoDevice = infoDeviceDao.getInfoDeviceById(id);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date scrap_time = sdf.parse(scrapTime);
+
+        infoDevice.preUpdate();
         infoDevice.setScrapped_flag(1);
+        infoDevice.setScrap_time(scrap_time);
         infoDevice.setUse_situation(infoDeviceDao.getScrap());
+        infoDevice.setRemarks(remarks);
         return infoDeviceDao.updateInfo(infoDevice) == 1;
     }
 
-    public String findLabel(String id){
+    public String findLabel(String id) {
         return infoDeviceDao.findLabel(id);
     }
 }

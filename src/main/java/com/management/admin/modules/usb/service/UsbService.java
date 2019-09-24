@@ -6,6 +6,9 @@ import com.management.admin.modules.usb.entity.Usb;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -47,10 +50,17 @@ public class UsbService {
         return list.size() == 0 || usbDao.deleteListByIds(list) == list.size();
     }
 
-    public boolean scrap(Usb usb) {
-        usb.preScrap();
+    public boolean scrap(String id, String scrapTime, String remarks) throws ParseException {
+        Usb usb = usbDao.getUsbById(id);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date scrap_time = sdf.parse(scrapTime);
+
+        usb.preUpdate();
         usb.setScrapped_flag(1);
+        usb.setScrap_time(scrap_time);
         usb.setUse_situation(usbDao.getScrap());
+        usb.setRemarks(remarks);
         return usbDao.updateUsb(usb) == 1;
     }
 }
