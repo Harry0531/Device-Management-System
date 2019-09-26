@@ -8,9 +8,13 @@
                 AND `dic_property` = CONCAT('非涉密存储介质', #{name})
             </if>
             <if test="name != '用途'">
-                `dic_property` = CONCAT('存储介质', #{name})
+                and `dic_property` = CONCAT('存储介质', #{name})
+            </if>
+            <if test="1 == 1">
+                and `del_flag` = '0'
             </if>
         </where>
+        order by `sort` DESC
     </select>
 
     <select id="getSubFromDept" resultType="com.management.admin.modules.sys.entity.Dept">

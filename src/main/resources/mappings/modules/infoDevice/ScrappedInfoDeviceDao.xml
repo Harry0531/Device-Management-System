@@ -3,7 +3,8 @@
 <mapper namespace="com.management.admin.modules.infoDevice.dao.ScrappedInfoDeviceDao">
     <select id="getSubFromDict" resultType="com.management.admin.modules.sys.entity.Dict">
         SELECT `id`, `dic_value` AS `dicValue` FROM `data_dictionary` WHERE
-            `dic_property` = CONCAT('信息设备', #{name})
+            `dic_property` = CONCAT('信息设备', #{name}) and `del_flag` = '0'
+                 order by `sort` DESC
     </select>
 
     <select id="getSubFromDept" resultType="com.management.admin.modules.sys.entity.Dept">
