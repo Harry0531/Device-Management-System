@@ -95,6 +95,7 @@ let app = new Vue({
                         })
                         s=s.substr(0,s.length-1);
                         console.log(s);
+                        if(s.length == 0) return ;
                         app.$message({
                             message:"其中第"+s+"条导入失败",
                             type:"error"

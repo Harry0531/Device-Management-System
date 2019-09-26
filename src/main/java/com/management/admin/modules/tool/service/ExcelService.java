@@ -209,6 +209,8 @@ public class ExcelService {
                         if(uu.equals("wrong")){
                             isWrong = true;
                             break;
+                        }else{
+                            cellValue  = uu;
                         }
                     }else if(columnMapField.getIsDict()){
                         //使用了字典
