@@ -62,7 +62,7 @@ let app = new Vue({
             if (exist === true) {
                 this.activeTabName = this.tabList[index].name;
                 this.tabList[index].loading = true; // tab页进入加载状态
-                this.refreshTab(this.activeTabName);
+                this.refreshTab(this.activeTabName, url);
             } else {
                 let newTabName = 'tab' + this.tabNameCount;
                 this.tabNameCount += 1;
@@ -97,8 +97,9 @@ let app = new Vue({
             this.tabList = tabs.filter(tab => tab.name !== targetName);
         },
         //刷新指定tab的iframe
-        refreshTab: function (iframeId) {
-            document.getElementById(iframeId).contentWindow.location.reload(true);
+        refreshTab: function (iframeId, url) {
+            // document.getElementById(iframeId).contentWindow.location.reload(true);
+            document.getElementById(iframeId).contentWindow.location.href = url;
         }
     }
 });
