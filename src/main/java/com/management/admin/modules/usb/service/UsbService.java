@@ -47,7 +47,14 @@ public class UsbService {
     }
 
     public boolean deleteListByIds(List<Usb> list) {
-        return list.size() == 0 || usbDao.deleteListByIds(list) == list.size();
+//        return list.size() == 0 || usbDao.deleteListByIds(list) == list.size();
+        for(Usb usb:list){
+            if(usb.get_secret_level().equals("非密"))
+                usbDao.remove(usb);
+            else
+                usbDao.delete(usb);
+        }
+        return true;
     }
 
     public boolean scrap(String id, String scrapTime, String remarks) throws ParseException {

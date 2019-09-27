@@ -162,10 +162,19 @@
             `scrap_time` = #{scrap_time}
         WHERE id =#{id}
     </update>
+
     <update id="deleteListByIds" parameterType="com.management.admin.modules.usb.entity.Usb">
         UPDATE `usb_key` SET `del_flag` = 1 WHERE `id` IN
         <foreach collection="list" item="item" open="(" close=")" separator=",">
             #{item.id}
         </foreach>
+    </update>
+
+    <delete id="remove" parameterType="com.management.admin.modules.usb.entity.Usb">
+        delete from `usb_key` where `id`=#{id}
+    </delete>
+
+    <update id="delete" parameterType="com.management.admin.modules.usb.entity.Usb">
+        update `usb_key` set `del_flag` = 1 where `id`=#{id}
     </update>
 </mapper>

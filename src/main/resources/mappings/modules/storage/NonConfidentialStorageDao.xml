@@ -214,12 +214,12 @@
         limit #{page.pageStart}, #{page.pageSize}
     </select>
 
-    <update id="deleteListByIds" parameterType="com.management.admin.modules.storage.entity.NonConfidentialStorage">
-        UPDATE `non_confidential_storage_device` SET `del_flag` = 1 WHERE `id` IN
+    <delete id="deleteListByIds" parameterType="com.management.admin.modules.storage.entity.NonConfidentialStorage">
+        delete from `non_confidential_storage_device` WHERE `id` IN
         <foreach collection="list" item="item" open="(" close=")" separator=",">
             #{item.id}
         </foreach>
-    </update>
+    </delete>
 
     <select id="getNonConfidential" resultType="String">
         SELECT `id` FROM `data_dictionary` WHERE

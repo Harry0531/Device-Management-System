@@ -40,7 +40,14 @@ public class ScrappedUsbService {
     }
 
     public boolean deleteListByIds(List<Usb> list) {
-        return list.size() == 0 || scrappedUsbDao.deleteListByIds(list) == list.size();
+//        return list.size() == 0 || scrappedUsbDao.deleteListByIds(list) == list.size();
+        for(Usb usb:list){
+            if (usb.get_secret_level().equals("非密"))
+                scrappedUsbDao.remove(usb);
+            else
+                scrappedUsbDao.delete(usb);
+        }
+        return true;
     }
 
     public boolean scrap(String id, String scrapTime, String remarks) throws ParseException {

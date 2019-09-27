@@ -16,4 +16,6 @@ public interface UsbDao {
     int deleteListByIds(List<Usb> list);
     String getScrap();
     Usb getUsbById(String id);
+    int remove(Usb usb);
+    int delete(Usb usb);
 }

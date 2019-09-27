@@ -236,4 +236,12 @@
     <select id="getUsbById" resultMap="usbBean">
         select * from `usb_key` where `id`=#{id}
     </select>
+
+    <delete id="remove" parameterType="com.management.admin.modules.usb.entity.Usb">
+        delete from `usb_key` where `id`=#{id}
+    </delete>
+
+    <update id="delete" parameterType="com.management.admin.modules.usb.entity.Usb">
+        update `usb_key` set `del_flag` = 1 where `id`=#{id}
+    </update>
 </mapper>
