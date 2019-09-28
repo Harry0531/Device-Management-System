@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>login</title>
+    <title>系统登录</title>
     <link rel="stylesheet" href="../css/login.css">
     <link rel="stylesheet" href="../css/template.css">
     <script src="../plugins/vue/vue.js"></script>
@@ -34,16 +34,21 @@
                 <div class="login-content">
                     <div class="login-input-wrap">
                         <div class="margin-bottom-5">
-                            <label class="loginLabal" v-if="isLogin">用户登录</label>
-                        </div>
-                        <div class="margin-bottom-5">
-                            <label class="loginLabal" v-if="!isLogin">修改密码</label>
+                            <label class="loginLabel">
+                                {{isLogin ? "用户登录" : "修改密码"}}
+                            </label>
                         </div>
 
+                        <div class="margin-bottom-5" v-if="isLogin" style="visibility: hidden">
+                            <div class="txtInput formIpt"></div>
+                        </div>
                         <div class="margin-bottom-5">
                             <input type="password" class="txtInput formIpt"
                                    placeholder="密码" v-model="passwordData.password"
                                    v-if="isLogin"/>
+                        </div>
+                        <div class="margin-bottom-5" v-if="isLogin" style="visibility: hidden">
+                            <div class="txtInput formIpt"></div>
                         </div>
 
                         <div class="margin-bottom-5">
@@ -87,7 +92,7 @@
         </div>
     </div>
     <footer class="footer" style="position: absolute;bottom: 10px;width: 100%">
-        <p style="text-align: center">&copy; 开发单位：北京理工大学软件学院</p>
+        <p style="text-align: center">&copy; 开发单位：北京理工大学计算机学院</p>
     </footer>
 </div>
 </body>

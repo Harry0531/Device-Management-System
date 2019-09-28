@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>frame</title>
+    <title>保密设备管理系统</title>
     <script src="../plugins/vue/vue.js"></script>
     <script src="../plugins/jquery/jquery-3.3.1.min.js"></script>
     <script src="../plugins/elementui/index.js"></script>
@@ -15,6 +15,9 @@
         <el-header height="48px"
                    style="background: #007cc4;padding-right: 60px;box-shadow: 0 2px 10px 0 rgba(0,0,0,.15);">
             <span class="title">设备管理系统</span>
+            <div style="display: block;">
+                <el-button type="danger" size="small" @click="logout">退出</el-button>
+            </div>
         </el-header>
         <el-container style="height: 100%">
             <el-aside width="230px">

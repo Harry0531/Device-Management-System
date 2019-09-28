@@ -98,9 +98,3 @@ let app = new Vue({
         }
     }
 });
-
-
-// window.onload = function () {
-//     setCookie("name", "value", 0);
-//     window.open("frame.html", "_self")
-// };

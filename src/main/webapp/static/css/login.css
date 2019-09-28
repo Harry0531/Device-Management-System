@@ -94,7 +94,7 @@ body {
     height: 100%;
     margin: 0 0 0 300px;
     position: absolute;
-    background: url(../image//login-mid.png) no-repeat center center;
+    background: url(../image/login-mid.png) no-repeat center center;
 }
 
 .login-right{
@@ -129,7 +129,7 @@ body {
     margin: 0 auto;
 }
 
-.loginLabal{
+.loginLabel{
     font-size : 25px;
     margin-left:50px;
     color:#00a608;
