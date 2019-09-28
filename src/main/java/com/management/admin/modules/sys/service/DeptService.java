@@ -21,10 +21,10 @@ public class DeptService {
         for (Dept d : list) {
             switch (d.getDept_type()) {
                 case 0:
-                    d.set_dept_type("学院");
+                    d.set_dept_type("部门/学院");
                     break;
                 case 1:
-                    d.set_dept_type("部门/课题组");
+                    d.set_dept_type("科室/课题组");
                     break;
             }
         }
