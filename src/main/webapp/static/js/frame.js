@@ -58,7 +58,7 @@ let app = new Vue({
                 type: 'error'
             });
             setTimeout(function () {
-                window.open("../login.html", "_self")
+                window.open("login.html", "_self")
             }, 2000);
         },
         //选中触发
