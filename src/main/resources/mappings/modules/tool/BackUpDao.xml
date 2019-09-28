@@ -5,8 +5,11 @@
     <select id="getTableData" parameterType="String" resultType="java.util.LinkedHashMap">
     		 select ${param1} from ${param2}
 			  <where>
-				  <if test="department != null and department !=''">
+				  <if test="department != null and department !='' and isDept!= 'yes'">
 					and `department`=#{param3}
+				  </if>
+				  <if test="isDept =='yes'">
+					  and (`id`=#{param3} or `dept_attach` = #{param3})
 				  </if>
 			  </where>
     	</select>

@@ -17,6 +17,7 @@
         <template>
             <el-transfer v-model="ExportList" :data="FieldList"
                 :titles="titles" :props="{key:'fieldType',label:'fieldName'}"
+                         :right-default-checked="defaultChecked"
             ></el-transfer>
         </template>
         <div style="position: absolute;right: 20px;bottom: 20px;">

@@ -91,9 +91,14 @@ public class BackUpService {
             }
             List<Map<String,Object>>  dataList =new ArrayList<>();
             if(tables.get(z).equals("data_dictionary")||tables.get(z).equals("data_dictionary_type")||tables.get(z).equals("department")||tables.get(z).equals("excel_template")||tables.get(z).equals("excel_template_map")){
-                dataList =  backUpDao.getTableData(field,tables.get(z),"");
+                if(tables.get(z).equals("department")){
+                    dataList =  backUpDao.getTableData(field,tables.get(z),department,"yes");
+                }else{
+                    dataList =  backUpDao.getTableData(field,tables.get(z),"","no");
+                }
+
             }else{
-                dataList = backUpDao.getTableData(field,tables.get(z),department);
+                dataList = backUpDao.getTableData(field,tables.get(z),department,"no");
             }
             List<List<Object>> data =new ArrayList<>();
             for(Map<String,Object> i :dataList){

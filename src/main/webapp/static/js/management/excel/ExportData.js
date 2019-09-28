@@ -9,7 +9,8 @@ var ex = new Vue({
         FieldList: [],
         ExportList: [],
         titles: ["未选中", "已选中"],
-        exportInfo: {}
+        exportInfo: {},
+        defaultChecked:[]
     },
     created: function () {
         this.checkStatus();
@@ -79,9 +80,14 @@ var ex = new Vue({
             }
             app.exportInfo = data;
             app.FieldList = con["fieldList"];
+            app.FieldList.forEach(function (v) {
+                app.defaultChecked.push(v["fieldType"])
+            })
+            console.log(app.defaultChecked)
         },
         startExport: function () {
             let app = this;
+
             app.getExportData();
             var selectList = [];
             app.exportInfo["fieldList"].forEach(function (v) {
