@@ -1,18 +1,35 @@
-
-
 var ex = new Vue({
-    el:'#app',
-    data:{
-        urls:{
-            getColumnInTableAndExcel:"http://localhost:8444/api/tool/excel/getColumnInTableAndExcel",
-            exportToExcel:"http://localhost:8444/api/tool/excel/exportDataToExcel"
+    el: '#app',
+    data: {
+        showWindow: false,
+        urls: {
+            getColumnInTableAndExcel: "http://localhost:8444/api/tool/excel/getColumnInTableAndExcel",
+            exportToExcel: "http://localhost:8444/api/tool/excel/exportDataToExcel"
         },
-        FieldList:[],
-        ExportList:[],
-        titles:["未选中","已选中"],
-        exportInfo:{}
+        FieldList: [],
+        ExportList: [],
+        titles: ["未选中", "已选中"],
+        exportInfo: {},
+        defaultChecked:[]
     },
-    methods:{
+    created: function () {
+        this.checkStatus();
+    },
+    methods: {
+        //判断登录状态
+        checkStatus() {
+            if (getCookie("name") != null) {
+                this.showWindow = true;
+                return;
+            }
+            this.$message({
+                message: "请登录",
+                type: 'error'
+            });
+            setTimeout(function () {
+                window.open("../../login.html", "_self")
+            }, 2000);
+        },
         //根据网页地址获得导出表名
         // getTableNameByUrl:function (URL) {
         //     var args = URL.split("?");
@@ -49,47 +66,52 @@ var ex = new Vue({
         //         })
         //     })
         // },
-        getExportData:function () {
-            let app=this;
-           let con = window.parent.getExportConditions();
-           let data={
-               fileName:con["fileName"],
-               templateId:con["templateId"],
-               fieldList:con["fieldList"],
-               conditionsList:con["conditionsList"],
-               idList:con["idList"],
-               isScrapped:con["isScrapped"],
-               tableName:con["tableName"]
-           }
+        getExportData: function () {
+            let app = this;
+            let con = window.parent.getExportConditions();
+            let data = {
+                fileName: con["fileName"],
+                templateId: con["templateId"],
+                fieldList: con["fieldList"],
+                conditionsList: con["conditionsList"],
+                idList: con["idList"],
+                isScrapped: con["isScrapped"],
+                tableName: con["tableName"]
+            }
             app.exportInfo = data;
-            app.FieldList=con["fieldList"];
+            app.FieldList = con["fieldList"];
+            app.FieldList.forEach(function (v) {
+                app.defaultChecked.push(v["fieldType"])
+            })
+            console.log(app.defaultChecked)
         },
-        startExport:function () {
-            let app=this;
+        startExport: function () {
+            let app = this;
+
             app.getExportData();
-            var selectList=[];
+            var selectList = [];
             app.exportInfo["fieldList"].forEach(function (v) {
-                if(app.ExportList.indexOf(v["fieldType"]) !== -1){
+                if (app.ExportList.indexOf(v["fieldType"]) !== -1) {
                     selectList.push(v["fieldName"]);
                 }
             })
-            let  data={
-                    fileName:app.exportInfo["fileName"],
-                    templateId:app.exportInfo["templateId"],
-                    fieldName:selectList,
-                    fieldType:app.ExportList,
-                    conditionsList:app.exportInfo["conditionsList"],
-                    idList:app.exportInfo["idList"],
-                    isScrapped:app.exportInfo["isScrapped"],
-                    tableName:app.exportInfo["tableName"]
+            let data = {
+                fileName: app.exportInfo["fileName"],
+                templateId: app.exportInfo["templateId"],
+                fieldName: selectList,
+                fieldType: app.ExportList,
+                conditionsList: app.exportInfo["conditionsList"],
+                idList: app.exportInfo["idList"],
+                isScrapped: app.exportInfo["isScrapped"],
+                tableName: app.exportInfo["tableName"]
             }
 
-        postcall(app.urls.exportToExcel,data);
-        app.ExportList=[]
+            postcall(app.urls.exportToExcel, data);
+            app.ExportList = []
         },
 
     },
-    mounted:function () {
+    mounted: function () {
         this.getExportData();
 
     }
@@ -100,16 +122,16 @@ function postcall(url, params, target) {
     tempform.id = "export"
     tempform.action = url;
     tempform.method = "post";
-    tempform.style.display="none"
-    if(target) {
+    tempform.style.display = "none"
+    if (target) {
         tempform.target = target;
     }
 
     for (var x in params) {
         var opt = document.createElement("input");
-        opt.setAttribute("type","hidden");
-        opt.setAttribute("name",x);
-        opt.setAttribute("value",params[x]);
+        opt.setAttribute("type", "hidden");
+        opt.setAttribute("name", x);
+        opt.setAttribute("value", params[x]);
         tempform.appendChild(opt);
     }
 
@@ -118,6 +140,6 @@ function postcall(url, params, target) {
     tempform.appendChild(opt);
     document.body.appendChild(tempform);
 
-     tempform.submit();
+    tempform.submit();
     document.body.removeChild(tempform);
 }

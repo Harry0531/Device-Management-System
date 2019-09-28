@@ -27,7 +27,7 @@
 </head>
 <body>
 
-    <div id="app" v-cloak>
+    <div id="app" v-cloak v-if="showWindow">
         <el-steps :active="StepCount" style="margin-right: 20px">
             <el-step title="1.上传模版文件" icon="el-icon-upload"></el-step>
             <el-step title="2.列名映射" icon="el-icon-edit"></el-step>

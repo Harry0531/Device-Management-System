@@ -1,11 +1,12 @@
 let app = new Vue({
     el: '#app',
     data: {
+        showWindow: false,
         formData: { // 与后端ExcelTemplate相对应
             id: '',
             excelName: '',      // excel模板文件的名字(默认存放/WEB-INF/excelTemplate)
             excelDataName: '',  // 存放数据的excel文件的名字(默认存放在/WEB-INF/temp)
-            typeId:''
+            typeId: ''
         },
         urls: {
             selectAllExcelTemplate: 'http://localhost:8444/api/tool/excel/selectAllTemplate',
@@ -19,12 +20,29 @@ let app = new Vue({
             importing: false
         }
     },
+    created: function () {
+        this.checkStatus();
+    },
     methods: {
+        //判断登录状态
+        checkStatus() {
+            if (getCookie("name") != null) {
+                this.showWindow = true;
+                return;
+            }
+            this.$message({
+                message: "请登录",
+                type: 'error'
+            });
+            setTimeout(function () {
+                window.open("../../login.html", "_self")
+            }, 2000);
+        },
         // 上传模板前调用
         beforeUpload: function (file) {
             let suffix = file.name.split('.').pop();
             if (suffix !== 'xlsx') {
-                app.$message({message:'仅支持xlsx文件', type:'error'});
+                app.$message({message: '仅支持xlsx文件', type: 'error'});
                 return false;
             }
         },
@@ -83,32 +101,32 @@ let app = new Vue({
             ajaxPostJSON(this.urls.importExcelToTable, this.formData, function (d) {
                 app.loading.importing = false;
                 app.$message({
-                    message:"成功导入"+d.data["success"]+"条记录",
-                    type:"success"
+                    message: "成功导入" + d.data["success"] + "条记录",
+                    type: "success"
                 });
 
                 setTimeout(function () {
-                    if(d.data["failed"]!=null){
-                        let s="";
+                    if (d.data["failed"] != null) {
+                        let s = "";
                         d.data["failed"].forEach(function (v) {
-                            s+=""+v.toString()+",";
+                            s += "" + v.toString() + ",";
                         })
-                        s=s.substr(0,s.length-1);
+                        s = s.substr(0, s.length - 1);
                         console.log(s);
-                        if(s.length == 0) return ;
+                        if (s.length == 0) return;
                         app.$message({
-                            message:"其中第"+s+"条导入失败",
-                            type:"error"
+                            message: "其中第" + s + "条导入失败",
+                            type: "error"
                         });
                     }
-                },1000)
+                }, 1000)
 
 
-            },function(d){
+            }, function (d) {
                 app.loading.importing = false;
                 app.$message({
-                    message:"导入失败",
-                    type:"error"
+                    message: "导入失败",
+                    type: "error"
                 });
             })
         }

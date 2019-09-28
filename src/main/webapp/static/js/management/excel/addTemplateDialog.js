@@ -1,37 +1,55 @@
-var app=new Vue({
-    el:'#app',
-    data:{
-        StepCount:1,
-        TableList:[],
-        urls:{
-            getTableList:"http://localhost:8444/api/tool/excel/getTableList",
-            getDictType:'http://localhost:8444/api/tool/excel/getTemplateTypeList',
-            getDict:'http://localhost:8444/api/sys/dict/getDictTypeList',
+var app = new Vue({
+    el: '#app',
+    data: {
+        showWindow: false,
+        StepCount: 1,
+        TableList: [],
+        urls: {
+            getTableList: "http://localhost:8444/api/tool/excel/getTableList",
+            getDictType: 'http://localhost:8444/api/tool/excel/getTemplateTypeList',
+            getDict: 'http://localhost:8444/api/sys/dict/getDictTypeList',
 
-            uploadFile:"http://localhost:8444/api/tool/file/uploadFile",
-            getColumnInTableAndExcel:"http://localhost:8444/api/tool/excel/getColumnInTableAndExcel",
-            insertExcelTemplate:"http://localhost:8444/api/tool/excel/insertExcelTemplate"
+            uploadFile: "http://localhost:8444/api/tool/file/uploadFile",
+            getColumnInTableAndExcel: "http://localhost:8444/api/tool/excel/getColumnInTableAndExcel",
+            insertExcelTemplate: "http://localhost:8444/api/tool/excel/insertExcelTemplate"
         },
-        loading:{
-            step1:false,
-            step2:false
+        loading: {
+            step1: false,
+            step2: false
         },
-        templateEntity:{
-            templateName:"",       //模版名
-            tableName:"",       //对应表名
-            filePath:"" ,  //文件名
-            TypeId:"" ,  //对应数据字典类型ID
-            TypeName:""
+        templateEntity: {
+            templateName: "",       //模版名
+            tableName: "",       //对应表名
+            filePath: "",  //文件名
+            TypeId: "",  //对应数据字典类型ID
+            TypeName: ""
         },
-        ColumnList:{
-            ExcelColumnList:[],
-            TableColumnList:[],
-            mapList:[],
+        ColumnList: {
+            ExcelColumnList: [],
+            TableColumnList: [],
+            mapList: [],
         },
-        dictType:[],
-        Dict:[],
+        dictType: [],
+        Dict: [],
+    },
+    created: function () {
+        this.checkStatus();
     },
     methods: {
+        //判断登录状态
+        checkStatus() {
+            if (getCookie("name") != null) {
+                this.showWindow = true;
+                return;
+            }
+            this.$message({
+                message: "请登录",
+                type: 'error'
+            });
+            setTimeout(function () {
+                window.open("../../login.html", "_self")
+            }, 2000);
+        },
         // 上传模板前调用
         beforeUpload: function (file) {
             let suffix = file.name.split('.').pop();
@@ -67,10 +85,10 @@ var app=new Vue({
                     app.ColumnList.mapList.push({
                         tableColumnName: v,
                         ExcelColumnIndex: -1,
-                        isDict:false,
-                        dict:null,
-                        columnIndex:null,
-                        columnName:null
+                        isDict: false,
+                        dict: null,
+                        columnIndex: null,
+                        columnName: null
                     })
                 });
                 app.loading.step1 = false;
@@ -104,8 +122,8 @@ var app=new Vue({
                     mapList: []
                 }
                 window.setTimeout(function (v) {
-                    window.parent.app.insertOrUpdateDialog.visible=false;
-                },1000);
+                    window.parent.app.insertOrUpdateDialog.visible = false;
+                }, 1000);
 
             })
         },
@@ -128,10 +146,10 @@ var app=new Vue({
             var app = this;
             app.templateEntity.TypeId = v;
             app.dictType.forEach(function (w) {
-                if (v=== w["typeName"]) {
+                if (v === w["typeName"]) {
                     app.templateEntity.tableName = w["tableName"];
                     app.templateEntity.typeName = w["typeName"];
-                    app.templateEntity.TypeId=w["id"];
+                    app.templateEntity.TypeId = w["id"];
                 }
             })
             console.log(app.templateEntity);
@@ -144,7 +162,7 @@ var app=new Vue({
         },
 
     },
-    mounted:function () {
+    mounted: function () {
         this.getTableList();
         this.getDictTypeData();
     }

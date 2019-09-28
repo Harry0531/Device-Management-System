@@ -1,13 +1,14 @@
 var app = new Vue({
     el: '#app',
     data: {
+        showWindow: false,
         fullScreenLoading: false,
         urls: {
             getDictList: 'http://localhost:8444/api/sys/dict/selectDictListByPage',
-            insertDict:'http://localhost:8444/api/sys/dict/insertOrUpdateDict',
-            deleteListByIds:'http://localhost:8444/api/sys/dict/deleteDictByIds',
-            deleteListById:'http://localhost:8444/api/sys/dict/deleteDictById',
-            getDictType:"http://localhost:8444/api/sys/dict/getDictTypeList"
+            insertDict: 'http://localhost:8444/api/sys/dict/insertOrUpdateDict',
+            deleteListByIds: 'http://localhost:8444/api/sys/dict/deleteDictByIds',
+            deleteListById: 'http://localhost:8444/api/sys/dict/deleteDictById',
+            getDictType: "http://localhost:8444/api/sys/dict/getDictTypeList"
 
         },
         table: {
@@ -21,34 +22,51 @@ var app = new Vue({
                 pageSizes: [5, 10, 20, 40],
                 total: 0
             },
-            typeId:''
+            typeId: ''
         },
-        dictType:[],
-        FieldList:[],
-        dialog:{
-            visible:false,
-            loading:false,
-            data:{
-                id:"",
-                dicProperty:"",
-                dicValue:"",
-                fatherProperty:[],
-                sort:"",
-                remarks:"",
-                delFlag:"",
-                dis:false
+        dictType: [],
+        FieldList: [],
+        dialog: {
+            visible: false,
+            loading: false,
+            data: {
+                id: "",
+                dicProperty: "",
+                dicValue: "",
+                fatherProperty: [],
+                sort: "",
+                remarks: "",
+                delFlag: "",
+                dis: false
             }
         },
-        options:[]
+        options: []
+    },
+    created: function () {
+        this.checkStatus();
     },
     methods: {
+        //判断登录状态
+        checkStatus() {
+            if (getCookie("name") != null) {
+                this.showWindow = true;
+                return;
+            }
+            this.$message({
+                message: "请登录",
+                type: 'error'
+            });
+            setTimeout(function () {
+                window.open("../login.html", "_self")
+            }, 2000);
+        },
         //刷新表格数据
         refreshTable: function () {
             let app = this;
             app.table.loading = true;
             let data = {
                 page: app.table.props,
-                dicProperty:app.table.data.dicProperty
+                dicProperty: app.table.data.dicProperty
             };
             ajaxPostJSON(this.urls.getDictList, data, function (d) {
                 app.table.loading = false;
@@ -57,7 +75,7 @@ var app = new Vue({
 
             })
             let dataAll = {
-                page:{
+                page: {
                     searchKey: '',
                     pageIndex: 1,
                     pageSize: 99999,
@@ -65,28 +83,28 @@ var app = new Vue({
                     total: 0
                 }
             };
-            app.options=[];
-            ajaxPostJSON(app.urls.getDictList,dataAll,function (d) {
+            app.options = [];
+            ajaxPostJSON(app.urls.getDictList, dataAll, function (d) {
                 d.data.resultList.forEach(function (v) {
-                    let pos=-1;
+                    let pos = -1;
                     app.options.forEach(function (h) {
-                        if(h["label"] === v["dicProperty"]){
-                            pos=app.options.indexOf(h);
+                        if (h["label"] === v["dicProperty"]) {
+                            pos = app.options.indexOf(h);
                         }
                     })
-                    if(pos === -1 ){
+                    if (pos === -1) {
                         app.options.push({
-                            label:v["dicProperty"],
-                            value:v["dicProperty"],
-                            children:[{
-                                label:v["dicValue"],
-                                value:v["dicValue"]
+                            label: v["dicProperty"],
+                            value: v["dicProperty"],
+                            children: [{
+                                label: v["dicValue"],
+                                value: v["dicValue"]
                             }]
                         })
-                    }else{
+                    } else {
                         app.options[pos].children.push({
-                            label:v["dicValue"],
-                            value:v["dicValue"]
+                            label: v["dicValue"],
+                            value: v["dicValue"]
                         })
                     }
 
@@ -94,10 +112,10 @@ var app = new Vue({
             })
         },
         //得到数据字典类型
-        getDictTypeData:function(){
-            let app= this;
-            ajaxGet(app.urls.getDictType,null,function (d) {
-                app.dictType=d.data;
+        getDictTypeData: function () {
+            let app = this;
+            ajaxGet(app.urls.getDictType, null, function (d) {
+                app.dictType = d.data;
             })
         },
         // 处理pageSize变化
@@ -114,15 +132,15 @@ var app = new Vue({
         onSelectionChange: function (val) {
             this.table.selectionList = val;
         },
-        formatYear: function(timestamp){
+        formatYear: function (timestamp) {
             let date = new Date(timestamp);
             return date.Format("yyyy");
         },
-        deleteByIds: function(fundList){
+        deleteByIds: function (fundList) {
             if (fundList.length === 0) {
                 app.$message({
                     message: "未选中任何项",
-                    type:"danger"
+                    type: "danger"
                 });
                 return;
             }
@@ -137,95 +155,95 @@ var app = new Vue({
                 ajaxPostJSON(this.urls.deleteListByIds, data, function (d) {
                     app.$message({
                         message: "删除成功",
-                        type:"success"
+                        type: "success"
                     });
                     app.refreshTable();
                 })
             }).catch(() => {
                 app.$message({
                     message: "取消删除",
-                    type:"danger"
+                    type: "danger"
                 });
             });
         },
-        handleSelectTypeChange:function (v) {
-            var app=this;
-            app.dialog.data.dicProperty=v;
+        handleSelectTypeChange: function (v) {
+            var app = this;
+            app.dialog.data.dicProperty = v;
         },
-        handleSelectTypeChange2:function (v) {
-            var app=this;
-            app.table.props.searchKey=v;
+        handleSelectTypeChange2: function (v) {
+            var app = this;
+            app.table.props.searchKey = v;
             app.refreshTable();
         },
-        handleSelectFatherTypeChange:function(v){
-            var app=this;
+        handleSelectFatherTypeChange: function (v) {
+            var app = this;
             console.log(v);
-            app.dialog.data.fatherProperty=v;
+            app.dialog.data.fatherProperty = v;
         },
         insertOrUpdateDict: function () {
             let app = this;
             app.dialog.loading = true;
             let data = {
-                dicProperty:app.dialog.data.dicProperty,
-                dicValue:app.dialog.data.dicValue,
-                fatherProperty:app.dialog.data.fatherProperty.toString(),
-                sort:app.dialog.data.sort,
-                remark:app.dialog.data.remarks,
-                id:app.dialog.data.id,
+                dicProperty: app.dialog.data.dicProperty,
+                dicValue: app.dialog.data.dicValue,
+                fatherProperty: app.dialog.data.fatherProperty.toString(),
+                sort: app.dialog.data.sort,
+                remark: app.dialog.data.remarks,
+                id: app.dialog.data.id,
             };
             ajaxPostJSON(this.urls.insertDict, data, function (d) {
                 app.dialog.loading = false;
-                app.dialog.visible=false;
+                app.dialog.visible = false;
                 app.$message({
-                    message:"操作成功",
-                    type:"success"
+                    message: "操作成功",
+                    type: "success"
                 })
                 app.refreshTable();
             })
         },
-        resetDialogData:function () {
-            var app=this;
-            app.dialog={
-                visible:false,
-                loading:false,
-                data:{
-                    id:"",
-                    dicProperty:"",
-                    dicValue:"",
-                    fatherProperty:[],
-                    sort:"",
-                    remarks:"",
-                    delFlag:"",
-                    dis:false
+        resetDialogData: function () {
+            var app = this;
+            app.dialog = {
+                visible: false,
+                loading: false,
+                data: {
+                    id: "",
+                    dicProperty: "",
+                    dicValue: "",
+                    fatherProperty: [],
+                    sort: "",
+                    remarks: "",
+                    delFlag: "",
+                    dis: false
                 }
             }
         },
-        updateDialog:function (v) {
-            var app=this;
-            app.dialog.data.id=v["id"];
-            app.dialog.data.dicProperty=v["dicProperty"];
-            app.dialog.data.dicValue=v["dicValue"];
-            app.dialog.data.fatherProperty=v["fatherProperty"].split(",");
-            app.dialog.data.sort=v["sort"];
-            app.dialog.data.remarks=v["remark"];
-            app.dialog.data.delFlag=v["delFlag"];
-            app.dialog.data.dis=true;
-            app.dialog.visible=true;
+        updateDialog: function (v) {
+            var app = this;
+            app.dialog.data.id = v["id"];
+            app.dialog.data.dicProperty = v["dicProperty"];
+            app.dialog.data.dicValue = v["dicValue"];
+            app.dialog.data.fatherProperty = v["fatherProperty"].split(",");
+            app.dialog.data.sort = v["sort"];
+            app.dialog.data.remarks = v["remark"];
+            app.dialog.data.delFlag = v["delFlag"];
+            app.dialog.data.dis = true;
+            app.dialog.visible = true;
 
         },
-        disable:function (v) {
-            var app=this;
-            let data={
-                dicts:v["id"]
+        disable: function (v) {
+            var app = this;
+            let data = {
+                dicts: v["id"]
             }
-            ajaxPost(app.urls.deleteListById,data, function (d) {
+            ajaxPost(app.urls.deleteListById, data, function (d) {
                 app.refreshTable();
             })
 
         }
 
     },
-    mounted: function(){
+    mounted: function () {
         this.getDictTypeData();
         this.refreshTable();
     }

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+    <link rel="stylesheet" href="../css/login.css">
+    <link rel="stylesheet" href="../css/template.css">
+    <script src="../plugins/vue/vue.js"></script>
+    <script src="../plugins/elementui/index.js"></script>
+    <script src="../plugins/jquery/jquery-3.3.1.min.js"></script>
+    <script src="../js/utils.js"></script>
+</head>
+<body>
+<div id="app" v-cloak style="height: 100%;overflow: hidden;" v-loading="fullScreenLoading">
+    <div class="login-body">
+        <div class="login-logo" style="text-align: center;letter-spacing: 0.2em;font-size: 40px;font-weight: bold;">
+            <div>
+                北京理工大学保密处
+            </div>
+            <div style="padding-top: 15px;">
+                设备管理系统
+            </div>
+        </div>
+
+        <div class="login-container" style="top: 15px;position:relative;">
+
+            <div class="login-left">
+                <div class="left-logo"></div>
+            </div>
+
+            <div class="login-mid"></div>
+
+            <div class="login-right">
+                <div class="login-content">
+                    <div class="login-input-wrap">
+                        <div class="margin-bottom-5">
+                            <label class="loginLabal" v-if="isLogin">用户登录</label>
+                        </div>
+                        <div class="margin-bottom-5">
+                            <label class="loginLabal" v-if="!isLogin">修改密码</label>
+                        </div>
+
+                        <div class="margin-bottom-5">
+                            <input type="password" class="txtInput formIpt"
+                                   placeholder="密码" v-model="passwordData.password"
+                                   v-if="isLogin"/>
+                        </div>
+
+                        <div class="margin-bottom-5">
+                            <input type="password" class="txtInput formIpt"
+                                   placeholder="原密码" v-model="passwordData.password"
+                                   v-if="!isLogin"/>
+                        </div>
+                        <div class="margin-bottom-5">
+                            <input type="password" class="txtInput formIpt"
+                                   placeholder="新密码" v-model="passwordData.newPassword"
+                                   v-if="!isLogin"/>
+                        </div>
+                        <div class="margin-bottom-5">
+                            <input type="password" class="txtInput formIpt"
+                                   placeholder="确认密码" v-model="passwordData.newPasswordConfirm"
+                                   v-if="!isLogin"/>
+                        </div>
+
+
+                        <div style="display: flex;justify-content: flex-end">
+                            <div class="login-button-container">
+                                <button class="login-button blue_background"
+                                        @click="isLogin=!isLogin;" style="margin-right: 20px;">
+                                    {{isLogin ? "修改密码" : "返回登录"}}
+                                </button>
+                            </div>
+                            <div class="login-button-container" v-if="isLogin">
+                                <button class="login-button orange_background" style="margin-right:100px;"
+                                        @click="login()">登 录
+                                </button>
+                            </div>
+                            <div class="login-button-container" v-if="!isLogin">
+                                <button class="login-button orange_background" style="margin-right:100px;"
+                                        @click="changePassword()">提 交
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer" style="position: absolute;bottom: 10px;width: 100%">
+        <p style="text-align: center">&copy; 开发单位：北京理工大学软件学院</p>
+    </footer>
+</div>
+</body>
+</html>
+<script src="../js/login.js"></script>
