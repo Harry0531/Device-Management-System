@@ -27,6 +27,7 @@ let urls = [
 let app = new Vue({
     el: '#app',
     data: {
+        showWindow: false,
         default_openeds_array: [
             'management'
         ],
@@ -42,7 +43,24 @@ let app = new Vue({
         tabNameCount: 1, // 只增不减
         fullScreenLoading: false
     },
+    created: function () {
+        this.checkStatus();
+    },
     methods: {
+        //判断登录状态
+        checkStatus() {
+            if (getCookie("name") != null) {
+                this.showWindow = true;
+                return;
+            }
+            this.$message({
+                message: "请登录",
+                type: 'error'
+            });
+            setTimeout(function () {
+                window.open("../login.html", "_self")
+            }, 2000);
+        },
         //选中触发
         onSelect(key) {
             this.addTab(urls[key][0], urls[key][1]);

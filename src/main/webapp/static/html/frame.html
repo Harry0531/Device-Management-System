@@ -11,7 +11,7 @@
 </head>
 <body>
 <div id="app" v-cloak>
-    <el-container style="height: 100vh" v-loading="fullScreenLoading"  direction="vertical">
+    <el-container style="height: 100vh" v-loading="fullScreenLoading"  direction="vertical" v-if="showWindow">
         <el-header height="48px"
                    style="background: #007cc4;padding-right: 60px;box-shadow: 0 2px 10px 0 rgba(0,0,0,.15);">
             <span class="title">设备管理系统</span>
@@ -71,5 +71,6 @@
     </el-container>
 </div>
 </body>
+<script src="../js/utils.js"></script>
 <script src="../js/frame.js"></script>
 </html>

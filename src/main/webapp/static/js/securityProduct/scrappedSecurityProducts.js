@@ -22,11 +22,12 @@ let defaultDialog = {
 let app = new Vue({
     el: '#app',
     data: {
+        showWindow: false,
         urls: {
             getSub: 'http://localhost:8444/api/sys/product/scrapped/getSub',
             getDeptSub: 'http://localhost:8444/api/sys/product/scrapped/getDeptSub',
             getList: 'http://localhost:8444/api/sys/product/scrapped/getList',
-            deleteListByIds:'http://localhost:8444/api/sys/product/scrapped/deleteListByIds',
+            deleteListByIds: 'http://localhost:8444/api/sys/product/scrapped/deleteListByIds',
             scrap: 'http://localhost:8444/api/sys/product/scrapped/scrap'
         },
         loading: false,
@@ -60,7 +61,24 @@ let app = new Vue({
         },
         dialog: defaultDialog
     },
+    created: function () {
+        this.checkStatus();
+    },
     methods: {
+        //判断登录状态
+        checkStatus() {
+            if (getCookie("name") != null) {
+                this.showWindow = true;
+                return;
+            }
+            this.$message({
+                message: "请登录",
+                type: 'error'
+            });
+            setTimeout(function () {
+                window.open("../login.html", "_self")
+            }, 2000);
+        },
         getSub() {
             ajaxPost(this.urls.getSub, {param: "使用范围"}, function (result) {
                 app.filters.selectionList.scope.push({'value': '', 'label': '全选'});
@@ -174,12 +192,12 @@ let app = new Vue({
             app.dialog.data.scrap_time = v["scrap_time"];
             app.dialog.visible = true;
         },
-        scrap:function () {
+        scrap: function () {
             app.dialog.loading = true;
-            if( app.dialog.data.scrap_time === ""|| app.dialog.data.scrap_time == null){
+            if (app.dialog.data.scrap_time === "" || app.dialog.data.scrap_time == null) {
                 app.$message({
-                    type:"error",
-                    message:"未选择报废时间"
+                    type: "error",
+                    message: "未选择报废时间"
                 });
                 app.dialog.loading = false;
                 return;

@@ -13,7 +13,7 @@
 
 </head>
 <body>
-    <div id="app" v-cloak v-loading="fullScreenLoading"style="margin-top:5px; ">
+    <div id="app" v-cloak v-loading="fullScreenLoading"style="margin-top:5px; " v-if="showWindow">
 
         <span style="margin: 10px">
             <el-button type="success" size="small" @click="insertOrUpdateDialog.visible=true">新增模版</el-button>

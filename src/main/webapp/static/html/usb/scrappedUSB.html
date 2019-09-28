@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../../css/usb/scrappedUSB.css">
 </head>
 <body>
-<div id="app" v-cloak style="background: white;height: 100%;overflow: hidden;">
+<div id="app" v-cloak style="background: white;height: 100%;overflow: hidden;" v-if="showWindow">
     <el-collapse v-model="activeNames">
         <el-collapse-item name="search">
             <template slot="title">

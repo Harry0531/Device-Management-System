@@ -1,7 +1,8 @@
 let app = new Vue({
     el: '#app',
     data: {
-        aaa:0,
+        showWindow: false,
+        aaa: 0,
         fullScreenLoading: false,
         selectionType: [
             {value: 0, label: '学院'},
@@ -42,7 +43,24 @@ let app = new Vue({
             }
         }
     },
+    created: function () {
+        this.checkStatus();
+    },
     methods: {
+        //判断登录状态
+        checkStatus() {
+            if (getCookie("name") != null) {
+                this.showWindow = true;
+                return;
+            }
+            this.$message({
+                message: "请登录",
+                type: 'error'
+            });
+            setTimeout(function () {
+                window.open("../login.html", "_self")
+            }, 2000);
+        },
         getSchoolList: function () {
             let app = this;
             ajaxGet(app.urls.getSchoolList, null, function (result) {
