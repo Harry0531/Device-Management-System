@@ -85,7 +85,6 @@ var ex = new Vue({
                 app.defaultChecked.push(v["fieldType"])
                 app.ExportList.push(v["fieldType"])
             })
-            console.log(app.defaultChecked)
         },
         startExport: function () {
             let app = this;

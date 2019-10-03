@@ -119,6 +119,22 @@ let app = new Vue({
         refreshTab: function (iframeId, url) {
             // document.getElementById(iframeId).contentWindow.location.reload(true);
             document.getElementById(iframeId).contentWindow.location.href = url;
+        },
+        logout:function () {
+            app.$confirm('确认退出', '警告', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                delCookie("name");
+                app.$message({
+                    message: '退出成功',
+                    type: 'success'
+                });
+                setTimeout(function () {
+                    window.open("login.html", "_self");
+                }, 2000);
+            })
         }
     }
 });
