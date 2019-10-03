@@ -49,7 +49,7 @@
                 AND a.`enablation_time` &lt;=  #{endTime}
             </if>
             <if test="1 == 1">
-                AND a.`del_flag` = 0
+                AND (a.`del_flag` = 0 AND a.`scrapped_flag` = 1)
             </if>
         </where>
     </select>
@@ -144,7 +144,7 @@
                 AND a.`enablation_time` &lt;=  #{endTime}
             </if>
             <if test="1 == 1">
-                AND a.`del_flag` = 0
+                AND (a.`del_flag` = 0 AND a.`scrapped_flag` = 1)
             </if>
         </where>
         ORDER BY a.`create_time` DESC
