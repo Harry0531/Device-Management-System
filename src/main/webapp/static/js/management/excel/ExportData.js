@@ -13,7 +13,8 @@ var ex = new Vue({
         defaultChecked:[]
     },
     created: function () {
-        this.checkStatus();
+        // this.checkStatus();
+        this.showWindow = true;
     },
     methods: {
         //判断登录状态
@@ -82,6 +83,7 @@ var ex = new Vue({
             app.FieldList = con["fieldList"];
             app.FieldList.forEach(function (v) {
                 app.defaultChecked.push(v["fieldType"])
+                app.ExportList.push(v["fieldType"])
             })
             console.log(app.defaultChecked)
         },

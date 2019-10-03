@@ -113,7 +113,8 @@ let app = new Vue({
 
     },
     created: function () {
-        this.checkStatus();
+        // this.checkStatus();
+        this.showWindow = true;
     },
     methods: {
         //判断登录状态

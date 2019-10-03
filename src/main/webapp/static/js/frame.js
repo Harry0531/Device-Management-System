@@ -44,7 +44,8 @@ let app = new Vue({
         fullScreenLoading: false
     },
     created: function () {
-        this.checkStatus();
+        // this.checkStatus();
+        this.showWindow = true;
     },
     methods: {
         //判断登录状态
