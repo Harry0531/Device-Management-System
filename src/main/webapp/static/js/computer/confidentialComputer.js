@@ -113,13 +113,12 @@ let app = new Vue({
 
     },
     created: function () {
-        // this.checkStatus();
-        this.showWindow = true;
+        this.checkStatus();
     },
     methods: {
         //判断登录状态
         checkStatus() {
-            if (getCookie("name") != null) {
+            if (getCookie("name") !== null) {
                 this.showWindow = true;
                 return;
             }
