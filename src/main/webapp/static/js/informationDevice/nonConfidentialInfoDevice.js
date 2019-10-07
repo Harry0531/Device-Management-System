@@ -27,6 +27,8 @@ let defaultDialog = {
         model: '',
         device_number: '',
         disk_number: '',
+        secret_level:'c60de690d93c4e18b369e1adff7dcb84',
+        usage:'51cbcfd540e847e2b2e35b5cdbbeaa22',
         place_location: '',
         enablation_time: '',
         use_situation: '',
@@ -40,7 +42,9 @@ let defaultDialog = {
         device_name: [],
         use_situation: [],
         subject: [],
-        department: []
+        department: [],
+        secret_level:[{value:'c60de690d93c4e18b369e1adff7dcb84',label:'非密'}],
+        usage:[{value:'51cbcfd540e847e2b2e35b5cdbbeaa22',label:'办公/科研'}]
     }
 };
 
@@ -223,11 +227,11 @@ let app = new Vue({
                 type: app.dialog.data.type,
                 device_name: app.dialog.data.device_name,
                 person: app.dialog.data.person,
-                secret_level: 'f7109e83e2ca4d3e9103a188aad838a6',
+                secret_level: 'c60de690d93c4e18b369e1adff7dcb84',
                 model: app.dialog.data.model,
                 device_number: app.dialog.data.device_number,
                 disk_number: app.dialog.data.disk_number,
-                usage: 'b59cb3797f2543119e34edb440aa098f',
+                usage: '51cbcfd540e847e2b2e35b5cdbbeaa22',
                 place_location: app.dialog.data.place_location,
                 use_situation: app.dialog.data.use_situation,
                 enablation_time: app.dialog.data.enablation_time,

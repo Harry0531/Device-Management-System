@@ -230,6 +230,14 @@
             <el-form-item label="责任人" :required="true">
                 <el-input v-model="dialog.data.person"></el-input>
             </el-form-item>
+            <el-form-item label="密级" :required="true">
+                <el-select v-model="dialog.data.secret_level">
+                    <el-option v-for="item in dialog.selectionList.secret_level"
+                               :key="item.value"
+                               :label="item.label"
+                               :value="item.value"></el-option>
+                </el-select>
+            </el-form-item>
             <el-form-item label="型号" :required="true">
                 <el-input v-model="dialog.data.model"></el-input>
             </el-form-item>
@@ -238,6 +246,14 @@
             </el-form-item>
             <el-form-item label="硬盘序列号" :required="true">
                 <el-input v-model="dialog.data.disk_number"></el-input>
+            </el-form-item>
+            <el-form-item label="用途" :required="true">
+                <el-select v-model="dialog.data.usage">
+                    <el-option v-for="item in dialog.selectionList.usage"
+                               :key="item.value"
+                               :label="item.label"
+                               :value="item.value"></el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="放置地点" :required="true">
                 <el-input v-model="dialog.data.place_location"></el-input>
