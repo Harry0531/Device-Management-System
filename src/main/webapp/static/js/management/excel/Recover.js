@@ -63,7 +63,7 @@ let app = new Vue({
             window.open("http://localhost:8444/api/tool/backup/backup" + "?department=" + app.selectDep);
         },
         toword: function () {
-            window.open("http://localhost:8444/api/tool/backup/toword" + "?department=" + app.selectDep);
+            window.open("http://localhost:8444/api/tool/toword/toword" + "?department=" + app.selectDep);
         }
     },
     mounted: function () {

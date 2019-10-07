@@ -29,6 +29,10 @@ public class Page<T> {
         return (pageIndex - 1) * pageSize;
     }
 
+    public void setPageStart(int pageStart) {
+        this.pageStart = pageStart;
+    }
+
     public int getPageSize() {
         return pageSize;
     }
