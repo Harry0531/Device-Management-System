@@ -19,14 +19,15 @@
 
 
         <span style="float: left;margin:0 0 10px 0px">
-              <el-button size="small" type="warning" @click="deleteByIds(table.selectionList)"
+            <el-button size="small" type="success" @click="dialog.visible=true" style="margin-left: 10px;">新增字典</el-button>
+            <el-button size="small" type="warning" @click="deleteByIds(table.selectionList)"
                          style="margin-right:  40px;">
                 <span>批量禁用</span>
             </el-button>
             <el-select size="small" prefix-icon="el-icon-search" placeholder="请筛选字典类型" v-model="table.props.searchKey"  filterable clearable @change="handleSelectTypeChange2">
-                    <el-option v-for="item in dictType" :key="item" :label="item"
+                <el-option v-for="item in dictType" :key="item" :label="item"
                                :value="item"></el-option>
-                </el-select>
+            </el-select>
             <!--<el-input size="small" placeholder="请输入字典类型" suffix-icon="el-icon-search"-->
             <!--style="width: 250px;margin-right: 10px;" v-model="table.props.searchKey"-->
             <!--@keyup.enter.native="table.props.pageIndex=1;refreshTable()">-->
@@ -36,10 +37,10 @@
             <!--<span>搜索</span>-->
             </el-button>
         </span>
-        <span style="float: right;margin-right: 50px;margin-top: 5px" >
+<!--        <span style="float: right;margin-right: 50px;margin-top: 5px" >-->
 
-            <el-button size="small" type="success" @click="dialog.visible=true" style="margin-left: 10px;">新增字典</el-button>
-        </span>
+<!--            -->
+<!--        </span>-->
 
 
 

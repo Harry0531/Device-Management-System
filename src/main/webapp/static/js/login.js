@@ -28,7 +28,7 @@ let app = new Vue({
                         type: 'success'
                     });
                     delCookie("name");
-                    setCookie("name", "value", 0);
+                    setCookie("name", "value", 1);
                     setTimeout(function () {
                         window.open("frame.html", "_self");
                     }, 2000);

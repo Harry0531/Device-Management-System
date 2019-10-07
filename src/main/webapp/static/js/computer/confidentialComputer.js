@@ -118,7 +118,7 @@ let app = new Vue({
     methods: {
         //判断登录状态
         checkStatus() {
-            if (getCookie("name") != null) {
+            if (getCookie("name") !== null) {
                 this.showWindow = true;
                 return;
             }
@@ -200,6 +200,7 @@ let app = new Vue({
                 searchKey: this.filters.condition.searchKey
             };
             ajaxPostJSON(this.urls.getList, data, function (result) {
+                console.log(result)
                 app.table.loading = false;
                 app.table.data = result.data.resultList;
                 app.table.props.total = result.data.total;

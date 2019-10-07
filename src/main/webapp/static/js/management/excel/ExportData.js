@@ -13,7 +13,8 @@ var ex = new Vue({
         defaultChecked:[]
     },
     created: function () {
-        this.checkStatus();
+        // this.checkStatus();
+        this.showWindow = true;
     },
     methods: {
         //判断登录状态

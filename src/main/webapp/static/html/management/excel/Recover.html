@@ -29,7 +29,8 @@
                            :label="item.dept_name"
                            :value="item.id"></el-option>
             </el-select>
-                <el-button  size="small" type="success" @click="backup" style="margin-left:20px;margin-right: 70px">导出数据</el-button>
+                <el-button  size="small" type="success" @click="backup" style="margin-left:20px;">导出备份数据</el-button>
+                <el-button  size="small" type="success" @click="toword" style="margin-left:20px;margin-right: 70px">导出word数据</el-button>
         </el-form-item>
 
         <el-form-item label="上传数据文件">

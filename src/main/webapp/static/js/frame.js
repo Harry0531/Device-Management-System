@@ -7,7 +7,7 @@
 let urls = [
     ['单位管理', 'management/deptManagement.html'],
     ['字典项管理', 'management/dictManagement.html'],
-    ['文件模板管理', 'management/ExcelManage.html'],
+    ['数据管理', 'management/ExcelManage.html'],
     ['涉密计算机', 'computer/confidentialComputer.html'],
     ['非涉密中间机', 'computer/nonConfidentialIntermediary.html'],
     ['非涉密计算机', 'computer/nonConfidentialComputer.html'],
@@ -44,7 +44,8 @@ let app = new Vue({
         fullScreenLoading: false
     },
     created: function () {
-        this.checkStatus();
+        // this.checkStatus();
+        this.showWindow = true;
     },
     methods: {
         //判断登录状态

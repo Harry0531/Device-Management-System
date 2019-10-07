@@ -5,8 +5,8 @@ let app = new Vue({
         aaa: 0,
         fullScreenLoading: false,
         selectionType: [
-            {value: 0, label: '学院'},
-            {value: 1, label: '部门/课题组'},
+            {value: 0, label: '学院/部门'},
+            {value: 1, label: '科室/课题组'},
         ],
         urls: {
             getSchoolList: 'http://localhost:8444/api/sys/dept/getSchoolList',
@@ -37,7 +37,7 @@ let app = new Vue({
                 dept_name: '',
                 dept_code: '',
                 dept_attach: '',
-                dept_type: '',
+                dept_type: 0,
                 _dept_type: '',
                 _dept_attach: ''
             }
@@ -167,7 +167,7 @@ let app = new Vue({
                     dept_name: '',
                     dept_code: '',
                     dept_attach: '',
-                    dept_type: '',
+                    dept_type: 0,
                     _dept_type: '',
                     _dept_attach: ''
                 }
