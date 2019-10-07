@@ -92,13 +92,17 @@ public class ToWordController extends BaseApi {
     @Autowired
     private UsbService usbService;
 
+    private String dep;
+
     @ResponseBody
     @RequestMapping("toword")
     public void toword(
             HttpServletResponse response,
-            @RequestParam String department
+            @RequestParam String department,
+            @RequestParam String depName
     ){
         try {
+            dep = department;
             Map<String, Object> dataMap = new HashMap<>();
             //数据导入
             dataMap.put("confidentialComputerList", getConfidentiaComputerList());
@@ -124,7 +128,7 @@ public class ToWordController extends BaseApi {
 
             //以utf-8的编码读取ftl文件
             Template t =  configuration.getTemplate("test.ftl","utf-8");
-            String fileName = URLEncoder.encode("word数据", "UTF-8") + ".doc";
+            String fileName = URLEncoder.encode(depName + "word数据", "UTF-8") + ".doc";
             response.setContentType("multipart/form-data");
             response.setHeader("Content-Disposition", "attachment;fileName=" + fileName);
             Writer out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), "utf-8"),10240);
@@ -146,6 +150,7 @@ public class ToWordController extends BaseApi {
         confidentialComputerPage.setPageSize(99999);
         confidentialComputerPage.setPageStart(0);
         confidentialComputer.setPage(confidentialComputerPage);
+        confidentialComputer.setDepartment_code(dep);
         List<ConfidentialComputer> list = confidentialComputerService.selectDictListByPage(confidentialComputer);
         return list;
     }
@@ -187,6 +192,7 @@ public class ToWordController extends BaseApi {
         noneConfidentialIntermediaryPage.setPageSize(99999);
         noneConfidentialIntermediaryPage.setPageStart(0);
         noneConfidentialIntermediary.setPage(noneConfidentialIntermediaryPage);
+        noneConfidentialIntermediary.setDepartment_code(dep);
         List<NoneConfidentialIntermediary> list = noneConfidentialIntermediaryService.selectDictListByPage(noneConfidentialIntermediary);
         return list;
     }
@@ -228,6 +234,7 @@ public class ToWordController extends BaseApi {
         noneConfidentialComputerPage.setPageSize(99999);
         noneConfidentialComputerPage.setPageStart(0);
         noneConfidentialComputer.setPage(noneConfidentialComputerPage);
+        noneConfidentialComputer.setDepartment_code(dep);
         List<NoneConfidentialComputer> list = noneConfidentialComputerService.selectDictListByPage(noneConfidentialComputer);
         return list;
     }
@@ -270,6 +277,7 @@ public class ToWordController extends BaseApi {
         confidentialComputerPage.setPageSize(99999);
         confidentialComputerPage.setPageStart(0);
         confidentialComputer.setPage(confidentialComputerPage);
+        confidentialComputer.setDepartment_code(dep);
         List<ConfidentialComputer> list = scrappedComputerService.selectDictListByPage(confidentialComputer);
         return list;
     }
@@ -313,6 +321,7 @@ public class ToWordController extends BaseApi {
         infoDevicePage.setPageSize(99999);
         infoDevicePage.setPageStart(0);
         infoDevice.setPage(infoDevicePage);
+        infoDevice.setDepartment_code(dep);
         List<InfoDevice> list = infoDeviceService.selectDictListByPage(infoDevice);
         return list;
     }
@@ -353,6 +362,7 @@ public class ToWordController extends BaseApi {
         nonConfidentialInfoDevicePage.setPageSize(99999);
         nonConfidentialInfoDevicePage.setPageStart(0);
         nonConfidentialInfoDevice.setPage(nonConfidentialInfoDevicePage);
+        nonConfidentialInfoDevice.setDepartment_code(dep);
         List<NonConfidentialInfoDevice> list = nonConfidentialInfoDeviceService.selectDictListByPage(nonConfidentialInfoDevice);
         return list;
     }
@@ -394,6 +404,7 @@ public class ToWordController extends BaseApi {
         infoDevicePage.setPageSize(99999);
         infoDevicePage.setPageStart(0);
         infoDevice.setPage(infoDevicePage);
+        infoDevice.setDepartment_code(dep);
         List<InfoDevice> list = scrappedInfoDeviceService.selectDictListByPage(infoDevice);
         return list;
     }
@@ -436,6 +447,7 @@ public class ToWordController extends BaseApi {
         confidentialStoragePage.setPageSize(99999);
         confidentialStoragePage.setPageStart(0);
         confidentialStorage.setPage(confidentialStoragePage);
+        confidentialStorage.setDepartment_code(dep);
         List<ConfidentialStorage> list = confidentialStorageService.selectDictListByPage(confidentialStorage);
         return list;
     }
@@ -473,6 +485,7 @@ public class ToWordController extends BaseApi {
         nonConfidentialStoragePage.setPageSize(99999);
         nonConfidentialStoragePage.setPageStart(0);
         nonConfidentialStorage.setPage(nonConfidentialStoragePage);
+        nonConfidentialStorage.setDepartment_code(dep);
         List<NonConfidentialStorage> list = nonConfidentialStorageService.selectDictListByPage(nonConfidentialStorage);
         return list;
     }
@@ -510,6 +523,7 @@ public class ToWordController extends BaseApi {
         confidentialStoragePage.setPageSize(99999);
         confidentialStoragePage.setPageStart(0);
         confidentialStorage.setPage(confidentialStoragePage);
+        confidentialStorage.setDepartment_code(dep);
         List<ConfidentialStorage> list = scrappedStorageService.selectDictListByPage(confidentialStorage);
         return list;
     }
@@ -549,6 +563,7 @@ public class ToWordController extends BaseApi {
         securityProductPage.setPageSize(99999);
         securityProductPage.setPageStart(0);
         securityProduct.setPage(securityProductPage);
+        securityProduct.setDepartment_code(dep);
         List<SecurityProduct> list = securityProductService.selectDictListByPage(securityProduct);
         return list;
     }
@@ -590,6 +605,7 @@ public class ToWordController extends BaseApi {
         securityProductPage.setPageSize(99999);
         securityProductPage.setPageStart(0);
         securityProduct.setPage(securityProductPage);
+        securityProduct.setDepartment_code(dep);
         List<SecurityProduct> list = scrappedProductService.selectDictListByPage(securityProduct);
         return list;
     }
@@ -633,6 +649,7 @@ public class ToWordController extends BaseApi {
         usbPage.setPageSize(99999);
         usbPage.setPageStart(0);
         usb.setPage(usbPage);
+        usb.setDepartment_code(dep);
         List<Usb> list = usbService.selectDictListByPage(usb);
         return list;
     }
@@ -671,6 +688,7 @@ public class ToWordController extends BaseApi {
         usbPage.setPageSize(99999);
         usbPage.setPageStart(0);
         usb.setPage(usbPage);
+        usb.setDepartment_code(dep);
         List<Usb> list = scrappedUsbService.selectDictListByPage(usb);
         return list;
     }

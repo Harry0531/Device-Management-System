@@ -6,7 +6,9 @@ let app = new Vue({
         tmpFileName: "",
         defaultFileList: [],
         department: [],
+        wordDepartment: [],
         selectDep: "",
+        wordDep: "",
         urls: {
             getSub: 'http://localhost:8444/api/sys/info/confidential/getSub',
         },
@@ -63,7 +65,18 @@ let app = new Vue({
             window.open("http://localhost:8444/api/tool/backup/backup" + "?department=" + app.selectDep);
         },
         toword: function () {
-            window.open("http://localhost:8444/api/tool/toword/toword" + "?department=" + app.selectDep);
+            if(app.wordDep === ''){
+                app.$message.error("请选择单位");
+                return;
+            }
+            let filename;
+            for(let i in app.wordDepartment){
+                if(app.wordDepartment[i].id === app.wordDep){
+                    filename = app.wordDepartment[i].dept_name;
+                    break;
+                }
+            }
+            window.open("http://localhost:8444/api/tool/toword/toword" + "?department=" + app.wordDep + "&depName=" + filename);
         }
     },
     mounted: function () {
@@ -74,6 +87,7 @@ let app = new Vue({
             }];
             result.forEach(function (r) {
                 app.department.push(r);
+                app.wordDepartment.push(r);
             })
         })
     }
