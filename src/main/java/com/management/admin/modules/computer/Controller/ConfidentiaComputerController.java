@@ -89,5 +89,9 @@ public class ConfidentiaComputerController extends BaseApi {
         if(confidentialComputerService.scrap(confidentialComputer))
             return retMsg.Set(MsgType.SUCCESS);
         return retMsg.Set(MsgType.ERROR);
+
+
     }
+
+
 }

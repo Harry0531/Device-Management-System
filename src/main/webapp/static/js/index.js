@@ -41,5 +41,8 @@ let app = new Vue({
                 window.open("login.html", "_self")
             }, 2000);
         },
+        addTab(){
+            parent.addTab(1,1);
+        }
     }
 })

@@ -67,6 +67,7 @@ let app = new Vue({
             this.addTab(urls[key][0], urls[key][1]);
         },
         addTab: function (title, url) {
+            alert(1);
             let exist = false;
             let index = -1;
             //判断是否已经有url相同的标签页被打开
@@ -138,3 +139,7 @@ let app = new Vue({
         }
     }
 });
+
+function addTab(title,url) {
+    app.addTab(title,url);
+}
