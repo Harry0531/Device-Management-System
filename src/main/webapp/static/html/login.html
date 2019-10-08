@@ -39,32 +39,26 @@
                             </label>
                         </div>
 
-                        <div class="margin-bottom-5" v-if="isLogin" style="visibility: hidden">
-                            <div class="txtInput formIpt"></div>
-                        </div>
-                        <div class="margin-bottom-5">
+                        <div class="margin-bottom-5" v-if="isLogin" style="margin-top: 64px">
                             <input type="password" class="txtInput formIpt"
                                    placeholder="密码" v-model="passwordData.password"
-                                   v-if="isLogin"/>
-                        </div>
-                        <div class="margin-bottom-5" v-if="isLogin" style="visibility: hidden">
-                            <div class="txtInput formIpt"></div>
+                                   />
                         </div>
 
-                        <div class="margin-bottom-5">
+                        <div class="margin-bottom-5" v-if="!isLogin">
                             <input type="password" class="txtInput formIpt"
                                    placeholder="原密码" v-model="passwordData.password"
-                                   v-if="!isLogin"/>
+                                   />
                         </div>
-                        <div class="margin-bottom-5">
+                        <div class="margin-bottom-5" v-if="!isLogin">
                             <input type="password" class="txtInput formIpt"
                                    placeholder="新密码" v-model="passwordData.newPassword"
-                                   v-if="!isLogin"/>
+                                   />
                         </div>
-                        <div class="margin-bottom-5">
+                        <div class="margin-bottom-5" v-if="!isLogin">
                             <input type="password" class="txtInput formIpt"
                                    placeholder="确认密码" v-model="passwordData.newPasswordConfirm"
-                                   v-if="!isLogin"/>
+                                   />
                         </div>
 
 

@@ -65,18 +65,14 @@ let app = new Vue({
             window.open("http://localhost:8444/api/tool/backup/backup" + "?department=" + app.selectDep);
         },
         toword: function () {
-            if(app.wordDep === ''){
-                app.$message.error("请选择单位");
-                return;
-            }
             let filename;
-            for(let i in app.wordDepartment){
-                if(app.wordDepartment[i].id === app.wordDep){
-                    filename = app.wordDepartment[i].dept_name;
+            for(let i in app.department){
+                if(app.department[i].id === app.selectDep){
+                    filename = app.department[i].dept_name;
                     break;
                 }
             }
-            window.open("http://localhost:8444/api/tool/toword/toword" + "?department=" + app.wordDep + "&depName=" + filename);
+            window.open("http://localhost:8444/api/tool/toword/toword" + "?department=" + app.selectDep + "&depName=" + filename);
         }
     },
     mounted: function () {
