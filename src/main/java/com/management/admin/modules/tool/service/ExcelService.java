@@ -99,7 +99,7 @@ public class ExcelService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Row firstRow = sheet.getRow(0);
+        Row firstRow = sheet.getRow(2);
         List<ExcelColumn> excelColumnList = new ArrayList<>();
         for (int colIndex = 0; colIndex <= firstRow.getLastCellNum(); colIndex++) {
             Cell cell = firstRow.getCell(colIndex);
@@ -177,7 +177,7 @@ public class ExcelService {
 
         Integer successRow =0;
         List<Integer> failRow = new ArrayList<>();
-        for(int rowIndex = 1; rowIndex <=sheet.getLastRowNum();rowIndex++){ //忽略第一行
+        for(int rowIndex = 3; rowIndex <=sheet.getLastRowNum();rowIndex++){ //忽略第一行
 
             Boolean isWrong = false;
 
