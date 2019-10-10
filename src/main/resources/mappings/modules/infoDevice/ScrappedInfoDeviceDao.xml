@@ -152,7 +152,7 @@
     </select>
 
     <update id="deleteListByIds" parameterType="com.management.admin.modules.infoDevice.entity.InfoDevice">
-        UPDATE `confidential_information_device` SET `del_flag` = 1 WHERE `id` IN
+        UPDATE `confidential_information_device` SET `del_flag` = 1,`secret_number`=`id` WHERE `id` IN
         <foreach collection="list" item="item" open="(" close=")" separator=",">
             #{item.id}
         </foreach>

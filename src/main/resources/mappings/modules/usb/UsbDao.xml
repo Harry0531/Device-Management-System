@@ -242,6 +242,6 @@
     </delete>
 
     <update id="delete" parameterType="com.management.admin.modules.usb.entity.Usb">
-        update `usb_key` set `del_flag` = 1 where `id`=#{id}
+        update `usb_key` set `del_flag` = 1,`secret_number`=`id` where `id`=#{id}
     </update>
 </mapper>
