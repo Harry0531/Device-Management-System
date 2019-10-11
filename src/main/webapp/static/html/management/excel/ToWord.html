@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../../plugins/elementui/index.css">
+    <style>
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+<div id="app" v-cloak v-loading="loading" v-if="showWindow">
+    <el-form ref="form" :model="formData" label-width="150px" style="padding: 34px 24px;" size="small"
+             label-position="left">
+
+        <el-form-item label="选择单位">
+            <el-select v-model="selectDep">
+                <el-option v-for="item in department"
+                           :key="item.id"
+                           :label="item.dept_name"
+                           :value="item.id"></el-option>
+            </el-select>
+        </el-form-item>
+
+        <el-form-item label="选择台账类型">
+            <el-select v-model="selectModel">
+                <el-option v-for="item in dataType"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value"></el-option>
+            </el-select>
+            <el-button  size="small" type="success" @click="toword" style="margin-left:20px;">导出word数据</el-button>
+        </el-form-item>
+
+    </el-form>
+</div>
+</body>
+<script src="../../../plugins/vue/vue.js"></script>
+<script src="../../../plugins/jquery/jquery-3.3.1.min.js"></script>
+<script src="../../../plugins/elementui/index.js"></script>
+<script src="../../../js/utils.js"></script>
+<script src="../../../js/management/excel/ToWord.js"></script>
+</html>

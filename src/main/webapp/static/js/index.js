@@ -41,8 +41,8 @@ let app = new Vue({
                 window.open("login.html", "_self")
             }, 2000);
         },
-        addTab(){
-            parent.addTab(1,1);
+        addTab(index){
+            parent.addTab(urls[index][0],urls[index][1]);
         }
     }
 })

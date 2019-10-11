@@ -87,11 +87,13 @@ let app = new Vue({
         },
         startImport: function () {
             if (this.formData.id == null || this.formData.id === '') {
-                window.parent.parent.app.showMessage('请先选择模板!', 'warning');
+                // app.showMessage('请先选择模板!', 'warning');
+                this.$message.warning('请先选择模板!');
                 return;
             }
             if (this.tmpFileName == null || this.tmpFileName === '') {
-                window.parent.parent.app.showMessage('请先上传数据文件!', 'warning');
+                // app.showMessage('请先上传数据文件!', 'warning');
+                this.$message.warning('请先上传数据文件!');
                 return;
             }
             this.formData.excelDataName = this.tmpFileName;

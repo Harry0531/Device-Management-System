@@ -117,8 +117,8 @@ let app = new Vue({
         },
         //刷新指定tab的iframe
         refreshTab: function (iframeId, url) {
-            // document.getElementById(iframeId).contentWindow.location.reload(true);
-            document.getElementById(iframeId).contentWindow.location.href = url;
+            document.getElementById(iframeId).contentWindow.location.reload(true);
+            // document.getElementById(iframeId).contentWindow.location.href = url;
         },
         logout:function () {
             app.$confirm('确认退出', '警告', {

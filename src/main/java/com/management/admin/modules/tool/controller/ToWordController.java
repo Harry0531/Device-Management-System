@@ -41,10 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("api/tool/toword")
@@ -99,51 +96,164 @@ public class ToWordController extends BaseApi {
     public void toword(
             HttpServletResponse response,
             @RequestParam String department,
-            @RequestParam String depName
+            @RequestParam String depName,
+            @RequestParam String model
     ){
-        try {
-            dep = department;
-            Map<String, Object> dataMap = new HashMap<>();
-            //数据导入
-            dataMap.put("confidentialComputerList", getConfidentiaComputerList());
-            dataMap.put("noneConfidentialIntermediaryList", getNoneConfidentialIntermediaryList());
-            dataMap.put("noneConfidentialComputerList", getNoneConfidentialComputerList());
-            dataMap.put("scrappedComputerList", getScrappedComputerList());
-            dataMap.put("infoDeviceList", getInfoDeviceList());
-            dataMap.put("noneConfidentialInfoDeviceList", getNonConfidentialInfoDeviceList());
-            dataMap.put("scrappedInfoDeviceList", getScrappedInfoDeviceList());
-            dataMap.put("confidentialStorageList", getConfidentialStorageList());
-            dataMap.put("noneConfidentialStorageList", getNonConfidentialStorageList());
-            dataMap.put("scrappedStorageList", getScrappedStorageList());
-            dataMap.put("securityProductList", getSecurityProductList());
-            dataMap.put("scrappedProductList", getScrappedProductList());
-            dataMap.put("usbList", getUSBList());
-            dataMap.put("scrappedUsbList", getScrappedUSBList());
+        dep = department;
 
-            Configuration configuration = new Configuration();
-            configuration.setDefaultEncoding("utf-8");
-            //指定模板路径的第二种方式,我的路径是D:/      还有其他方式
-//            configuration.setDirectoryForTemplateLoading(new File("D:/"));
-            configuration.setClassForTemplateLoading(this.getClass(), "/template");
-
-            //以utf-8的编码读取ftl文件
-            Template t =  configuration.getTemplate("test.ftl","utf-8");
-            String fileName = URLEncoder.encode(depName + "word数据", "UTF-8") + ".doc";
-            response.setContentType("multipart/form-data");
-            response.setHeader("Content-Disposition", "attachment;fileName=" + fileName);
-            Writer out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), "utf-8"),10240);
-            t.process(dataMap, out);
-            out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
+        switch (model) {
+            case "secret":
+                secret(depName, response);
+                break;
+            case "noneSecret":
+                noneSecret(depName, response);
+                break;
+            case "scrapped":
+                scrapped(depName, response);
+                break;
         }
+
+
+//            Map<String, Object> dataMap = new HashMap<>();
+//            //数据导入
+//            dataMap.put("confidentialComputerList", getConfidentiaComputerList());
+//            dataMap.put("noneConfidentialIntermediaryList", getNoneConfidentialIntermediaryList());
+//            dataMap.put("noneConfidentialComputerList", getNoneConfidentialComputerList());
+//            dataMap.put("scrappedComputerList", getScrappedComputerList());
+//            dataMap.put("infoDeviceList", getInfoDeviceList());
+//            dataMap.put("noneConfidentialInfoDeviceList", getNonConfidentialInfoDeviceList());
+//            dataMap.put("scrappedInfoDeviceList", getScrappedInfoDeviceList());
+//            dataMap.put("confidentialStorageList", getConfidentialStorageList());
+//            dataMap.put("noneConfidentialStorageList", getNonConfidentialStorageList());
+//            dataMap.put("scrappedStorageList", getScrappedStorageList());
+//            dataMap.put("securityProductList", getSecurityProductList());
+//            dataMap.put("scrappedProductList", getScrappedProductList());
+//            dataMap.put("usbList", getUSBList());
+//            dataMap.put("scrappedUsbList", getScrappedUSBList());
+//
+//            Configuration configuration = new Configuration();
+//            configuration.setDefaultEncoding("utf-8");
+//            //指定模板路径的第二种方式,我的路径是D:/      还有其他方式
+//            configuration.setClassForTemplateLoading(this.getClass(), "/template");
+//
+//            //以utf-8的编码读取ftl文件
+//            Template t =  configuration.getTemplate("test.ftl","utf-8");
+//            String fileName = URLEncoder.encode(depName + "word数据", "UTF-8") + ".doc";
+//            response.setContentType("multipart/form-data");
+//            response.setHeader("Content-Disposition", "attachment;fileName=" + fileName);
+//            Writer out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), "utf-8"),10240);
+//            t.process(dataMap, out);
+//            out.close();
 
         return;
     }
+
+    private void secret(String depName, HttpServletResponse response){
+        if(!dep.equals("")){
+            try {
+                Map<String, Object> dataMap = new HashMap<>();
+                dataMap.put("confidentialComputerList", getConfidentiaComputerList());
+                dataMap.put("noneConfidentialIntermediaryList", getNoneConfidentialIntermediaryList());
+                dataMap.put("infoDeviceList", getInfoDeviceList());
+                dataMap.put("confidentialStorageList", getConfidentialStorageList());
+                dataMap.put("securityProductList", getSecurityProductList());
+                dataMap.put("usbList", getUSBList());
+                dataMap.put("department", depName);
+                String[] strNow = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString().split("-");
+                dataMap.put("year", strNow[0]);
+                dataMap.put("month", strNow[1]);
+                dataMap.put("day", strNow[2]);
+
+                Configuration configuration = new Configuration();
+                configuration.setDefaultEncoding("utf-8");
+                configuration.setClassForTemplateLoading(this.getClass(), "/template");
+                //以utf-8的编码读取ftl文件
+                Template t =  configuration.getTemplate("secret.ftl","utf-8");
+                String fileName = URLEncoder.encode(depName + "涉密信息设备和存储设备台账", "UTF-8") + ".doc";
+                response.setContentType("multipart/form-data");
+                response.setHeader("Content-Disposition", "attachment;fileName=" + fileName);
+                Writer out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), "utf-8"),10240);
+                t.process(dataMap, out);
+                out.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+
+        }
+        return;
+    }
+
+    private void noneSecret(String depName, HttpServletResponse response){
+        if(!dep.equals("")){
+            try {
+                Map<String, Object> dataMap = new HashMap<>();
+                dataMap.put("noneConfidentialComputerList", getNoneConfidentialComputerList());
+                dataMap.put("noneConfidentialInfoDeviceList", getNonConfidentialInfoDeviceList());
+                dataMap.put("noneConfidentialStorageList", getNonConfidentialStorageList());
+                dataMap.put("department", depName);
+                String[] strNow = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString().split("-");
+                dataMap.put("year", strNow[0]);
+                dataMap.put("month", strNow[1]);
+                dataMap.put("day", strNow[2]);
+
+                Configuration configuration = new Configuration();
+                configuration.setDefaultEncoding("utf-8");
+                configuration.setClassForTemplateLoading(this.getClass(), "/template");
+                //以utf-8的编码读取ftl文件
+                Template t =  configuration.getTemplate("noneSecret.ftl","utf-8");
+                String fileName = URLEncoder.encode(depName + "非涉密信息设备和存储设备台账", "UTF-8") + ".doc";
+                response.setContentType("multipart/form-data");
+                response.setHeader("Content-Disposition", "attachment;fileName=" + fileName);
+                Writer out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), "utf-8"),10240);
+                t.process(dataMap, out);
+                out.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+
+        }
+        return;
+    }
+
+    private void scrapped(String depName, HttpServletResponse response){
+        if(!dep.equals("")){
+            try {
+                Map<String, Object> dataMap = new HashMap<>();
+                dataMap.put("scrappedComputerList", getScrappedComputerList());
+                dataMap.put("scrappedInfoDeviceList", getScrappedInfoDeviceList());
+                dataMap.put("scrappedStorageList", getScrappedStorageList());
+                dataMap.put("scrappedProductList", getScrappedProductList());
+                dataMap.put("scrappedUsbList", getScrappedUSBList());
+                dataMap.put("department", depName);
+                String[] strNow = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString().split("-");
+                dataMap.put("year", strNow[0]);
+                dataMap.put("month", strNow[1]);
+                dataMap.put("day", strNow[2]);
+
+                Configuration configuration = new Configuration();
+                configuration.setDefaultEncoding("utf-8");
+                configuration.setClassForTemplateLoading(this.getClass(), "/template");
+                //以utf-8的编码读取ftl文件
+                Template t =  configuration.getTemplate("scrapped.ftl","utf-8");
+                String fileName = URLEncoder.encode(depName + "报废涉密信息设备和存储设备台账", "UTF-8") + ".doc";
+                response.setContentType("multipart/form-data");
+                response.setHeader("Content-Disposition", "attachment;fileName=" + fileName);
+                Writer out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), "utf-8"),10240);
+                t.process(dataMap, out);
+                out.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+
+        }
+        return;
+    }
+
     //涉密计算机获取数据
-    public List<ConfidentialComputer> getAllConfidentiaComputerData(){
+    private List<ConfidentialComputer> getAllConfidentiaComputerData(){
         ConfidentialComputer confidentialComputer = new ConfidentialComputer();
         Page<ConfidentialComputer> confidentialComputerPage = new Page<>();
         confidentialComputerPage.setPageIndex(1);
@@ -155,7 +265,7 @@ public class ToWordController extends BaseApi {
         return list;
     }
     //涉密计算机数据转换
-    public List<Map<String,String>> getConfidentiaComputerList(){
+    private List<Map<String,String>> getConfidentiaComputerList(){
         List<Map<String,String>> newlist = new ArrayList<>();
         List<ConfidentialComputer> list = getAllConfidentiaComputerData();
         int i = 1;
@@ -185,7 +295,7 @@ public class ToWordController extends BaseApi {
         return newlist;
     }
     //非涉密中间机获取数据
-    public List<NoneConfidentialIntermediary> getAllNoneConfidentialIntermediaryData(){
+    private List<NoneConfidentialIntermediary> getAllNoneConfidentialIntermediaryData(){
         NoneConfidentialIntermediary noneConfidentialIntermediary = new NoneConfidentialIntermediary();
         Page<NoneConfidentialIntermediary> noneConfidentialIntermediaryPage = new Page<>();
         noneConfidentialIntermediaryPage.setPageIndex(1);
@@ -197,7 +307,7 @@ public class ToWordController extends BaseApi {
         return list;
     }
     //非涉密中间级数据转换
-    public List<Map<String,String>> getNoneConfidentialIntermediaryList(){
+    private List<Map<String,String>> getNoneConfidentialIntermediaryList(){
         List<Map<String,String>> newlist = new ArrayList<>();
         List<NoneConfidentialIntermediary> list = getAllNoneConfidentialIntermediaryData();
         int i = 1;
@@ -227,7 +337,7 @@ public class ToWordController extends BaseApi {
         return newlist;
     }
     //非涉密计算机获取数据
-    public List<NoneConfidentialComputer> getAllNoneConfidentialComputerData(){
+    private List<NoneConfidentialComputer> getAllNoneConfidentialComputerData(){
         NoneConfidentialComputer noneConfidentialComputer = new NoneConfidentialComputer();
         Page<NoneConfidentialComputer> noneConfidentialComputerPage = new Page<>();
         noneConfidentialComputerPage.setPageIndex(1);
@@ -239,7 +349,7 @@ public class ToWordController extends BaseApi {
         return list;
     }
     //非涉密计算机数据转换
-    public List<Map<String,String>> getNoneConfidentialComputerList(){
+    private List<Map<String,String>> getNoneConfidentialComputerList(){
         List<Map<String,String>> newlist = new ArrayList<>();
         List<NoneConfidentialComputer> list = getAllNoneConfidentialComputerData();
         int i = 1;
@@ -270,7 +380,7 @@ public class ToWordController extends BaseApi {
         return newlist;
     }
     //报废涉密计算机获取数据
-    public List<ConfidentialComputer> getAllScrappedComputerData(){
+    private List<ConfidentialComputer> getAllScrappedComputerData(){
         ConfidentialComputer confidentialComputer = new ConfidentialComputer();
         Page<ConfidentialComputer> confidentialComputerPage = new Page<>();
         confidentialComputerPage.setPageIndex(1);
@@ -282,7 +392,7 @@ public class ToWordController extends BaseApi {
         return list;
     }
     //报废涉密计算机数据转换
-    public List<Map<String,String>> getScrappedComputerList(){
+    private List<Map<String,String>> getScrappedComputerList(){
         List<Map<String,String>> newlist = new ArrayList<>();
         List<ConfidentialComputer> list = getAllScrappedComputerData();
         int i = 1;
@@ -314,7 +424,7 @@ public class ToWordController extends BaseApi {
         return newlist;
     }
     //涉密信息设备获取数据
-    public List<InfoDevice> getAllInfoDeviceData(){
+    private List<InfoDevice> getAllInfoDeviceData(){
         InfoDevice infoDevice = new InfoDevice();
         Page<InfoDevice> infoDevicePage = new Page<>();
         infoDevicePage.setPageIndex(1);
@@ -326,7 +436,7 @@ public class ToWordController extends BaseApi {
         return list;
     }
     //涉密信息设备数据转换
-    public List<Map<String,String>> getInfoDeviceList(){
+    private List<Map<String,String>> getInfoDeviceList(){
         List<Map<String,String>> newlist = new ArrayList<>();
         List<InfoDevice> list = getAllInfoDeviceData();
         int i = 1;
@@ -355,7 +465,7 @@ public class ToWordController extends BaseApi {
         return newlist;
     }
     //非涉密信息设备获取数据
-    public List<NonConfidentialInfoDevice> getAllNonConfidentialInfoDeviceData(){
+    private List<NonConfidentialInfoDevice> getAllNonConfidentialInfoDeviceData(){
         NonConfidentialInfoDevice nonConfidentialInfoDevice = new NonConfidentialInfoDevice();
         Page<NonConfidentialInfoDevice> nonConfidentialInfoDevicePage = new Page<>();
         nonConfidentialInfoDevicePage.setPageIndex(1);
@@ -367,7 +477,7 @@ public class ToWordController extends BaseApi {
         return list;
     }
     //非涉密信息设备数据转换
-    public List<Map<String,String>> getNonConfidentialInfoDeviceList(){
+    private List<Map<String,String>> getNonConfidentialInfoDeviceList(){
         List<Map<String,String>> newlist = new ArrayList<>();
         List<NonConfidentialInfoDevice> list = getAllNonConfidentialInfoDeviceData();
         int i = 1;
@@ -397,7 +507,7 @@ public class ToWordController extends BaseApi {
         return newlist;
     }
     //报废涉密信息设备获取数据
-    public List<InfoDevice> getAllScrappedInfoDeviceData(){
+    private List<InfoDevice> getAllScrappedInfoDeviceData(){
         InfoDevice infoDevice = new InfoDevice();
         Page<InfoDevice> infoDevicePage = new Page<>();
         infoDevicePage.setPageIndex(1);
@@ -409,7 +519,7 @@ public class ToWordController extends BaseApi {
         return list;
     }
     //报废涉密信息设备数据转换
-    public List<Map<String,String>> getScrappedInfoDeviceList(){
+    private List<Map<String,String>> getScrappedInfoDeviceList(){
         List<Map<String,String>> newlist = new ArrayList<>();
         List<InfoDevice> list = getAllScrappedInfoDeviceData();
         int i = 1;
@@ -440,7 +550,7 @@ public class ToWordController extends BaseApi {
         return newlist;
     }
     //涉密存储介质获取数据
-    public List<ConfidentialStorage> getAllConfidentialStorageData(){
+    private List<ConfidentialStorage> getAllConfidentialStorageData(){
         ConfidentialStorage confidentialStorage = new ConfidentialStorage();
         Page<ConfidentialStorage> confidentialStoragePage = new Page<>();
         confidentialStoragePage.setPageIndex(1);
@@ -452,7 +562,7 @@ public class ToWordController extends BaseApi {
         return list;
     }
     //涉密存储介质数据转换
-    public List<Map<String,String>> getConfidentialStorageList(){
+    private List<Map<String,String>> getConfidentialStorageList(){
         List<Map<String,String>> newlist = new ArrayList<>();
         List<ConfidentialStorage> list = getAllConfidentialStorageData();
         int i = 1;
@@ -478,7 +588,7 @@ public class ToWordController extends BaseApi {
         return newlist;
     }
     //非涉密存储介质获取数据
-    public List<NonConfidentialStorage> getAllNonConfidentialStorageData(){
+    private List<NonConfidentialStorage> getAllNonConfidentialStorageData(){
         NonConfidentialStorage nonConfidentialStorage = new NonConfidentialStorage();
         Page<NonConfidentialStorage> nonConfidentialStoragePage = new Page<>();
         nonConfidentialStoragePage.setPageIndex(1);
@@ -490,7 +600,7 @@ public class ToWordController extends BaseApi {
         return list;
     }
     //非涉密存储介质数据转换
-    public List<Map<String,String>> getNonConfidentialStorageList(){
+    private List<Map<String,String>> getNonConfidentialStorageList(){
         List<Map<String,String>> newlist = new ArrayList<>();
         List<NonConfidentialStorage> list = getAllNonConfidentialStorageData();
         int i = 1;
@@ -516,7 +626,7 @@ public class ToWordController extends BaseApi {
         return newlist;
     }
     //报废涉密存储介质获取数据
-    public List<ConfidentialStorage> getAllScrappedStorageData(){
+    private List<ConfidentialStorage> getAllScrappedStorageData(){
         ConfidentialStorage confidentialStorage = new ConfidentialStorage();
         Page<ConfidentialStorage> confidentialStoragePage = new Page<>();
         confidentialStoragePage.setPageIndex(1);
@@ -528,7 +638,7 @@ public class ToWordController extends BaseApi {
         return list;
     }
     //报废涉密存储介质数据转换
-    public List<Map<String,String>> getScrappedStorageList(){
+    private List<Map<String,String>> getScrappedStorageList(){
         List<Map<String,String>> newlist = new ArrayList<>();
         List<ConfidentialStorage> list = getAllScrappedStorageData();
         int i = 1;
@@ -556,7 +666,7 @@ public class ToWordController extends BaseApi {
         return newlist;
     }
     //保密产品数据获取
-    public List<SecurityProduct> getAllSecurityProductData(){
+    private List<SecurityProduct> getAllSecurityProductData(){
         SecurityProduct securityProduct = new SecurityProduct();
         Page<SecurityProduct> securityProductPage = new Page<>();
         securityProductPage.setPageIndex(1);
@@ -568,7 +678,7 @@ public class ToWordController extends BaseApi {
         return list;
     }
     //保密产品数据转换
-    public List<Map<String,String>> getSecurityProductList(){
+    private List<Map<String,String>> getSecurityProductList(){
         List<Map<String,String>> newlist = new ArrayList<>();
         List<SecurityProduct> list = getAllSecurityProductData();
         int i = 1;
@@ -598,7 +708,7 @@ public class ToWordController extends BaseApi {
         return newlist;
     }
     //报废保密产品数据获取
-    public List<SecurityProduct> getAllScrappedProductData(){
+    private List<SecurityProduct> getAllScrappedProductData(){
         SecurityProduct securityProduct = new SecurityProduct();
         Page<SecurityProduct> securityProductPage = new Page<>();
         securityProductPage.setPageIndex(1);
@@ -610,7 +720,7 @@ public class ToWordController extends BaseApi {
         return list;
     }
     //报废保密产品数据转换
-    public List<Map<String,String>> getScrappedProductList(){
+    private List<Map<String,String>> getScrappedProductList(){
         List<Map<String,String>> newlist = new ArrayList<>();
         List<SecurityProduct> list = getAllScrappedProductData();
         int i = 1;
@@ -642,7 +752,7 @@ public class ToWordController extends BaseApi {
         return newlist;
     }
     //USBKey数据获取
-    public List<Usb> getAllUSBData(){
+    private List<Usb> getAllUSBData(){
         Usb usb = new Usb();
         Page<Usb> usbPage = new Page<>();
         usbPage.setPageIndex(1);
@@ -654,7 +764,7 @@ public class ToWordController extends BaseApi {
         return list;
     }
     //USBKey数据转换
-    public List<Map<String,String>> getUSBList(){
+    private List<Map<String,String>> getUSBList(){
         List<Map<String,String>> newlist = new ArrayList<>();
         List<Usb> list = getAllUSBData();
         int i = 1;
@@ -681,7 +791,7 @@ public class ToWordController extends BaseApi {
         return newlist;
     }
     //报废USBKey数据获取
-    public List<Usb> getAllScrappedUSBData(){
+    private List<Usb> getAllScrappedUSBData(){
         Usb usb = new Usb();
         Page<Usb> usbPage = new Page<>();
         usbPage.setPageIndex(1);
@@ -693,7 +803,7 @@ public class ToWordController extends BaseApi {
         return list;
     }
     //报废USBKey数据转换
-    public List<Map<String,String>> getScrappedUSBList(){
+    private List<Map<String,String>> getScrappedUSBList(){
         List<Map<String,String>> newlist = new ArrayList<>();
         List<Usb> list = getAllScrappedUSBData();
         int i = 1;

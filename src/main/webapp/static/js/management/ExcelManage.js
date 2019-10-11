@@ -18,6 +18,11 @@ var app = new Vue({
                 src: "./excel/Recover.html",
                 label: "数据备份",
                 name: "recover"
+            },
+            {
+                src: "./excel/ToWord.html",
+                label: "word导出",
+                name: "toWord"
             }]
     },
     created: function () {
@@ -44,6 +49,12 @@ var app = new Vue({
             }
             if (tab.name === "recover" && document.getElementById('recover') != null) {
                 document.getElementById("recover").contentWindow.location.reload(true);
+            }
+            if (tab.name === "importData" && document.getElementById('importData') != null) {
+                document.getElementById("importData").contentWindow.location.reload(true);
+            }
+            if (tab.name === "toWord" && document.getElementById('toWord') != null) {
+                document.getElementById("toWord").contentWindow.location.reload(true);
             }
         },
 

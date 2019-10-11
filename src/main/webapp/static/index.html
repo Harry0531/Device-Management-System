@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="./css/template.css">
     <script src="./plugins/vue/vue.js" type="text/javascript"></script>
     <script src="./plugins/elementui/index.js"></script>
     <script src="./plugins/jquery/jquery-3.3.1.min.js"></script>
     <script src="./js/utils.js"></script>
+    <link rel="stylesheet" href="./css/index.css">
 </head>
 <body>
 <div id="app">
@@ -17,8 +17,10 @@
             <div slot="header" class="clearfix">
                 <span>系统管理</span>
             </div>
-            <div>
-
+            <div class="card-buttons">
+                <el-button type="text" @click="addTab(0)">单位管理</el-button>
+                <el-button type="text" @click="addTab(1)">字典项管理</el-button>
+                <el-button type="text" @click="addTab(2)">数据管理</el-button>
             </div>
         </el-card>
 
@@ -26,8 +28,11 @@
             <div slot="header" class="clearfix">
                 <span>计算机台账</span>
             </div>
-            <div>
-
+            <div class="card-buttons">
+                <el-button type="text" @click="addTab(3)">涉密计算机</el-button>
+                <el-button type="text" @click="addTab(4)">非涉密中间机</el-button>
+                <el-button type="text" @click="addTab(5)">非涉密计算机</el-button>
+                <el-button type="text" @click="addTab(6)">报废计算机</el-button>
             </div>
         </el-card>
 
@@ -35,8 +40,10 @@
             <div slot="header" class="clearfix">
                 <span>信息设备台账</span>
             </div>
-            <div>
-
+            <div class="card-buttons">
+                <el-button type="text" @click="addTab(7)">涉密信息设备</el-button>
+                <el-button type="text" @click="addTab(8)">非涉密信息设备</el-button>
+                <el-button type="text" @click="addTab(9)">报废信息设备</el-button>
             </div>
         </el-card>
 
@@ -44,8 +51,10 @@
             <div slot="header" class="clearfix">
                 <span>存储介质台账</span>
             </div>
-            <div>
-
+            <div class="card-buttons">
+                <el-button type="text" @click="addTab(10)">涉密存储介质</el-button>
+                <el-button type="text" @click="addTab(11)">非涉密存储介质</el-button>
+                <el-button type="text" @click="addTab(12)">报废涉密存储介质</el-button>
             </div>
         </el-card>
 
@@ -53,8 +62,9 @@
             <div slot="header" class="clearfix">
                 <span>安全保密产品台账</span>
             </div>
-            <div>
-
+            <div class="card-buttons">
+                <el-button type="text" @click="addTab(13)">安全保密产品</el-button>
+                <el-button type="text" @click="addTab(14)">报废安全保密产品</el-button>
             </div>
         </el-card>
 
@@ -62,12 +72,13 @@
             <div slot="header" class="clearfix">
                 <span>USB Key台账</span>
             </div>
-            <div>
-
+            <div class="card-buttons">
+                <el-button type="text" @click="addTab(15)">USB Key</el-button>
+                <el-button type="text" @click="addTab(16)">报废USB Key</el-button>
             </div>
         </el-card>
 
-        <el-button @click="addTab">addTab</el-button>
+<!--        <el-button @click="addTab(0)">addTab</el-button>-->
     </div>
 </div>
 </body>
