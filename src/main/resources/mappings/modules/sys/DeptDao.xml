@@ -13,6 +13,7 @@
         <result column="dept_attach" property="dept_attach"/>
         <result column="_dept_type" property="_dept_type"/>
         <result column="_dept_attach" property="_dept_attach"/>
+        <result column="sort" property="sort"/>
         <result column="create_date" property="createDate"/>
         <result column="modify_date" property="modifyDate"/>
         <result column="del_flag" property="delFlag"/>
@@ -34,7 +35,7 @@
                 AND a.`id` != '0'
             </if>
         </where>
-        ORDER BY a.`dept_code`
+        ORDER BY a.`sort`
         limit #{page.pageStart}, #{page.pageSize}
     </select>
 
@@ -64,6 +65,7 @@
         `dept_code`,
         `dept_attach`,
         `dept_type`,
+        `sort`,
         `create_time`,
         `modify_time`,
         `del_flag`,
@@ -74,6 +76,7 @@
         #{dept_code},
         #{dept_attach},
         #{dept_type},
+        #{sort},
         #{createTime},
         #{modifyTime},
         #{delFlag},
@@ -87,6 +90,7 @@
             `dept_code` = #{dept_code},
             `dept_type` = #{dept_type},
             `dept_attach` = #{dept_attach},
+            `sort`=#{sort},
             `modify_time` = #{modifyTime},
             `del_flag`  = #{delFlag}
         WHERE id =#{id}

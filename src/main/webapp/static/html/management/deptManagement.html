@@ -43,6 +43,7 @@
         <el-table-column label="单位代码" width="300" prop="dept_code" align="center"></el-table-column>
         <el-table-column label="单位类型" width="150" prop="_dept_type" align="center"></el-table-column>
         <el-table-column label="归属学院" width="200" prop="_dept_attach" align="center"></el-table-column>
+        <el-table-column label="排序" width="60" prop="sort" align="center"></el-table-column>
         <el-table-column label="启用" width="100" align="center">
             <template slot-scope="scope">
                 <el-switch v-model="scope.row.delFlag"
@@ -92,6 +93,9 @@
             </el-form-item>
             <el-form-item label="单位代码" :required="true">
                 <el-input v-model="dialog.data.dept_code"></el-input>
+            </el-form-item>
+            <el-form-item label="排序" :required="true">
+                <el-input v-model="dialog.data.sort"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer">

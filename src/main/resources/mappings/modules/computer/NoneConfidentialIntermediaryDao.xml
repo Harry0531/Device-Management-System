@@ -8,11 +8,11 @@
         </select>
 
         <select id="getSubFromDept" resultType="com.management.admin.modules.sys.entity.Dept">
-            SELECT `id`, `dept_name` FROM `department` WHERE (`dept_type` = 0 AND `del_flag` = 0)
+            SELECT `id`, `dept_name` FROM `department` WHERE (`dept_type` = 0 AND `del_flag` = 0) order by sort
         </select>
 
         <select id="getDeptSub" resultType="com.management.admin.modules.sys.entity.Dept">
-            SELECT `id`, `dept_name` FROM `department` WHERE (`dept_attach` = #{_parameter} AND `del_flag` = 0)
+            SELECT `id`, `dept_name` FROM `department` WHERE (`dept_attach` = #{_parameter} AND `del_flag` = 0) order by sort
         </select>
 
         <insert id="insertComputer" parameterType="com.management.admin.modules.computer.Entity.NoneConfidentialIntermediary">

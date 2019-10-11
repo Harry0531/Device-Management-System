@@ -37,9 +37,11 @@ let app = new Vue({
                 dept_name: '',
                 dept_code: '',
                 dept_attach: '',
+                sort: '',
                 dept_type: 0,
                 _dept_type: '',
-                _dept_attach: ''
+                _dept_attach: '',
+                delFlag: ''
             }
         }
     },
@@ -103,7 +105,9 @@ let app = new Vue({
                 dept_type: app.dialog.data.dept_type,
                 dept_attach: app.dialog.data.dept_attach,
                 dept_name: app.dialog.data.dept_name,
-                dept_code: app.dialog.data.dept_code
+                dept_code: app.dialog.data.dept_code,
+                sort: app.dialog.data.sort == '' ? 0 : app.dialog.data.sort,
+                delFlag: app.dialog.data.delFlag
             };
             if (app.dialog.data.dept_type == 0) {
                 data.dept_attach = 0;
@@ -169,7 +173,9 @@ let app = new Vue({
                     dept_attach: '',
                     dept_type: 0,
                     _dept_type: '',
-                    _dept_attach: ''
+                    _dept_attach: '',
+                    delFlag: '',
+                    sort: ''
                 }
             }
         },
@@ -182,6 +188,8 @@ let app = new Vue({
             app.dialog.data._dept_type = v["_dept_type"];
             app.dialog.data._dept_attach = v["_dept_attach"];
             app.dialog.data.dept_attach = v["dept_attach"];
+            app.dialog.data.sort = v["sort"];
+            app.dialog.data.delFlag = v["delFlag"];
             if (app.dialog.data.dept_attach == '0')
                 app.dialog.data.dept_attach = '';
             app.dialog.visible = true;

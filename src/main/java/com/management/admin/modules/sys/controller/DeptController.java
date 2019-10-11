@@ -59,11 +59,9 @@ public class DeptController extends BaseApi {
                 } else return retMsg.Set(MsgType.ERROR, "，请稍后重试");
             } else return retMsg.Set(MsgType.ERROR, "，请检查单位代码");
         } else {
-            if (deptService.searchEntry(dept)) {
-                if (deptService.updateDept(dept))
-                    return retMsg.Set(MsgType.SUCCESS);
-                else return retMsg.Set(MsgType.ERROR, "，请稍后重试");
-            } else return retMsg.Set(MsgType.ERROR, "，请检查单位代码");
+            if (deptService.updateDept(dept))
+                return retMsg.Set(MsgType.SUCCESS);
+            else return retMsg.Set(MsgType.ERROR, "，请稍后重试");
         }
     }
 

@@ -10,6 +10,7 @@ public class Dept extends DataEntity<Dept> {
     private int dept_type;
     private String dept_attach;
     private String dept_property;
+    private int sort;
 
     //前缀“_”为显示给用户的
     private String _dept_type;
