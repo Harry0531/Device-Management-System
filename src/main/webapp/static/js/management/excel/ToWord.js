@@ -22,7 +22,10 @@ let app = new Vue({
         }, {
             label: '报废涉密信息设备和存储设备台账',
             value: 'scrapped'
-        }]
+        }],
+        time: false,
+        startTime: '',
+        endTime: ''
     },
     created: function () {
         this.checkStatus();
@@ -47,6 +50,10 @@ let app = new Vue({
                 this.$message.warning('请选择台账类型');
                 return;
             }
+            if(this.selectModel === 'scrapped' && (this.startTime === '' || this.endTime === '')){
+                this.$message.warning('请选择时间');
+                return;
+            }
             let filename;
             for(let i in app.department){
                 if(app.department[i].id === app.selectDep){
@@ -54,7 +61,20 @@ let app = new Vue({
                     break;
                 }
             }
-            window.open("http://localhost:8444/api/tool/toword/toword" + "?department=" + app.selectDep + "&depName=" + filename + "&model=" + this.selectModel);
+            if(this.selectModel === 'scrapped'){
+                window.open("http://localhost:8444/api/tool/toword/towordScrapped" + "?department=" + app.selectDep + "&depName=" + filename + "&startTime=" + this.startTime + "&endTime=" + this.endTime);
+            } else {
+                window.open("http://localhost:8444/api/tool/toword/toword" + "?department=" + app.selectDep + "&depName=" + filename + "&model=" + this.selectModel);
+            }
+        },
+        selectChange: function (item) {
+            if(item === 'scrapped'){
+                this.time = true;
+            } else {
+                this.time = false;
+                this.startTime = '';
+                this.endTime = '';
+            }
         }
     },
     mounted: function () {

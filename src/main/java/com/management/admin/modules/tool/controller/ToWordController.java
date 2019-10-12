@@ -22,6 +22,7 @@ import com.management.admin.modules.storage.entity.NonConfidentialStorage;
 import com.management.admin.modules.storage.service.ConfidentialStorageService;
 import com.management.admin.modules.storage.service.NonConfidentialStorageService;
 import com.management.admin.modules.storage.service.ScrappedStorageService;
+import com.management.admin.modules.sys.entity.Dept;
 import com.management.admin.modules.tool.dao.ImportDataDao;
 import com.management.admin.modules.tool.entity.tiny.DictInfo;
 import com.management.admin.modules.tool.entity.tiny.PartInfo;
@@ -90,6 +91,8 @@ public class ToWordController extends BaseApi {
     private UsbService usbService;
 
     private String dep;
+    private String startDate;
+    private String endDate;
 
     @ResponseBody
     @RequestMapping("toword")
@@ -100,7 +103,6 @@ public class ToWordController extends BaseApi {
             @RequestParam String model
     ){
         dep = department;
-
         switch (model) {
             case "secret":
                 secret(depName, response);
@@ -108,148 +110,190 @@ public class ToWordController extends BaseApi {
             case "noneSecret":
                 noneSecret(depName, response);
                 break;
-            case "scrapped":
-                scrapped(depName, response);
-                break;
         }
+        return;
+    }
 
-
-//            Map<String, Object> dataMap = new HashMap<>();
-//            //数据导入
-//            dataMap.put("confidentialComputerList", getConfidentiaComputerList());
-//            dataMap.put("noneConfidentialIntermediaryList", getNoneConfidentialIntermediaryList());
-//            dataMap.put("noneConfidentialComputerList", getNoneConfidentialComputerList());
-//            dataMap.put("scrappedComputerList", getScrappedComputerList());
-//            dataMap.put("infoDeviceList", getInfoDeviceList());
-//            dataMap.put("noneConfidentialInfoDeviceList", getNonConfidentialInfoDeviceList());
-//            dataMap.put("scrappedInfoDeviceList", getScrappedInfoDeviceList());
-//            dataMap.put("confidentialStorageList", getConfidentialStorageList());
-//            dataMap.put("noneConfidentialStorageList", getNonConfidentialStorageList());
-//            dataMap.put("scrappedStorageList", getScrappedStorageList());
-//            dataMap.put("securityProductList", getSecurityProductList());
-//            dataMap.put("scrappedProductList", getScrappedProductList());
-//            dataMap.put("usbList", getUSBList());
-//            dataMap.put("scrappedUsbList", getScrappedUSBList());
-//
-//            Configuration configuration = new Configuration();
-//            configuration.setDefaultEncoding("utf-8");
-//            //指定模板路径的第二种方式,我的路径是D:/      还有其他方式
-//            configuration.setClassForTemplateLoading(this.getClass(), "/template");
-//
-//            //以utf-8的编码读取ftl文件
-//            Template t =  configuration.getTemplate("test.ftl","utf-8");
-//            String fileName = URLEncoder.encode(depName + "word数据", "UTF-8") + ".doc";
-//            response.setContentType("multipart/form-data");
-//            response.setHeader("Content-Disposition", "attachment;fileName=" + fileName);
-//            Writer out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), "utf-8"),10240);
-//            t.process(dataMap, out);
-//            out.close();
-
+    @ResponseBody
+    @RequestMapping("towordScrapped")
+    public void towordScrapped(
+            HttpServletResponse response,
+            @RequestParam String department,
+            @RequestParam String depName,
+            @RequestParam String startTime,
+            @RequestParam String endTime
+    ){
+        dep = department;
+        startDate = startTime;
+        endDate = endTime;
+        scrapped(depName, response);
         return;
     }
 
     private void secret(String depName, HttpServletResponse response){
-        if(!dep.equals("")){
-            try {
-                Map<String, Object> dataMap = new HashMap<>();
-                dataMap.put("confidentialComputerList", getConfidentiaComputerList());
-                dataMap.put("noneConfidentialIntermediaryList", getNoneConfidentialIntermediaryList());
-                dataMap.put("infoDeviceList", getInfoDeviceList());
-                dataMap.put("confidentialStorageList", getConfidentialStorageList());
-                dataMap.put("securityProductList", getSecurityProductList());
-                dataMap.put("usbList", getUSBList());
-                dataMap.put("department", depName);
+        try {
+            Map<String, Object> dataMap = new HashMap<>();
+            Template t;
+            Configuration configuration = new Configuration();
+            configuration.setDefaultEncoding("utf-8");
+            configuration.setClassForTemplateLoading(this.getClass(), "/template");
+            if(!dep.equals("")){
+                dataMap = getSecretData(dep, depName);
+                //以utf-8的编码读取ftl文件
+                t =  configuration.getTemplate("secret.ftl","utf-8");
+            } else {
+                List<Dept> dept = infoDeviceService.getSubFromDept();
+                List<Map<String,Object>> newlist = new ArrayList<>();
+                for(Dept dep : dept){
+                    newlist.add(getSecretData(dep.getId(), dep.getDept_name()));
+                }
+                dataMap.put("list", newlist);
+                depName = "北京理工大学";
                 String[] strNow = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString().split("-");
                 dataMap.put("year", strNow[0]);
                 dataMap.put("month", strNow[1]);
                 dataMap.put("day", strNow[2]);
-
-                Configuration configuration = new Configuration();
-                configuration.setDefaultEncoding("utf-8");
-                configuration.setClassForTemplateLoading(this.getClass(), "/template");
                 //以utf-8的编码读取ftl文件
-                Template t =  configuration.getTemplate("secret.ftl","utf-8");
-                String fileName = URLEncoder.encode(depName + "涉密信息设备和存储设备台账", "UTF-8") + ".doc";
-                response.setContentType("multipart/form-data");
-                response.setHeader("Content-Disposition", "attachment;fileName=" + fileName);
-                Writer out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), "utf-8"),10240);
-                t.process(dataMap, out);
-                out.close();
-            } catch (Exception e) {
-                e.printStackTrace();
+                t =  configuration.getTemplate("secretAll.ftl","utf-8");
             }
-        } else {
-
+            String fileName = URLEncoder.encode(depName + "涉密信息设备和存储设备台账", "UTF-8") + ".doc";
+            response.setContentType("multipart/form-data");
+            response.setHeader("Content-Disposition", "attachment;fileName=" + fileName);
+            Writer out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), "utf-8"),10240);
+            t.process(dataMap, out);
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return;
     }
 
     private void noneSecret(String depName, HttpServletResponse response){
-        if(!dep.equals("")){
-            try {
-                Map<String, Object> dataMap = new HashMap<>();
-                dataMap.put("noneConfidentialComputerList", getNoneConfidentialComputerList());
-                dataMap.put("noneConfidentialInfoDeviceList", getNonConfidentialInfoDeviceList());
-                dataMap.put("noneConfidentialStorageList", getNonConfidentialStorageList());
-                dataMap.put("department", depName);
+        try {
+            Map<String, Object> dataMap = new HashMap<>();
+            Configuration configuration = new Configuration();
+            configuration.setDefaultEncoding("utf-8");
+            configuration.setClassForTemplateLoading(this.getClass(), "/template");
+            Template t;
+            if(!dep.equals("")){
+                dataMap = getNoneSecretData(dep, depName);
+                t =  configuration.getTemplate("noneSecret.ftl","utf-8");
+            } else {
+                List<Dept> dept = infoDeviceService.getSubFromDept();
+                List<Map<String,Object>> newlist = new ArrayList<>();
+                for(Dept dep : dept){
+                    newlist.add(getNoneSecretData(dep.getId(), dep.getDept_name()));
+                }
+                t =  configuration.getTemplate("noneSecretAll.ftl","utf-8");
+                depName = "北京理工大学";
                 String[] strNow = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString().split("-");
                 dataMap.put("year", strNow[0]);
                 dataMap.put("month", strNow[1]);
                 dataMap.put("day", strNow[2]);
-
-                Configuration configuration = new Configuration();
-                configuration.setDefaultEncoding("utf-8");
-                configuration.setClassForTemplateLoading(this.getClass(), "/template");
-                //以utf-8的编码读取ftl文件
-                Template t =  configuration.getTemplate("noneSecret.ftl","utf-8");
-                String fileName = URLEncoder.encode(depName + "非涉密信息设备和存储设备台账", "UTF-8") + ".doc";
-                response.setContentType("multipart/form-data");
-                response.setHeader("Content-Disposition", "attachment;fileName=" + fileName);
-                Writer out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), "utf-8"),10240);
-                t.process(dataMap, out);
-                out.close();
-            } catch (Exception e) {
-                e.printStackTrace();
+                dataMap.put("list", newlist);
             }
-        } else {
-
+            String fileName = URLEncoder.encode(depName + "非涉密信息设备和存储设备台账", "UTF-8") + ".doc";
+            response.setContentType("multipart/form-data");
+            response.setHeader("Content-Disposition", "attachment;fileName=" + fileName);
+            Writer out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), "utf-8"),10240);
+            t.process(dataMap, out);
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return;
     }
 
     private void scrapped(String depName, HttpServletResponse response){
-        if(!dep.equals("")){
-            try {
-                Map<String, Object> dataMap = new HashMap<>();
-                dataMap.put("scrappedComputerList", getScrappedComputerList());
-                dataMap.put("scrappedInfoDeviceList", getScrappedInfoDeviceList());
-                dataMap.put("scrappedStorageList", getScrappedStorageList());
-                dataMap.put("scrappedProductList", getScrappedProductList());
-                dataMap.put("scrappedUsbList", getScrappedUSBList());
-                dataMap.put("department", depName);
-                String[] strNow = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString().split("-");
-                dataMap.put("year", strNow[0]);
-                dataMap.put("month", strNow[1]);
-                dataMap.put("day", strNow[2]);
-
-                Configuration configuration = new Configuration();
-                configuration.setDefaultEncoding("utf-8");
-                configuration.setClassForTemplateLoading(this.getClass(), "/template");
-                //以utf-8的编码读取ftl文件
-                Template t =  configuration.getTemplate("scrapped.ftl","utf-8");
-                String fileName = URLEncoder.encode(depName + "报废涉密信息设备和存储设备台账", "UTF-8") + ".doc";
-                response.setContentType("multipart/form-data");
-                response.setHeader("Content-Disposition", "attachment;fileName=" + fileName);
-                Writer out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), "utf-8"),10240);
-                t.process(dataMap, out);
-                out.close();
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            Configuration configuration = new Configuration();
+            configuration.setDefaultEncoding("utf-8");
+            configuration.setClassForTemplateLoading(this.getClass(), "/template");
+            Template t;
+            Map<String, Object> dataMap = new HashMap<>();
+            if(!dep.equals("")){
+                dataMap = getScrappedData(dep, depName);
+                t = configuration.getTemplate("scrapped.ftl","utf-8");
+            } else {
+                List<Dept> dept = infoDeviceService.getSubFromDept();
+                List<Map<String,Object>> newlist = new ArrayList<>();
+                for(Dept dep : dept){
+                    newlist.add(getScrappedData(dep.getId(), dep.getDept_name()));
+                }
+                dataMap.put("list", newlist);
+                String[] strNow = startDate.split("-");
+                dataMap.put("syear", strNow[0]);
+                dataMap.put("smonth", strNow[1]);
+                dataMap.put("sday", strNow[2]);
+                strNow = endDate.split("-");
+                dataMap.put("eyear", strNow[0]);
+                dataMap.put("emonth", strNow[1]);
+                dataMap.put("eday", strNow[2]);
+                t = configuration.getTemplate("scrappedAll.ftl","utf-8");
+                depName = "北京理工大学";
             }
-        } else {
-
+            //以utf-8的编码读取ftl文件
+            String fileName = URLEncoder.encode(depName + "报废涉密信息设备和存储设备台账", "UTF-8") + ".doc";
+            response.setContentType("multipart/form-data");
+            response.setHeader("Content-Disposition", "attachment;fileName=" + fileName);
+            Writer out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), "utf-8"),10240);
+            t.process(dataMap, out);
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return;
+    }
+
+    private Map<String, Object> getSecretData(String depCode, String depName){
+        Map<String, Object> dataMap = new HashMap<>();
+        dep = depCode;
+        dataMap.put("confidentialComputerList", getConfidentiaComputerList());
+        dataMap.put("noneConfidentialIntermediaryList", getNoneConfidentialIntermediaryList());
+        dataMap.put("infoDeviceList", getInfoDeviceList());
+        dataMap.put("confidentialStorageList", getConfidentialStorageList());
+        dataMap.put("securityProductList", getSecurityProductList());
+        dataMap.put("usbList", getUSBList());
+        dataMap.put("department", depName);
+        String[] strNow = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString().split("-");
+        dataMap.put("year", strNow[0]);
+        dataMap.put("month", strNow[1]);
+        dataMap.put("day", strNow[2]);
+        return dataMap;
+    }
+
+    private Map<String, Object> getNoneSecretData(String depCode, String depName){
+        Map<String, Object> dataMap = new HashMap<>();
+        dep = depCode;
+        dataMap.put("noneConfidentialComputerList", getNoneConfidentialComputerList());
+        dataMap.put("noneConfidentialInfoDeviceList", getNonConfidentialInfoDeviceList());
+        dataMap.put("noneConfidentialStorageList", getNonConfidentialStorageList());
+        dataMap.put("department", depName);
+        String[] strNow = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString().split("-");
+        dataMap.put("year", strNow[0]);
+        dataMap.put("month", strNow[1]);
+        dataMap.put("day", strNow[2]);
+        return dataMap;
+    }
+
+    private Map<String, Object> getScrappedData(String depCode, String depName){
+        Map<String, Object> dataMap = new HashMap<>();
+        dep = depCode;
+        dataMap.put("scrappedComputerList", getScrappedComputerList());
+        dataMap.put("scrappedInfoDeviceList", getScrappedInfoDeviceList());
+        dataMap.put("scrappedStorageList", getScrappedStorageList());
+        dataMap.put("scrappedProductList", getScrappedProductList());
+        dataMap.put("scrappedUsbList", getScrappedUSBList());
+        dataMap.put("department", depName);
+        String[] strNow = startDate.split("-");
+        dataMap.put("syear", strNow[0]);
+        dataMap.put("smonth", strNow[1]);
+        dataMap.put("sday", strNow[2]);
+        strNow = endDate.split("-");
+        dataMap.put("eyear", strNow[0]);
+        dataMap.put("emonth", strNow[1]);
+        dataMap.put("eday", strNow[2]);
+        return dataMap;
     }
 
     //涉密计算机获取数据
@@ -388,6 +432,8 @@ public class ToWordController extends BaseApi {
         confidentialComputerPage.setPageStart(0);
         confidentialComputer.setPage(confidentialComputerPage);
         confidentialComputer.setDepartment_code(dep);
+        confidentialComputer.setStartTime(startDate);
+        confidentialComputer.setEndTime(endDate);
         List<ConfidentialComputer> list = scrappedComputerService.selectDictListByPage(confidentialComputer);
         return list;
     }
@@ -515,6 +561,8 @@ public class ToWordController extends BaseApi {
         infoDevicePage.setPageStart(0);
         infoDevice.setPage(infoDevicePage);
         infoDevice.setDepartment_code(dep);
+        infoDevice.setStartTime(startDate);
+        infoDevice.setEndTime(endDate);
         List<InfoDevice> list = scrappedInfoDeviceService.selectDictListByPage(infoDevice);
         return list;
     }
@@ -634,6 +682,8 @@ public class ToWordController extends BaseApi {
         confidentialStoragePage.setPageStart(0);
         confidentialStorage.setPage(confidentialStoragePage);
         confidentialStorage.setDepartment_code(dep);
+        confidentialStorage.setStartTime(startDate);
+        confidentialStorage.setEndTime(endDate);
         List<ConfidentialStorage> list = scrappedStorageService.selectDictListByPage(confidentialStorage);
         return list;
     }
@@ -716,6 +766,8 @@ public class ToWordController extends BaseApi {
         securityProductPage.setPageStart(0);
         securityProduct.setPage(securityProductPage);
         securityProduct.setDepartment_code(dep);
+        securityProduct.setStartTime(startDate);
+        securityProduct.setEndTime(endDate);
         List<SecurityProduct> list = scrappedProductService.selectDictListByPage(securityProduct);
         return list;
     }
@@ -799,6 +851,8 @@ public class ToWordController extends BaseApi {
         usbPage.setPageStart(0);
         usb.setPage(usbPage);
         usb.setDepartment_code(dep);
+        usb.setStartTime(startDate);
+        usb.setEndTime(endDate);
         List<Usb> list = scrappedUsbService.selectDictListByPage(usb);
         return list;
     }

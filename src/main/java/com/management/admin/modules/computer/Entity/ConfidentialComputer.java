@@ -84,6 +84,30 @@ public class ConfidentialComputer extends DataEntity<ConfidentialComputer> {
     private String startTime;
     private String endTime;
 
+    public int getScrapped_flag() {
+        return scrapped_flag;
+    }
+
+    public void setScrapped_flag(int scrapped_flag) {
+        this.scrapped_flag = scrapped_flag;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
     //以下为uuid转换后的中文
     private String _type;
     private String _secret_level;
