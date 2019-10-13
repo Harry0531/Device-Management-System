@@ -26,6 +26,9 @@ import com.management.admin.modules.sys.entity.Dept;
 import com.management.admin.modules.tool.dao.ImportDataDao;
 import com.management.admin.modules.tool.entity.tiny.DictInfo;
 import com.management.admin.modules.tool.entity.tiny.PartInfo;
+import com.management.admin.modules.tool.entity.toWordTools.ScrappedStatistics;
+import com.management.admin.modules.tool.entity.toWordTools.SecretStatistics;
+import com.management.admin.modules.tool.entity.toWordTools.noneSecretStatistics;
 import com.management.admin.modules.tool.service.BackUpService;
 import com.management.admin.modules.usb.entity.Usb;
 import com.management.admin.modules.usb.service.ScrappedUsbService;
@@ -93,6 +96,10 @@ public class ToWordController extends BaseApi {
     private String dep;
     private String startDate;
     private String endDate;
+
+    private noneSecretStatistics noneSecretStatisticsCounts;
+    private ScrappedStatistics scrappedStatisticsCounts;
+    private SecretStatistics secretStatistics;
 
     @ResponseBody
     @RequestMapping("toword")
@@ -248,6 +255,7 @@ public class ToWordController extends BaseApi {
     private Map<String, Object> getSecretData(String depCode, String depName){
         Map<String, Object> dataMap = new HashMap<>();
         dep = depCode;
+        secretStatistics = new SecretStatistics();
         dataMap.put("confidentialComputerList", getConfidentiaComputerList());
         dataMap.put("noneConfidentialIntermediaryList", getNoneConfidentialIntermediaryList());
         dataMap.put("infoDeviceList", getInfoDeviceList());
@@ -259,11 +267,13 @@ public class ToWordController extends BaseApi {
         dataMap.put("year", strNow[0]);
         dataMap.put("month", strNow[1]);
         dataMap.put("day", strNow[2]);
+        dataMap.put("statisticsInfo", getSecretStatistics());
         return dataMap;
     }
 
     private Map<String, Object> getNoneSecretData(String depCode, String depName){
         Map<String, Object> dataMap = new HashMap<>();
+        noneSecretStatisticsCounts = new noneSecretStatistics();
         dep = depCode;
         dataMap.put("noneConfidentialComputerList", getNoneConfidentialComputerList());
         dataMap.put("noneConfidentialInfoDeviceList", getNonConfidentialInfoDeviceList());
@@ -273,11 +283,13 @@ public class ToWordController extends BaseApi {
         dataMap.put("year", strNow[0]);
         dataMap.put("month", strNow[1]);
         dataMap.put("day", strNow[2]);
+        dataMap.put("statisticsInfo", getNoneSecretStatistics());
         return dataMap;
     }
 
     private Map<String, Object> getScrappedData(String depCode, String depName){
         Map<String, Object> dataMap = new HashMap<>();
+        scrappedStatisticsCounts = new ScrappedStatistics();
         dep = depCode;
         dataMap.put("scrappedComputerList", getScrappedComputerList());
         dataMap.put("scrappedInfoDeviceList", getScrappedInfoDeviceList());
@@ -293,7 +305,59 @@ public class ToWordController extends BaseApi {
         dataMap.put("eyear", strNow[0]);
         dataMap.put("emonth", strNow[1]);
         dataMap.put("eday", strNow[2]);
+        dataMap.put("statisticsInfo", getScrappedStatistics());
         return dataMap;
+    }
+
+    private Map<String, String> getSecretStatistics(){
+        Map<String, String> map = new HashMap<>();
+        map.put("laptop", String.valueOf(secretStatistics.laptop));
+        map.put("desktop", String.valueOf(secretStatistics.desktop));
+        map.put("allComputer", String.valueOf(secretStatistics.laptop + secretStatistics.desktop));
+        map.put("printer", String.valueOf(secretStatistics.printer));
+        map.put("copier", String.valueOf(secretStatistics.copier));
+        map.put("otherInfoDevice", String.valueOf(secretStatistics.noneInfoDeviceOther));
+        map.put("allInfoDevice", String.valueOf(secretStatistics.printer + secretStatistics.copier + secretStatistics.noneInfoDeviceOther));
+        map.put("udisk", String.valueOf(secretStatistics.udisk));
+        map.put("disk", String.valueOf(secretStatistics.disk));
+        map.put("otherSecProduct", String.valueOf(secretStatistics.noneSecProOther));
+        map.put("allSecProduct", String.valueOf(secretStatistics.udisk + secretStatistics.disk + secretStatistics.noneSecProOther));
+        map.put("middle", String.valueOf(secretStatistics.middle));
+        map.put("usb", String.valueOf(secretStatistics.usb));
+        return map;
+    }
+
+    private Map<String, String> getNoneSecretStatistics(){
+        Map<String, String> map = new HashMap<>();
+        map.put("laptop", String.valueOf(noneSecretStatisticsCounts.laptop));
+        map.put("desktop", String.valueOf(noneSecretStatisticsCounts.desktop));
+        map.put("allComputer", String.valueOf(noneSecretStatisticsCounts.laptop + noneSecretStatisticsCounts.desktop));
+        map.put("printer", String.valueOf(noneSecretStatisticsCounts.printer));
+        map.put("copier", String.valueOf(noneSecretStatisticsCounts.copier));
+        map.put("otherInfoDevice", String.valueOf(noneSecretStatisticsCounts.noneInfoDeviceOther));
+        map.put("allInfoDevice", String.valueOf(noneSecretStatisticsCounts.printer + noneSecretStatisticsCounts.copier + noneSecretStatisticsCounts.noneInfoDeviceOther));
+        map.put("udisk", String.valueOf(noneSecretStatisticsCounts.udisk));
+        map.put("disk", String.valueOf(noneSecretStatisticsCounts.disk));
+        map.put("otherSecProduct", String.valueOf(noneSecretStatisticsCounts.noneSecProOther));
+        map.put("allSecProduct", String.valueOf(noneSecretStatisticsCounts.udisk + noneSecretStatisticsCounts.disk + noneSecretStatisticsCounts.noneSecProOther));
+        return map;
+    }
+
+    private Map<String, String> getScrappedStatistics(){
+        Map<String, String> map = new HashMap<>();
+        map.put("laptop", String.valueOf(scrappedStatisticsCounts.laptop));
+        map.put("desktop", String.valueOf(scrappedStatisticsCounts.desktop));
+        map.put("allComputer", String.valueOf(scrappedStatisticsCounts.laptop + scrappedStatisticsCounts.desktop));
+        map.put("printer", String.valueOf(scrappedStatisticsCounts.printer));
+        map.put("copier", String.valueOf(scrappedStatisticsCounts.copier));
+        map.put("otherInfoDevice", String.valueOf(scrappedStatisticsCounts.noneInfoDeviceOther));
+        map.put("allInfoDevice", String.valueOf(scrappedStatisticsCounts.printer + scrappedStatisticsCounts.copier + scrappedStatisticsCounts.noneInfoDeviceOther));
+        map.put("udisk", String.valueOf(scrappedStatisticsCounts.udisk));
+        map.put("disk", String.valueOf(scrappedStatisticsCounts.disk));
+        map.put("otherSecProduct", String.valueOf(scrappedStatisticsCounts.noneSecProOther));
+        map.put("allSecProduct", String.valueOf(scrappedStatisticsCounts.udisk + scrappedStatisticsCounts.disk + scrappedStatisticsCounts.noneSecProOther));
+        map.put("usb", String.valueOf(scrappedStatisticsCounts.usb));
+        return map;
     }
 
     //涉密计算机获取数据
@@ -335,6 +399,11 @@ public class ToWordController extends BaseApi {
             map.put("useSituation", computer.get_use_situation());
             map.put("remark", computer.getRemarks());
             newlist.add(map);
+            if(computer.get_type().equals("台式机")){
+                secretStatistics.desktop++;
+            }else {
+                secretStatistics.laptop++;
+            }
         }
         return newlist;
     }
@@ -377,6 +446,7 @@ public class ToWordController extends BaseApi {
             map.put("useSituation", computer.get_use_situation());
             map.put("remark", computer.getRemarks());
             newlist.add(map);
+            secretStatistics.middle++;
         }
         return newlist;
     }
@@ -420,6 +490,11 @@ public class ToWordController extends BaseApi {
             map.put("useSituation", computer.get_use_situation());
             map.put("remark", computer.getRemarks());
             newlist.add(map);
+            if(computer.get_type().equals("台式机")){
+                noneSecretStatisticsCounts.desktop++;
+            }else {
+                noneSecretStatisticsCounts.laptop++;
+            }
         }
         return newlist;
     }
@@ -466,6 +541,11 @@ public class ToWordController extends BaseApi {
             map.put("scrappedTime", sdf.format(computer.getScrap_time()));
             map.put("remark", computer.getRemarks());
             newlist.add(map);
+            if(computer.get_type().equals("台式机")){
+                scrappedStatisticsCounts.desktop++;
+            }else {
+                scrappedStatisticsCounts.laptop++;
+            }
         }
         return newlist;
     }
@@ -507,6 +587,13 @@ public class ToWordController extends BaseApi {
             map.put("useSituation", computer.get_use_situation());
             map.put("remark", computer.getRemarks());
             newlist.add(map);
+            if(computer.get_device_name().equals("打印机")){
+                secretStatistics.printer++;
+            } else if(computer.get_device_name().equals("复印机")){
+                secretStatistics.copier++;
+            } else {
+                secretStatistics.noneInfoDeviceOther++;
+            }
         }
         return newlist;
     }
@@ -549,6 +636,13 @@ public class ToWordController extends BaseApi {
             map.put("useSituation", computer.get_use_situation());
             map.put("remark", computer.getRemarks());
             newlist.add(map);
+            if(computer.get_device_name().equals("打印机")){
+                noneSecretStatisticsCounts.printer++;
+            } else if(computer.get_device_name().equals("复印机")){
+                noneSecretStatisticsCounts.copier++;
+            } else {
+                noneSecretStatisticsCounts.noneInfoDeviceOther++;
+            }
         }
         return newlist;
     }
@@ -594,6 +688,13 @@ public class ToWordController extends BaseApi {
             map.put("scrappedTime", sdf.format(computer.getScrap_time()));
             map.put("remark", computer.getRemarks());
             newlist.add(map);
+            if(computer.get_device_name().equals("打印机")){
+                scrappedStatisticsCounts.printer++;
+            } else if(computer.get_device_name().equals("复印机")){
+                scrappedStatisticsCounts.copier++;
+            } else {
+                scrappedStatisticsCounts.noneInfoDeviceOther++;
+            }
         }
         return newlist;
     }
@@ -632,6 +733,13 @@ public class ToWordController extends BaseApi {
             map.put("useSituation", computer.get_use_situation());
             map.put("remark", computer.getRemarks());
             newlist.add(map);
+            if(computer.get_type().equals("U盘")){
+                secretStatistics.udisk++;
+            } else if(computer.get_type().equals("硬盘")){
+                secretStatistics.disk++;
+            } else {
+                secretStatistics.noneSecProOther++;
+            }
         }
         return newlist;
     }
@@ -670,6 +778,13 @@ public class ToWordController extends BaseApi {
             map.put("useSituation", computer.get_use_situation());
             map.put("remark", computer.getRemarks());
             newlist.add(map);
+            if(computer.get_type().equals("U盘")){
+                noneSecretStatisticsCounts.udisk++;
+            } else if(computer.get_type().equals("硬盘")){
+                noneSecretStatisticsCounts.disk++;
+            } else {
+                noneSecretStatisticsCounts.noneSecProOther++;
+            }
         }
         return newlist;
     }
@@ -712,6 +827,13 @@ public class ToWordController extends BaseApi {
             map.put("scrappedTime", sdf.format(computer.getScrap_time()));
             map.put("remark", computer.getRemarks());
             newlist.add(map);
+            if(computer.get_type().equals("U盘")){
+                scrappedStatisticsCounts.udisk++;
+            } else if(computer.get_type().equals("硬盘")){
+                scrappedStatisticsCounts.disk++;
+            } else {
+                scrappedStatisticsCounts.noneSecProOther++;
+            }
         }
         return newlist;
     }
@@ -839,6 +961,7 @@ public class ToWordController extends BaseApi {
             map.put("useSituation", computer.get_use_situation());
             map.put("remark", computer.getRemarks());
             newlist.add(map);
+            secretStatistics.usb++;
         }
         return newlist;
     }
@@ -882,6 +1005,7 @@ public class ToWordController extends BaseApi {
             map.put("scrappedTime", sdf.format(computer.getScrap_time()));
             map.put("remark", computer.getRemarks());
             newlist.add(map);
+            scrappedStatisticsCounts.usb++;
         }
         return newlist;
     }
