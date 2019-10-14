@@ -17,12 +17,14 @@
 
         <span style="margin: 10px">
             <el-button type="success" size="small" @click="insertOrUpdateDialog.visible=true">新增模版</el-button>
-            <el-button type="danger" size="small">删除模版</el-button>
+            <el-button type="danger" size="small" @click="deleteTemplateByIds()">删除模版</el-button>
         </span>
 
         <el-table  :data="table.data" height="600px" v-loading="table.loading"
                    style="width: 100%;overflow-y: hidden;margin-top: 15px;" class="scroll-bar" stripe border
-                   width="100%">
+                   width="100%"
+                   @selection-change="handleSelectionChange"
+        >
             <el-table-column type="selection" ></el-table-column>
             <el-table-column label="模版名称" prop="templateName" ></el-table-column>
             <el-table-column label="模版类别" prop="typeName"></el-table-column>

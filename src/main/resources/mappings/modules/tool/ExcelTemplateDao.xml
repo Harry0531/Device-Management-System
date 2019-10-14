@@ -71,4 +71,18 @@
       select id,type_name as "typeName",`table_name`as "tableName" from data_dictionary_type where del_flag != 1
     </select>
 
+    <delete id="deleteByIds">
+        delete from `excel_template` WHERE `id` IN
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByIds2">
+        delete from `excel_template_map` WHERE `template_id` IN
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+
+    </delete>
 </mapper>

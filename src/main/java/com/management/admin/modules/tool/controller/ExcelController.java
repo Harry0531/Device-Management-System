@@ -61,6 +61,18 @@ public class ExcelController extends BaseApi {
         return null;
     }
 
+    @RequestMapping(value="deleteExcelTemplate",method = RequestMethod.POST)
+    @ResponseBody
+    public  Object deleteTemplateByIds(
+            @RequestBody List<String>ids,
+            HttpServletRequest request
+    )throws Exception{
+        excelService.deleteByIds(ids);
+        return retMsg.Set(MsgType.SUCCESS);
+    }
+
+
+
     @RequestMapping(value="selectAllTemplate",method = RequestMethod.POST)
     @ResponseBody
     public Object selectAllTemplate(
