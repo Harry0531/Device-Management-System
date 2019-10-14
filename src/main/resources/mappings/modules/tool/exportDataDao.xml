@@ -13,7 +13,7 @@
 					and `scrapped_flag`=1
 				</if>
 				 <if test="iScrapped == false">
-					 and `scrapped_flag`=0
+					 and (`scrapped_flag`!=1 or `scrapped_flag` is null)
 				 </if>
 				<if test="selectSql!=null and selectSql !=''">
 					and id in ${selectSql}

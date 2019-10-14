@@ -451,7 +451,7 @@ function getExportConditions() {
 
     let data={
         fileName:"非涉密计算机",
-        templateId:"3364a351d7c941418b0946219397f7e4",
+        templateId:"6cc88bef4db04274afff5d78b5d88400",
         fieldList:[
             {
                 fieldName:"单位",
@@ -486,6 +486,9 @@ function getExportConditions() {
             },{
                 fieldName:"硬盘序列号",
                 fieldType:"serial_number"
+            },,{
+                fieldName:"IP地址",
+                fieldType:"ip_address"
             },{
                 fieldName:"mac地址",
                 fieldType:"mac_address"

@@ -241,7 +241,7 @@ function getExportConditions() {
     });
     let data = {
         fileName: "报废安全保密产品",
-        templateId: "ab81d835f0b146d98b4f5e06e0f651c0",//todo 编号！！！
+        templateId: "f40edb34f32343e5b7488beb5498d8a1",
         fieldList: [
             {
                 fieldName: "单位",

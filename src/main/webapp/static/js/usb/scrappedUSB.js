@@ -250,7 +250,7 @@ function getExportConditions() {
     });
     let data = {
         fileName: "报废USB Key",
-        templateId: "ab81d835f0b146d98b4f5e06e0f651c0",//todo 编号！！！
+        templateId: "5610987ac848462882fbfa6581e1ab8d",
         fieldList: [
             {
                 fieldName: "单位",
@@ -304,7 +304,7 @@ function getExportConditions() {
         ],
         conditionsList: [],
         idList: ID,
-        isScrapped: false,
+        isScrapped: true,
         tableName: "usb_key"
     };
     return data;

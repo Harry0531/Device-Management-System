@@ -250,7 +250,7 @@ function getExportConditions() {
     });
     let data = {
         fileName: "报废涉密信息设备",
-        templateId: "ab81d835f0b146d98b4f5e06e0f651c0",//todo 编号！！！
+        templateId: "df86810688c04df39cacb0f473aef47f",
         fieldList: [
             {
                 fieldName: "单位",
@@ -311,7 +311,7 @@ function getExportConditions() {
         conditionsList: [],
         idList: ID,
         isScrapped: true,
-        tableName: "scrapped_information_device"
+        tableName: "confidential_information_device"
     };
     return data;
 }
