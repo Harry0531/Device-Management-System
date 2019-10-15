@@ -319,6 +319,7 @@ let app = new Vue({
             app.dialog.data.remarks = '';
             app.dialog.data._type = '';
             app.dialog.data._scope = '';
+            app.dialog.data.scrap_time='';
         },
         deleteByIds: function (list) {
             if (list.length === 0) {

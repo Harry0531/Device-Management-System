@@ -365,7 +365,7 @@ let app = new Vue({
             app.dialog.data.cd_drive = '';
             app.dialog.data._cd_drive = '';
             app.dialog.data._os_version = '';
-            app.dialog.data.scrap_time = ''
+            app.dialog.data.scrap_time = '';
         },
         deleteByIds: function (list) {
             if (list.length === 0) {

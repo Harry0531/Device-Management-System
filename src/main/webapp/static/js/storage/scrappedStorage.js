@@ -334,6 +334,7 @@ let app = new Vue({
             app.dialog.data._secret_level = '';
             app.dialog.data._usage = '';
             app.dialog.data._scope = '';
+            app.dialog.data.scrap_time='';
         },
         deleteByIds: function (list) {
             if (list.length === 0) {

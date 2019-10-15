@@ -326,6 +326,7 @@ let app = new Vue({
             app.dialog.data._secret_level = '';
             app.dialog.data._usage = '';
             app.dialog.data._device_name = '';
+            app.dialog.data.scrap_time='';
         },
         getList: function (index) {
             app.table.props.pageIndex = 1;
