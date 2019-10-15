@@ -82,4 +82,15 @@ public class ScrappedComputerController extends BaseApi {
             return retMsg.Set(MsgType.ERROR);
         }
     }
+
+     @RequestMapping(value = "/scrap", method = RequestMethod.POST)
+     @ResponseBody
+     public Object scrap(@RequestParam("id") String id,
+                         @RequestParam("scrap_time") String scrapTime,
+                         @RequestParam("remarks") String remarks
+     ) throws Exception {
+         if(scrappedComputerService.scrap(id, scrapTime,remarks))
+             return retMsg.Set(MsgType.SUCCESS);
+         return retMsg.Set(MsgType.ERROR);
+     }
 }

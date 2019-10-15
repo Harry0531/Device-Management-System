@@ -254,4 +254,7 @@
             SELECT `id` FROM `data_dictionary` WHERE
                 (`dic_value` = '报废' AND `dic_property` = '计算机使用情况')
         </select>
-    </mapper>
+    <select id="getComputerById" resultMap="computerBean">
+        select * from `confidential_computer` where id=#{id}
+    </select>
+</mapper>

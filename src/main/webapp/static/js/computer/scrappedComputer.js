@@ -63,6 +63,16 @@ let defaultDialog = {
     }
 };
 
+let defaultUpdateDialog = {
+    visible: false,
+    loading: false,
+    data: {
+        id: '',
+        remarks: '',
+        scrap_time: ''
+    }
+};
+
 let app = new Vue({
     el: '#app',
     data: {
@@ -92,6 +102,7 @@ let app = new Vue({
             condition: defaultFiltersCondition
         },
         dialog: defaultDialog,
+        updateItemDialog: defaultUpdateDialog,
         table: {
             loading: false,
             selectionList: [],
@@ -315,42 +326,10 @@ let app = new Vue({
         },
         updateDialog: function (v) {
             let app = this;
-            app.dialog.data.id = v["id"];
-            app.dialog.data.department = v["department"];
-            app.dialog.data.department_name = v["department_name"];
-            app.dialog.data.subject = v["subject"];
-            app.dialog.data.subject_name = v["subject_name"];
-            app.dialog.data.secret_number = v["secret_number"];
-            app.dialog.data.type = v["type"];
-            app.dialog.data.model = v["model"];
-            app.dialog.data.person = v["person"];
-            app.dialog.data.secret_level = v["secret_level"];
-            app.dialog.data.serial_number = v["serial_number"];
-            app.dialog.data.place_location = v["place_location"];
-            app.dialog.data.usage = v["usage"];
-            app.dialog.data.enablation_time = v["enablation_time"];
-            app.dialog.data.use_situation = v["use_situation"];
-            app.dialog.data.remarks = v["remarks"];
-            app.dialog.data._type = v["_type"];
-            app.dialog.data._secret_level = v["_secret_level"];
-            app.dialog.data._usage = v["_scope"];
-            app.dialog.data._use_situation = v["_use_situation"];
-            app.dialog.data.asset_number = v["asset_number"];
-            app.dialog.data.os_version = v["os_version"];
-            app.dialog.data.os_install_time = v["os_install_time"];
-            app.dialog.data.mac_address = v["mac_address"];
-            app.dialog.data.cd_drive = v["cd_drive"];
-            app.dialog.data._cd_drive = v["_cd_drive"];
-            app.dialog.data._os_version = v["_os_version"];
-            app.dialog.data.scrap_time = v["scrap_time"]
-            ajaxPost(this.urls.getDeptSub, {id: app.dialog.data.department}, function (result) {
-                app.dialog.selectionList.subject = [];
-                result.forEach(function (r) {
-                    app.dialog.selectionList.subject.push(r);
-                })
-            });
-            app.getDialogList();
-            app.dialog.visible = true;
+            app.updateItemDialog.data.id = v["id"];
+            app.updateItemDialog.data.remarks = v["remarks"];
+            app.updateItemDialog.data.scrap_time = v["scrap_time"];
+            app.updateItemDialog.visible = true;
         },
         resetDialogData: function () {
             app.dialog.data.id = '';
@@ -367,12 +346,10 @@ let app = new Vue({
             app.dialog.data.place_location = '';
             app.dialog.data.usage = '';
             app.dialog.data.enablation_time = '';
-            app.dialog.data.use_situation = '';
             app.dialog.data.remarks = '';
             app.dialog.data._type = '';
             app.dialog.data._secret_level = '';
             app.dialog.data._usage = '';
-            app.dialog.data._use_situation = '';
             app.dialog.data.asset_number = '';
             app.dialog.data.os_version = '';
             app.dialog.data.os_install_time = '';
@@ -424,7 +401,37 @@ let app = new Vue({
             this.table.props.pageIndex = newIndex;
             this.refreshTable();
         },
-
+        resetScrapDialog: function () {
+            this.updateItemDialog.data.id = '';
+            this.updateItemDialog.data.remarks = '';
+            this.updateItemDialog.data.scrap_time = '';
+        },
+        scrap:function () {
+            app.updateItemDialog.loading = true;
+            if (app.updateItemDialog.data.scrap_time === "" || app.updateItemDialog.data.scrap_time == null) {
+                app.$message({
+                    type: "error",
+                    message: "未选择报废时间"
+                });
+                app.updateItemDialog.loading = false;
+                return;
+            }
+            let data = {
+                id: app.updateItemDialog.data.id,
+                scrap_time: app.updateItemDialog.data.scrap_time,
+                remarks: app.updateItemDialog.data.remarks
+            };
+            ajaxPost(app.urls.scrap, data, function (result) {
+                app.$message({
+                    message: "更新成功",
+                    type: "success"
+                });
+                app.table.props.pageIndex = 1;
+                app.refreshTable();
+                app.updateItemDialog.loading = false;
+                app.updateItemDialog.visible = false;
+            });
+        }
     },
     mounted: function () {
         this.getSub();

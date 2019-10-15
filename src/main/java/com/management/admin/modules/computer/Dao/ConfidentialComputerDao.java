@@ -15,4 +15,5 @@ public interface ConfidentialComputerDao {
     int selectSearchCount(ConfidentialComputer confidentialComputer);
     int deleteListByIds(List<ConfidentialComputer> list);
     String getScrap();
+    ConfidentialComputer getComputerById(String id);
 }

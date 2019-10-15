@@ -201,7 +201,7 @@
                    layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
 
-    <!--编辑对话框-->
+    <!--添加对话框-->
     <el-dialog title="添加记录" :visible.sync="dialog.visible" @closed="resetDialogData">
         <div class="dialog_height">
             <el-form label-position="left" label-width="140px" style="padding: 0 100px;"
@@ -304,7 +304,6 @@
                                    :label="item.label"
                                    :value="item.value"
                                    :disabled="item.label == '报废'"></el-option>
-                        <!--本页面不可以通过输入的方式报废-->
                     </el-select>
                 </el-form-item>
                 <el-form-item label="报废时间" :required="true">
@@ -319,9 +318,31 @@
             </el-form>
         </div>
         <div slot="footer">
-            <el-button size="medium" @click="dialog.visible=false">取消</el-button>
+            <el-button size="medium" @click="dialog.visible=false;resetDialogData()">取消</el-button>
             <el-button size="medium" type="primary" style="margin-left: 10px;" @click="insertOrUpdateStorage"
                        :disabled=isInsertStorageDisable>提交
+            </el-button>
+        </div>
+    </el-dialog>
+
+    <!--编辑对话框-->
+    <el-dialog title="更新" :visible.sync="updateItemDialog.visible" heigth="700" @closed="resetScrapDialog">
+        <el-form label-position="left" label-width="140px" style="padding: 0 100px;"
+                 v-loading="updateItemDialog.loading" status-icon>
+            <el-form-item label="报废时间">
+                <el-date-picker v-model="updateItemDialog.data.scrap_time"
+                                :placeholder=visitDate
+                                value-format="yyyy-MM-dd"
+                                format="yyyy-MM-dd"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="备注">
+                <el-input v-model="updateItemDialog.data.remarks"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer">
+            <el-button size="medium" @click="updateItemDialog.visible=false;resetScrapDialog()">取 消</el-button>
+            <el-button size="medium" type="danger" @click="scrap"
+                       style="margin-left: 10px;">更 新
             </el-button>
         </div>
     </el-dialog>
