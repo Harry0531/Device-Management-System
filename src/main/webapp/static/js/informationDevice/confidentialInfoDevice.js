@@ -299,6 +299,14 @@ let app = new Vue({
                 });
                 app.resetDialogData();
                 app.getList();
+            }, (res) => {
+                app.dialog.loading = false;
+                app.dialog.visible = false;
+                app.$message({
+                    message: "系统出错或保密编号已存在",
+                    type: "error"
+                });
+                app.resetDialogData();
             })
         },
         getList: function () {
