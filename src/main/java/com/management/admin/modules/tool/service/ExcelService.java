@@ -72,6 +72,11 @@ public class ExcelService {
         return true;
     }
 
+    public void deleteByIds(List<String> ids){
+         excelTemplateDao.deleteByIds(ids);
+        excelTemplateDao.deleteByIds2(ids);
+    }
+
     public  List<String> getTableList(){
         return excelTemplateDao.getTableList();
     }

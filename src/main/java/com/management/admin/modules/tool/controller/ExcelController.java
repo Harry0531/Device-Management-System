@@ -61,6 +61,18 @@ public class ExcelController extends BaseApi {
         return null;
     }
 
+    @RequestMapping(value="deleteExcelTemplate",method = RequestMethod.POST)
+    @ResponseBody
+    public  Object deleteTemplateByIds(
+            @RequestBody List<String>ids,
+            HttpServletRequest request
+    )throws Exception{
+        excelService.deleteByIds(ids);
+        return retMsg.Set(MsgType.SUCCESS);
+    }
+
+
+
     @RequestMapping(value="selectAllTemplate",method = RequestMethod.POST)
     @ResponseBody
     public Object selectAllTemplate(
@@ -140,9 +152,9 @@ public class ExcelController extends BaseApi {
         exportExcel.setIdList(idList);
         exportExcel.setIScrapped(isScrapped);
         exportExcel.setTableName(tableName);
-        ExportExcelData excelData = exportDataService.ExportToExcel(exportExcel);
+        ExportExcelData excelData = exportDataService.ExportToExcel(exportExcel,response);
 
-        ExcelUtils.exportExcel(response,exportExcel.getFileName(),excelData);
+//        ExcelUtils.exportExcel(response,exportExcel.getFileName(),excelData);
         return fileName;
     }
 

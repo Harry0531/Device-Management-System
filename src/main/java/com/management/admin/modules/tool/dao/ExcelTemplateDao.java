@@ -27,7 +27,8 @@ public interface ExcelTemplateDao {
     //查询单个模版信息
     ExcelTemplate selectById(String id);
 
-
+    public void deleteByIds(List<String> ids);
+    public void deleteByIds2(List<String> ids);
 
 
 

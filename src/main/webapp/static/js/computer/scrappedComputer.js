@@ -473,7 +473,7 @@ function getExportConditions() {
     });
     let data = {
         fileName: "报废计算机",
-        templateId: "5027f28477164775b50a389949710ce2",
+        templateId: "e5aba220d7e54016bb82d901ba6be78d",
         fieldList: [
             {
                 fieldName: "单位",

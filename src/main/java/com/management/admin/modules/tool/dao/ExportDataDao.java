@@ -10,4 +10,6 @@ public interface ExportDataDao {
     public List<Map<String,Object>> getDataList(ExportExcel exportExcel);
 
     public  String getTypeIdByTableName(String tableName);
+
+
 }

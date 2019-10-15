@@ -250,7 +250,7 @@ function getExportConditions() {
     });
     let data = {
         fileName: "报废涉密存储介质",
-        templateId: "ab81d835f0b146d98b4f5e06e0f651c0",//todo 编号！！！
+        templateId: "ab277109b9f1428d866808c72a4dce95",
         fieldList: [
             {
                 fieldName: "单位",
