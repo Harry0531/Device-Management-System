@@ -430,6 +430,28 @@ let app = new Vue({
             let month = nowDate.getMonth() + 1;
             let day = nowDate.getDate();
             return year + "-" + month + "-" + day;
+        },
+        isInsertInfoDisable: function () {
+            let app = this;
+            return !(
+                app.dialog.data.department_name
+                && app.dialog.data.subject_name
+                && app.dialog.data.secret_number
+                && app.dialog.data.asset_number
+                && app.dialog.data.type
+                && app.dialog.data.device_name
+                && app.dialog.data.person
+                && app.dialog.data.secret_level
+                && app.dialog.data.connect_number
+                && app.dialog.data.model
+                && app.dialog.data.device_number
+                && app.dialog.data.disk_number
+                && app.dialog.data.usage
+                && app.dialog.data.place_location
+                && app.dialog.data.use_situation
+                && app.dialog.data.enablation_time
+                && app.dialog.data.scrap_time
+            )
         }
     }
 });

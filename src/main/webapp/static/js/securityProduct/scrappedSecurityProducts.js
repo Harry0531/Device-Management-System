@@ -14,8 +14,51 @@ let defaultDialog = {
     loading: false,
     data: {
         id: '',
+        department: '',
+        department_code: '',
+        department_name: '',
+        subject: '',
+        subject_code: '',
+        subject_name: '',
+        secret_number: '',
+        asset_number: '',
+        type: '',
+        product_version: '',
+        manufacturer: '',
+        certificate_number: '',
+        certificate_validity: '',
+        serial_number: '',
+        secret_level: 'a434016d651e4f29a176f271fa4f04e1',
+        person: '',
+        place_location: '',
+        scope: '',
+        buy_time: '',
+        enablation_time: '',
+        use_situation: '756dc2b343ee42ab9a20d34eebc38c5d',
+        scrap_time: '',
         remarks: '',
-        scrap_time: ''
+        _type: '',
+        _secret_level: '涉密专用',
+        _scope: '',
+        _use_situation: '报废',
+    },
+    selectionList: {
+        type: [],
+        secret_level: [],
+        scope: [],
+        use_situation: [{value: '756dc2b343ee42ab9a20d34eebc38c5d', label: '报废'}],
+        subject: [],
+        department: []
+    }
+};
+
+let defaultScrapDialog = {
+    visible: false,
+    loading: false,
+    data: {
+        id: '',
+        scrap_time: '',
+        remarks: ''
     }
 };
 
@@ -28,7 +71,8 @@ let app = new Vue({
             getDeptSub: 'http://localhost:8444/api/sys/product/scrapped/getDeptSub',
             getList: 'http://localhost:8444/api/sys/product/scrapped/getList',
             deleteListByIds: 'http://localhost:8444/api/sys/product/scrapped/deleteListByIds',
-            scrap: 'http://localhost:8444/api/sys/product/scrapped/scrap'
+            scrap: 'http://localhost:8444/api/sys/product/scrapped/scrap',
+            insertOrUpdateProduct: 'http://localhost:8444/api/sys/product/product/insertOrUpdateProduct',
         },
         loading: false,
         activeNames: [],
@@ -59,7 +103,8 @@ let app = new Vue({
             visible: false,
             src: "../management/excel/ExportData.html"
         },
-        dialog: defaultDialog
+        dialog: defaultDialog,
+        scrapDialog: defaultScrapDialog
     },
     created: function () {
         this.checkStatus();
@@ -139,6 +184,104 @@ let app = new Vue({
                 app.table.props.total = result.data.total;
             })
         },
+        getDialogList: function () {
+            ajaxPost(this.urls.getSub, {param: "使用范围"}, function (result) {
+                app.dialog.selectionList.scope = [];
+                result.forEach(function (r) {
+                    app.dialog.selectionList.scope.push({'value': r.id, 'label': r.dicValue});
+                });
+            });
+            ajaxPost(this.urls.getSub, {param: "类型"}, function (result) {
+                app.dialog.selectionList.type = [];
+                result.forEach(function (r) {
+                    app.dialog.selectionList.type.push({'value': r.id, 'label': r.dicValue});
+                });
+            });
+            ajaxPost(this.urls.getSub, {param: "密级"}, function (result) {
+                app.dialog.selectionList.secret_level = [];
+                result.forEach(function (r) {
+                    app.dialog.selectionList.secret_level.push({'value': r.id, 'label': r.dicValue});
+                });
+            });
+            ajaxPost(this.urls.getSub, {param: "dept"}, function (result) {
+                app.dialog.selectionList.department = [];
+                result.forEach(function (r) {
+                    app.dialog.selectionList.department.push(r);
+                })
+            })
+        },
+        handleTypeChange: function (v) {
+            app.dialog.data.type = v;
+        },
+        handleLevelChange: function (v) {
+            app.dialog.data.secret_level = v;
+        },
+        handleScopeChange: function (v) {
+            app.dialog.data.scope = v;
+        },
+        handleSchoolChange: function (v) {
+            app.dialog.data.department_name = v.dept_name;
+            app.dialog.data.department = v.id;
+            console.log("data", app.dialog.data);
+            ajaxPost(this.urls.getDeptSub, {id: v.id}, function (result) {
+                app.dialog.selectionList.subject = [];
+                result.forEach(function (r) {
+                    app.dialog.selectionList.subject.push(r);
+                })
+            });
+            app.dialog.data.subject = '';
+            app.dialog.data.subject_name = '';
+            app.dialog.data.subject_code = '';
+        },
+        handleSubjectChange: function (v) {
+            app.dialog.data.subject_name = v.dept_name;
+            app.dialog.data.subject = v.id;
+        },
+        insertOrUpdateProduct: function () {
+            app.dialog.loading = true;
+            let data = {
+                id: app.dialog.data.id,
+                department: app.dialog.data.department,
+                subject: app.dialog.data.subject,
+                secret_number: app.dialog.data.secret_number,
+                asset_number: app.dialog.data.asset_number,
+                type: app.dialog.data.type,
+                product_version: app.dialog.data.product_version,
+                manufacturer: app.dialog.data.manufacturer,
+                certificate_number: app.dialog.data.certificate_number,
+                certificate_validity: app.dialog.data.certificate_validity,
+                serial_number: app.dialog.data.serial_number,
+                secret_level: app.dialog.data.secret_level,
+                person: app.dialog.data.person,
+                place_location: app.dialog.data.place_location,
+                scope: app.dialog.data.scope,
+                buy_time: app.dialog.data.buy_time,
+                enablation_time: app.dialog.data.enablation_time,
+                use_situation: app.dialog.data.use_situation,
+                scrap_time: app.dialog.data.scrap_time,
+                remarks: app.dialog.data.remarks,
+                scrapped_flag: 1,
+                delFlag: 0
+            };
+            ajaxPostJSON(this.urls.insertOrUpdateProduct, data, function (d) {
+                app.dialog.loading = false;
+                app.dialog.visible = false;
+                app.$message({
+                    message: "操作成功",
+                    type: "success"
+                });
+                app.resetDialogData();
+                app.getList();
+            }, (res) => {
+                app.dialog.loading = false;
+                app.dialog.visible = false;
+                app.$message({
+                    message: "系统出错或保密编号已存在",
+                    type: "error"
+                });
+                app.resetDialogData();
+            })
+        },
         getList: function (index) {
             app.table.props.pageIndex = 1;
             this.refreshTable();
@@ -153,6 +296,29 @@ let app = new Vue({
         onPageIndexChange: function (newIndex) {
             this.table.props.pageIndex = newIndex;
             this.refreshTable();
+        },
+        resetDialogData: function () {
+            app.dialog.data.id = '';
+            app.dialog.data.department = '';
+            app.dialog.data.department_name = '';
+            app.dialog.data.subject = '';
+            app.dialog.data.subject_name = '';
+            app.dialog.data.secret_number = '';
+            app.dialog.data.asset_number = '';
+            app.dialog.data.type = '';
+            app.dialog.data.product_version = '';
+            app.dialog.data.manufacturer = '';
+            app.dialog.data.certificate_number = '';
+            app.dialog.data.certificate_validity = '';
+            app.dialog.data.serial_number = '';
+            app.dialog.data.person = '';
+            app.dialog.data.place_location = '';
+            app.dialog.data.scope = '';
+            app.dialog.data.buy_time = '';
+            app.dialog.data.enablation_time = '';
+            app.dialog.data.remarks = '';
+            app.dialog.data._type = '';
+            app.dialog.data._scope = '';
         },
         deleteByIds: function (list) {
             if (list.length === 0) {
@@ -193,30 +359,42 @@ let app = new Vue({
             app.dialog.visible = true;
         },
         scrap: function () {
-            app.dialog.loading = true;
-            if (app.dialog.data.scrap_time === "" || app.dialog.data.scrap_time == null) {
+            app.scrapDialog.loading = true;
+            if (app.scrapDialog.data.scrap_time === "" || app.scrapDialog.data.scrap_time == null) {
                 app.$message({
                     type: "error",
                     message: "未选择报废时间"
                 });
-                app.dialog.loading = false;
+                app.scrapDialog.loading = false;
                 return;
             }
             let data = {
-                id: app.dialog.data.id,
-                scrap_time: app.dialog.data.scrap_time,
-                remarks: app.dialog.data.remarks
+                id: app.scrapDialog.data.id,
+                scrap_time: app.scrapDialog.data.scrap_time,
+                remarks: app.scrapDialog.data.remarks
             };
             ajaxPost(app.urls.scrap, data, function (result) {
                 app.$message({
-                    message: "更新成功",
+                    message: "报废成功",
                     type: "success"
                 });
                 app.table.props.pageIndex = 1;
                 app.refreshTable();
-                app.dialog.loading = false;
-                app.dialog.visible = false;
+                app.scrapDialog.loading = false;
+                app.scrapDialog.visible = false;
             });
+
+        },
+        showScrapDialog: function (v) {
+            app.scrapDialog.data.id = v["id"];
+            app.scrapDialog.data.scrap_time = v["scrap_time"];
+            app.scrapDialog.data.remarks = v["remarks"];
+            app.scrapDialog.visible = true;
+        },
+        resetScrapDialog: function () {
+            app.scrapDialog.data.id = '';
+            app.scrapDialog.data.scrap_time = '';
+            app.scrapDialog.data.remarks = '';
         }
     },
     mounted: function () {
@@ -230,6 +408,29 @@ let app = new Vue({
             let month = nowDate.getMonth() + 1;
             let day = nowDate.getDate();
             return year + "-" + month + "-" + day;
+        },
+        isInsertProductDisable:function () {
+            let app = this;
+            return !(
+                app.dialog.data.department_name
+                && app.dialog.data.subject_name
+                && app.dialog.data.secret_number
+                && app.dialog.data.asset_number
+                && app.dialog.data.type
+                && app.dialog.data.product_version
+                && app.dialog.data.manufacturer
+                && app.dialog.data.certificate_validity
+                && app.dialog.data.certificate_number
+                && app.dialog.data.person
+                && app.dialog.data.secret_level
+                && app.dialog.data.serial_number
+                && app.dialog.data.place_location
+                && app.dialog.data.scope
+                && app.dialog.data.buy_time
+                && app.dialog.data.enablation_time
+                && app.dialog.data.use_situation
+                && app.dialog.data.scrap_time
+            )
         }
     }
 });
