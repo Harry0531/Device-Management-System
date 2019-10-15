@@ -56,4 +56,9 @@ public class ScrappedInfoDeviceService {
     public boolean deleteListByIds(List<InfoDevice> list) {
         return list.size() == 0 || scrappedInfoDeviceDao.deleteListByIds(list) == list.size();
     }
+
+    public boolean insertInfo(InfoDevice infoDevice) {
+        infoDevice.preInsert();
+        return infoDeviceDao.insertInfo(infoDevice) == 1;
+    }
 }

@@ -15,8 +15,52 @@ let defaultDialog = {
     loading: false,
     data: {
         id: '',
+        department: '',
+        department_code: '',
+        department_name: '',
+        subject: '',
+        subject_code: '',
+        subject_name: '',
+        secret_number: '',
+        asset_number: '',
+        type: '',
+        device_name: '',
+        person: '',
+        secret_level: '',
+        connect_number: '',
+        model: '',
+        device_number: '',
+        disk_number: '',
+        usage: '',
+        place_location: '',
+        enablation_time: '',
+        use_situation: 'fe31ffd7e4b7404ea7f3d71191a6df0e',
         remarks: '',
-        scrap_time: ''
+        scrap_time: '',
+        _type: '',
+        _device_name: '',
+        _secret_level: '',
+        _usage: '',
+        _use_situation: '报废',
+    },
+    selectionList: {
+        type: [],
+        secret_level: [],
+        usage: [],
+        device_name: [],
+        use_situation: [{value: 'fe31ffd7e4b7404ea7f3d71191a6df0e', label: '报废'}],
+        subject: [],
+        department: []
+    }
+};
+
+let defaultScrapDialog = {
+    visible: false,
+    loading: false,
+    data: {
+        id: '',
+        scrap_time: '',
+        remarks: ''
     }
 };
 
@@ -27,10 +71,12 @@ let app = new Vue({
         loading: false,
         urls: {
             getSub: 'http://localhost:8444/api/sys/info/scrapped/getSub',
+            getDeviceName: 'http://localhost:8444/api/sys/info/confidential/getDeviceName',
             getDeptSub: 'http://localhost:8444/api/sys/info/scrapped/getDeptSub',
             getList: 'http://localhost:8444/api/sys/info/scrapped/getList',
             deleteListByIds: 'http://localhost:8444/api/sys/info/scrapped/deleteListByIds',
-            scrap: 'http://localhost:8444/api/sys/info/scrapped/scrap'
+            scrap: 'http://localhost:8444/api/sys/info/scrapped/scrap',
+            insertOrUpdateInfo: 'http://localhost:8444/api/sys/info/scrapped/insertOrUpdateInfo'
         },
         activeNames: [],
         filters: {
@@ -46,6 +92,7 @@ let app = new Vue({
             condition: defaultFiltersCondition
         },
         dialog: defaultDialog,
+        scrapDialog: defaultScrapDialog,
         table: {
             loading: false,
             selectionList: [],
@@ -148,6 +195,138 @@ let app = new Vue({
                 app.table.props.total = result.data.total;
             })
         },
+        getDialogList: function () {
+            ajaxPost(this.urls.getSub, {param: "类型"}, function (result) {
+                app.dialog.selectionList.type = [];
+                result.forEach(function (r) {
+                    app.dialog.selectionList.type.push({'value': r.id, 'label': r.dicValue});
+                });
+            });
+            ajaxPost(this.urls.getSub, {param: "密级"}, function (result) {
+                app.dialog.selectionList.secret_level = [];
+                result.forEach(function (r) {
+                    app.dialog.selectionList.secret_level.push({'value': r.id, 'label': r.dicValue});
+                });
+            });
+            ajaxPost(this.urls.getSub, {param: "用途"}, function (result) {
+                app.dialog.selectionList.usage = [];
+                result.forEach(function (r) {
+                    app.dialog.selectionList.usage.push({'value': r.id, 'label': r.dicValue});
+                });
+            });
+            ajaxPost(this.urls.getSub, {param: "dept"}, function (result) {
+                app.dialog.selectionList.department = [];
+                result.forEach(function (r) {
+                    app.dialog.selectionList.department.push(r);
+                })
+            })
+        },
+        handleTypeChange: function (v) {
+            app.dialog.data.type = v;
+            ajaxPost(this.urls.getDeviceName, {type: v}, function (result) {
+                app.dialog.selectionList.device_name = [];
+                result.forEach(function (r) {
+                    app.dialog.selectionList.device_name.push({'value': r.id, 'label': r.dicValue});
+                });
+            });
+            app.dialog.data.device_name = '';
+        },
+        handleLevelChange: function (v) {
+            app.dialog.data.secret_level = v;
+        },
+        handleUsageChange: function (v) {
+            app.dialog.data.usage = v;
+        },
+        handleDeviceChange: function (v) {
+            app.dialog.data.device_name = v;
+        },
+        handleSchoolChange: function (v) {
+            app.dialog.data.department_name = v.dept_name;
+            app.dialog.data.department = v.id;
+            console.log("data", app.dialog.data);
+            ajaxPost(this.urls.getDeptSub, {id: v.id}, function (result) {
+                app.dialog.selectionList.subject = [];
+                result.forEach(function (r) {
+                    app.dialog.selectionList.subject.push(r);
+                })
+            });
+            app.dialog.data.subject = '';
+            app.dialog.data.subject_name = '';
+            app.dialog.data.subject_code = '';
+        },
+        handleSubjectChange: function (v) {
+            app.dialog.data.subject_name = v.dept_name;
+            app.dialog.data.subject = v.id;
+        },
+        insertOrUpdateInfo: function () {
+            app.dialog.loading = true;
+            let data = {
+                id: app.dialog.data.id,
+                department: app.dialog.data.department,
+                subject: app.dialog.data.subject,
+                secret_number: app.dialog.data.secret_number,
+                asset_number: app.dialog.data.asset_number,
+                type: app.dialog.data.type,
+                device_name: app.dialog.data.device_name,
+                person: app.dialog.data.person,
+                secret_level: app.dialog.data.secret_level,
+                connect_number: app.dialog.data.connect_number,
+                model: app.dialog.data.model,
+                device_number: app.dialog.data.device_number,
+                disk_number: app.dialog.data.disk_number,
+                usage: app.dialog.data.usage,
+                place_location: app.dialog.data.place_location,
+                use_situation: app.dialog.data.use_situation,
+                enablation_time: app.dialog.data.enablation_time,
+                remarks: app.dialog.data.remarks,
+                scrap_time: app.dialog.data.scrap_time,
+                scrapped_flag: 1,
+                delFlag: 0
+            };
+            ajaxPostJSON(this.urls.insertOrUpdateInfo, data, function (d) {
+                app.dialog.loading = false;
+                app.dialog.visible = false;
+                app.$message({
+                    message: "操作成功",
+                    type: "success"
+                });
+                app.resetDialogData();
+                app.getList();
+            }, (res) => {
+                app.dialog.loading = false;
+                app.dialog.visible = false;
+                app.$message({
+                    message: "系统出错或保密编号已存在",
+                    type: "error"
+                });
+                app.resetDialogData();
+            })
+        },
+        resetDialogData: function () {
+            app.dialog.data.id = '';
+            app.dialog.data.department = '';
+            app.dialog.data.department_name = '';
+            app.dialog.data.subject = '';
+            app.dialog.data.subject_name = '';
+            app.dialog.data.secret_number = '';
+            app.dialog.data.asset_number = '';
+            app.dialog.data.type = '';
+            app.dialog.data.device_name = '';
+            app.dialog.data.person = '';
+            app.dialog.data.secret_level = '';
+            app.dialog.data.connect_number = '';
+            app.dialog.data.model = '';
+            app.dialog.data.device_number = '';
+            app.dialog.data.disk_number = '';
+            app.dialog.data.usage = '';
+            app.dialog.data.place_location = '';
+            app.dialog.data.enablation_time = '';
+            app.dialog.data.remarks = '';
+            app.dialog.data._type = '';
+            app.dialog.data._secret_level = '';
+            app.dialog.data._usage = '';
+            app.dialog.data._device_name = '';
+        },
         getList: function (index) {
             app.table.props.pageIndex = 1;
             this.refreshTable();
@@ -202,30 +381,42 @@ let app = new Vue({
             app.dialog.visible = true;
         },
         scrap: function () {
-            app.dialog.loading = true;
-            if (app.dialog.data.scrap_time === "" || app.dialog.data.scrap_time == null) {
+            app.scrapDialog.loading = true;
+            if (app.scrapDialog.data.scrap_time === "" || app.scrapDialog.data.scrap_time == null) {
                 app.$message({
                     type: "error",
                     message: "未选择报废时间"
                 });
-                app.dialog.loading = false;
+                app.scrapDialog.loading = false;
                 return;
             }
             let data = {
-                id: app.dialog.data.id,
-                scrap_time: app.dialog.data.scrap_time,
-                remarks: app.dialog.data.remarks
+                id: app.scrapDialog.data.id,
+                scrap_time: app.scrapDialog.data.scrap_time,
+                remarks: app.scrapDialog.data.remarks
             };
             ajaxPost(app.urls.scrap, data, function (result) {
                 app.$message({
-                    message: "更新成功",
+                    message: "报废成功",
                     type: "success"
                 });
                 app.table.props.pageIndex = 1;
                 app.refreshTable();
-                app.dialog.loading = false;
-                app.dialog.visible = false;
+                app.scrapDialog.loading = false;
+                app.scrapDialog.visible = false;
             });
+
+        },
+        showScrapDialog: function (v) {
+            app.scrapDialog.data.id = v["id"];
+            app.scrapDialog.data.scrap_time = v['scrap_time'];
+            app.scrapDialog.data.remarks = v["remarks"];
+            app.scrapDialog.visible = true;
+        },
+        resetScrapDialog: function () {
+            app.scrapDialog.data.id = '';
+            app.scrapDialog.data.scrap_time = '';
+            app.scrapDialog.data.remarks = '';
         }
     },
     mounted: function () {

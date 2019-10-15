@@ -3,6 +3,7 @@ package com.management.admin.modules.infoDevice.controller;
 import com.management.admin.common.persistence.Page;
 import com.management.admin.common.web.BaseApi;
 import com.management.admin.common.web.MsgType;
+import com.management.admin.modules.infoDevice.dao.InfoDeviceDao;
 import com.management.admin.modules.infoDevice.entity.InfoDevice;
 import com.management.admin.modules.infoDevice.service.ScrappedInfoDeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,8 +69,20 @@ public class ScrappedInfoDeviceController extends BaseApi {
                         @RequestParam("scrap_time") String scrapTime,
                         @RequestParam("remarks") String remarks
     ) throws Exception {
-        if(scrappedInfoDeviceService.scrap(id, scrapTime,remarks))
+        if (scrappedInfoDeviceService.scrap(id, scrapTime, remarks))
             return retMsg.Set(MsgType.SUCCESS);
         return retMsg.Set(MsgType.ERROR);
+    }
+
+    @RequestMapping(value = "/insertOrUpdateInfo", method = RequestMethod.POST)
+    @ResponseBody
+    public Object insertStorage(@RequestBody InfoDevice infoDevice) throws Exception {
+        if (infoDevice.getId() == null || infoDevice.getId().equals("")) {
+            if (scrappedInfoDeviceService.insertInfo(infoDevice))
+                return retMsg.Set(MsgType.SUCCESS);
+            else return retMsg.Set(MsgType.ERROR);
+        } else {
+            return retMsg.Set(MsgType.ERROR);
+        }
     }
 }
