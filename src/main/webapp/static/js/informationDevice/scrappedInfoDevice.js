@@ -462,6 +462,8 @@ function getExportConditions() {
     app.table.selectionList.forEach(function (v) {
         ID.push(v["id"]);
     });
+    let timeList = [];
+    timeList.push(app.filters.condition.startTime,app.filters.condition.endTime);
     let data = {
         fileName: "报废涉密信息设备",
         templateId: "df86810688c04df39cacb0f473aef47f",
@@ -522,7 +524,7 @@ function getExportConditions() {
                 fieldType: "remarks"
             }
         ],
-        conditionsList: [],
+        conditionsList: timeList,
         idList: ID,
         isScrapped: true,
         tableName: "confidential_information_device"

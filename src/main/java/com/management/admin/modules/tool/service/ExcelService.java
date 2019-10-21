@@ -208,9 +208,10 @@ public class ExcelService {
                     cellValue = ExcelUtils.getCellValueByFieldType(cell, columnMapField.getFieldType());
                     //如果是部门或课题组
                     if(columnMapField.getColumnName().equals("单位")||columnMapField.getColumnName().equals("科室/课题组")){
-                        String deName=cellValue.toString().split(" ")[1];
-                        String deCode=cellValue.toString().split(" ")[0];
-                        String uu =getUuidByNameAndCode(deName,deCode);
+//                        String deName=cellValue.toString().split(" ")[1];
+//                        String deCode=cellValue.toString().split(" ")[0];
+                        String deName=cellValue.toString();
+                        String uu =getUuidByNameAndCode(deName,"000");
                         if(uu.equals("wrong")){
                             isWrong = true;
                             break;
@@ -294,7 +295,7 @@ public class ExcelService {
     public String getUuidByNameAndCode(String Name,String Code){
         for(int i=0;i<partInfos.size();i++){
             PartInfo partInfo = partInfos.get(i);
-            if(partInfo.getName().equals(Name)&&partInfo.getCode().equals(Code)){
+            if(partInfo.getName().equals(Name)){
                 return partInfo.getId();
             }
         }

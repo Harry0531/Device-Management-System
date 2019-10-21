@@ -443,6 +443,8 @@ function getExportConditions() {
     app.table.selectionList.forEach(function (v) {
         ID.push(v["id"]);
     });
+    let timeList = [];
+    timeList.push(app.filters.condition.startTime,app.filters.condition.endTime);
     let data = {
         fileName: "报废USB Key",
         templateId: "5610987ac848462882fbfa6581e1ab8d",
@@ -497,7 +499,7 @@ function getExportConditions() {
                 fieldType: "remarks"
             }
         ],
-        conditionsList: [],
+        conditionsList: timeList,
         idList: ID,
         isScrapped: true,
         tableName: "usb_key"

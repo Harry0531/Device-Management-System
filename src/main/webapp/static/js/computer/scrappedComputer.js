@@ -478,6 +478,8 @@ function getExportConditions() {
     app.table.selectionList.forEach(function (v) {
         ID.push(v["id"]);
     });
+    let timeList = [];
+    timeList.push(app.filters.condition.startTime,app.filters.condition.endTime);
     let data = {
         fileName: "报废计算机",
         templateId: "e5aba220d7e54016bb82d901ba6be78d",
@@ -541,7 +543,7 @@ function getExportConditions() {
                 fieldType: "remarks"
             }
         ],
-        conditionsList: [],
+        conditionsList: timeList,
         idList: ID,
         isScrapped: true,
         tableName: "confidential_computer"
