@@ -14,4 +14,27 @@ public class DynamicInsertParam {
     private List<String> fieldList;
     private List<List<Object>> data;
 
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
+
+    public List<String> getFieldList() {
+        return fieldList;
+    }
+
+    public void setFieldList(List<String> fieldList) {
+        this.fieldList = fieldList;
+    }
+
+    public List<List<Object>> getData() {
+        return data;
+    }
+
+    public void setData(List<List<Object>> data) {
+        this.data = data;
+    }
 }

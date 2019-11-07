@@ -3,5 +3,5 @@ document.write('<script src="../../plugins/jquery/jquery-3.3.1.min.js" type="tex
 document.write('<script src="../../plugins/elementui/index.js"></script>');
 document.write('<script src="../../js/utils.js"></script>');
 
-console.log("load template.js");
+// console.log("load template.js");
 

@@ -104,7 +104,8 @@ let app = new Vue({
             src: "../management/excel/ExportData.html"
         },
         dialog: defaultDialog,
-        scrapDialog: defaultScrapDialog
+        scrapDialog: defaultScrapDialog,
+        visitDate: ''
     },
     created: function () {
         this.checkStatus();

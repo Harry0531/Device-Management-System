@@ -12,6 +12,7 @@ let app = new Vue({
         urls: {
             getSub: 'http://localhost:8444/api/sys/info/confidential/getSub',
         },
+        formData: {}
     },
     created: function () {
         this.checkStatus();

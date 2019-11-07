@@ -25,7 +25,8 @@ let app = new Vue({
         }],
         time: false,
         startTime: '',
-        endTime: ''
+        endTime: '',
+        formData: {}
     },
     created: function () {
         this.checkStatus();

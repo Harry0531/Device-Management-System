@@ -104,7 +104,8 @@ let app = new Vue({
         exportData: {
             visible: false,
             src: "../management/excel/ExportData.html"
-        }
+        },
+        visitDate: ''
     },
     created: function () {
         this.checkStatus();

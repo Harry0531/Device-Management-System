@@ -14,23 +14,18 @@
 <body>
 <div id="app" v-cloak v-loading="loading" v-if="showWindow">
 
-
-
-
-
-
     <el-form ref="form" :model="formData" label-width="150px" style="padding: 34px 24px;" size="small"
              label-position="left">
 
         <el-form-item label="选择单位">
-            <el-select v-model="selectDep" @change="handleSchoolChange">
+            <el-select v-model="selectDep">
                 <el-option v-for="item in department"
                            :key="item.id"
                            :label="item.dept_name"
                            :value="item.id"></el-option>
             </el-select>
             <el-button  size="small" type="success" @click="backup" style="margin-left:20px;">导出备份数据</el-button>
-            <el-button  size="small" type="success" @click="toword" style="margin-left:20px;">导出word数据</el-button>
+<!--            <el-button  size="small" type="success" @click="toword" style="margin-left:20px;">导出word数据</el-button>-->
         </el-form-item>
 
 <!--        <el-form-item label="选择单位">-->
