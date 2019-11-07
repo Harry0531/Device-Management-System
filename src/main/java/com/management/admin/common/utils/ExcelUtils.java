@@ -29,7 +29,7 @@ public class ExcelUtils {
     // 通过table中的字段类型获取对应excel类型值
     public static Object getCellValueByFieldType(Cell cell, String fieldType) {
         Object val = null;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
             switch (fieldType) {
                 case "varchar":
@@ -56,7 +56,7 @@ public class ExcelUtils {
                 case "date":
                     val = cell.getDateCellValue();
                     val = dateFormat.format(val);
-                    break;
+                break;
                     default:
                         cell.setCellType(HSSFCell.CELL_TYPE_STRING);
                         val = cell.getStringCellValue();
