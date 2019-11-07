@@ -233,12 +233,14 @@ public class ExcelService {
                              }
                         }
                         if(!findDict){
+                            System.out.println("字典项匹配失败！！！！！！！！！！！！！");
                             isWrong=true;
                             break;
                         }
                     }
                 }
-                if(isWrong) break;
+                if(isWrong)
+                    break;
                 row.add(cellValue);
             }
             if(isWrong){
@@ -254,7 +256,11 @@ public class ExcelService {
         HashMap<String,Object> status =new HashMap<>();
         status.put("success",successRow);
         status.put("failed",failRow);
-
+        if(data.size() == 0) {
+            status.put("success",0);
+            status.put("failed",0);
+            return status;
+        }
         // 4.进行插入，并返回是否成功
         try {
             importDataDao.dynamicInsert(dynamicInsertParam);
