@@ -5,11 +5,13 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import sun.java2d.pipe.SpanShapeRenderer;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 
 public class ExcelUtils {
 
@@ -27,6 +29,7 @@ public class ExcelUtils {
     // 通过table中的字段类型获取对应excel类型值
     public static Object getCellValueByFieldType(Cell cell, String fieldType) {
         Object val = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
         try {
             switch (fieldType) {
                 case "varchar":
@@ -51,6 +54,9 @@ public class ExcelUtils {
                 case "datetime":
                 case "timestamp":
                 case "date":
+                    val = cell.getDateCellValue();
+                    val = dateFormat.format(val);
+                    break;
                     default:
                         cell.setCellType(HSSFCell.CELL_TYPE_STRING);
                         val = cell.getStringCellValue();
