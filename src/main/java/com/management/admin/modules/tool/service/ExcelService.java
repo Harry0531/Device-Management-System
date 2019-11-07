@@ -183,10 +183,13 @@ public class ExcelService {
         Integer successRow =0;
         List<Integer> failRow = new ArrayList<>();
         for(int rowIndex = 3; rowIndex <=sheet.getLastRowNum();rowIndex++){ //忽略第一行
+            Row dataRow = sheet.getRow(rowIndex);   //获取一行的数据
+            //判断是不是空行 是的话就停止
+            if("".equals(dataRow.getCell(1).getStringCellValue())) {
+                break;
+            }
 
             Boolean isWrong = false;
-
-            Row dataRow = sheet.getRow(rowIndex);   //获取一行的数据
 
             //对应前面四个固定值
             List<Object> row = new ArrayList<>();
@@ -251,11 +254,13 @@ public class ExcelService {
         HashMap<String,Object> status =new HashMap<>();
         status.put("success",successRow);
         status.put("failed",failRow);
+
         // 4.进行插入，并返回是否成功
         try {
             importDataDao.dynamicInsert(dynamicInsertParam);
             return status;
         }catch (Exception e){
+            e.printStackTrace();
             return null;
         }
 
