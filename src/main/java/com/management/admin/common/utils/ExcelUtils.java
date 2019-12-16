@@ -54,8 +54,13 @@ public class ExcelUtils {
                 case "datetime":
                 case "timestamp":
                 case "date":
-                    val = cell.getDateCellValue();
-                    val = dateFormat.format(val);
+                    if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+//                        val = dateFormat.parse(cell.getStringCellValue().replaceAll("/", "-"));
+                        val = cell.getStringCellValue();
+                    } else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                        val = cell.getDateCellValue();
+                        val = dateFormat.format(val);
+                    }
                 break;
                     default:
                         cell.setCellType(HSSFCell.CELL_TYPE_STRING);
@@ -63,6 +68,7 @@ public class ExcelUtils {
                     break;
             }
         } catch (Exception e) {
+            System.out.println(e);
             // do nothing
         }
         return val;

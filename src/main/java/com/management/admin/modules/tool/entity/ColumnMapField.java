@@ -18,71 +18,13 @@ public class ColumnMapField extends DataEntity<ColumnMapField> {
     private Boolean isDict;
     private String dict;
 
-    public Boolean getIsDict() {
-        return isDict;
-    }
-
     public ColumnMapField(TableField tableField) {
         tableColumnName = tableField.getFieldName();
         fieldType = tableField.getFieldType();
         columnIndex = -1;
     }
+
     public ColumnMapField() {
 
     }
-
-
-    public String getTemplateId() {
-        return templateId;
-    }
-
-    public void setTemplateId(String templateId) {
-        this.templateId = templateId;
-    }
-
-    public String getTableColumnName() {
-        return tableColumnName;
-    }
-
-    public void setTableColumnName(String tableColumnName) {
-        this.tableColumnName = tableColumnName;
-    }
-
-    public String getFieldType() {
-        return fieldType;
-    }
-
-    public void setFieldType(String fieldType) {
-        this.fieldType = fieldType;
-    }
-
-    public String getColumnName() {
-        return columnName;
-    }
-
-    public void setColumnName(String columnName) {
-        this.columnName = columnName;
-    }
-
-    public Integer getColumnIndex() {
-        return columnIndex;
-    }
-
-    public void setColumnIndex(Integer columnIndex) {
-        this.columnIndex = columnIndex;
-    }
-
-    public Boolean getDict() {
-        return isDict;
-    }
-
-    public void setDict(String dict) {
-        this.dict = dict;
-    }
-
-    public void setDict(Boolean dict) {
-        isDict = dict;
-    }
-
-
 }

@@ -15,6 +15,15 @@
         </foreach>
     </insert>
 
+    <update id="dynamicUpdate" parameterType="com.management.admin.modules.tool.entity.DynamicUpdateParam">
+        update ${tableName} set
+        <foreach collection="value" item="item" index="index" separator=",">
+            ${item}
+        </foreach>
+        , modify_time = #{date}
+        where ${primaryName} = #{primaryKey}
+    </update>
+
     <select id="selectFieldListByTableName" parameterType="string" resultType="com.management.admin.modules.tool.entity.tiny.TableField">
         select COLUMN_NAME    as fieldName,
                DATA_TYPE      as fieldType
@@ -28,5 +37,13 @@
 
     <select id="getPartList" resultType="com.management.admin.modules.tool.entity.tiny.PartInfo">
         SELECT id,`dept_name`as "name",`dept_code`as"code" from department
+    </select>
+
+    <select id="getNumber" parameterType="string" resultType="java.lang.String">
+        SELECT `number` from ${tableName} where del_flag = 0
+    </select>
+
+    <select id="getSecretNumber" parameterType="string" resultType="java.lang.String">
+        SELECT secret_number from ${tableName} where del_flag = 0
     </select>
 </mapper>

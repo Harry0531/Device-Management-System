@@ -100,29 +100,35 @@ let app = new Vue({
             this.loading.importing = true;
             let app = this;
             console.log(this.formData);
-            ajaxPostJSON(this.urls.importExcelToTable, this.formData, function (d) {
+            ajaxPostJSON(this.urls.importExcelToTable, this.formData, async function (d) {
                 app.loading.importing = false;
-                app.$message({
-                    message: "成功导入" + d.data["success"] + "条记录",
-                    type: "success"
+                console.log(d)
+                let success = d.data.successUpdate + d.data.successInsert
+                await app.$notify({
+                    title: '成功',
+                    type: 'success',
+                    message: "成功导入数据" + success + "条<br>" +
+                        "成功插入数据" + d.data.successInsert + "条<br>" +
+                        "成功更新数据" + d.data.successUpdate + "条",
+                    dangerouslyUseHTMLString: true,
+                    duration: 0
                 });
 
-                setTimeout(function () {
-                    if (d.data["failed"] != null) {
-                        let s = "";
-                        d.data["failed"].forEach(function (v) {
-                            s += "" + v.toString() + ",";
-                        })
-                        s = s.substr(0, s.length - 1);
-                        console.log(s);
-                        if (s.length == 0) return;
-                        app.$message({
-                            message: "其中第" + s + "条导入失败",
-                            type: "error"
-                        });
+                if(d.data.failInsert + d.data.failUpdate > 0) {
+                    let failMessage = "";
+                    for(let i in d.data.failMessage){
+                        failMessage += d.data.failMessage[i] + "<br>"
                     }
-                }, 1000)
-
+                    failMessage = "插入失败" + d.data.failInsert + "条<br>" +
+                        "更新失败" + d.data.failUpdate + "条<br>" + failMessage;
+                    await app.$notify({
+                        title: '失败',
+                        type: 'error',
+                        message: "<div class='errorBox'>" + failMessage + "</div>",
+                        dangerouslyUseHTMLString: true,
+                        duration: 0
+                    });
+                }
 
             }, function (d) {
                 app.loading.importing = false;

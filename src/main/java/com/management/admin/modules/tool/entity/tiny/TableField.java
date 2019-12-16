@@ -7,6 +7,8 @@ public class TableField {
     private String fieldName;
     private String fieldType;
 
+
+
     public String getFieldName() {
         return fieldName;
     }

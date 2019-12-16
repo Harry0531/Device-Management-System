@@ -8,6 +8,28 @@
         [v-cloak]{
             display: none;
         }
+        .errorBox{
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 16px;
+        }
+        .errorBox::-webkit-scrollbar {/*滚动条整体样式*/
+            width: 5px;     /*高宽分别对应横竖滚动条的尺寸*/
+            height: 1px;
+        }
+        .errorBox::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+            border-radius: 5px;
+            -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+            background: #535353;
+        }
+        .errorBox::-webkit-scrollbar-track {/*滚动条里面轨道*/
+            -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+            border-radius: 5px;
+            background: #EDEDED;
+        }
+        .el-notification{
+            padding-right: 0;
+        }
     </style>
 
 </head>

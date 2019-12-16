@@ -7,10 +7,7 @@ import com.management.admin.modules.sys.service.DictService;
 import com.management.admin.modules.tool.dao.ColumnMapFieldDao;
 import com.management.admin.modules.tool.dao.ExcelTemplateDao;
 import com.management.admin.modules.tool.dao.ImportDataDao;
-import com.management.admin.modules.tool.entity.ColumnMapField;
-import com.management.admin.modules.tool.entity.DynamicInsertParam;
-import com.management.admin.modules.tool.entity.ImportExcel;
-import com.management.admin.modules.tool.entity.ExcelTemplate;
+import com.management.admin.modules.tool.entity.*;
 import com.management.admin.modules.tool.entity.tiny.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -172,16 +169,30 @@ public class ExcelService {
 
 
         DynamicInsertParam dynamicInsertParam = new DynamicInsertParam();
+        DynamicUpdateParam dynamicUpdateParam = new DynamicUpdateParam();
         //设置插入的数据库表名
         dynamicInsertParam.setTableName(importExcel.getTableName());
+        dynamicUpdateParam.setTableName(importExcel.getTableName());
         //设置插入字段
         dynamicInsertParam.setFieldList(fieldList);
+        dynamicUpdateParam.setFieldList(fieldList);
 
 //        3.处理表格数据
         List<DictInfo>dictInfos =importDataDao.selectAllDictInfo();
+        //获取主键列表
+        List<String> primaryList;
+        if(fieldList.indexOf("`number`") != -1){
+            primaryList = importDataDao.getNumber(importExcel.getTableName());
+        } else {
+            primaryList = importDataDao.getSecretNumber(importExcel.getTableName());
+        }
 
-        Integer successRow =0;
-        List<Integer> failRow = new ArrayList<>();
+        int successInsert = 0;
+        int successUpdate = 0;
+        int failInsert = 0;
+        int failUpdate = 0;
+        List<String> failMessage = new ArrayList<>();
+
         for(int rowIndex = 3; rowIndex <=sheet.getLastRowNum();rowIndex++){ //忽略第一行
             Row dataRow = sheet.getRow(rowIndex);   //获取一行的数据
             //判断是不是空行 是的话就停止
@@ -190,7 +201,8 @@ public class ExcelService {
             }
 
             Boolean isWrong = false;
-
+            Boolean hasExist = false;
+            String errorColumn = "";
             //对应前面四个固定值
             List<Object> row = new ArrayList<>();
             row.add(IdGen.uuid());
@@ -217,6 +229,7 @@ public class ExcelService {
                         String uu =getUuidByNameAndCode(deName,"000");
                         if(uu.equals("wrong")){
                             isWrong = true;
+                            errorColumn = columnMapField.getColumnName();
                             break;
                         }else{
                             cellValue  = uu;
@@ -235,30 +248,66 @@ public class ExcelService {
                         if(!findDict){
                             System.out.println("字典项匹配失败！！！！！！！！！！！！！");
                             isWrong=true;
+                            errorColumn = columnMapField.getColumnName();
                             break;
                         }
                     }
                 }
-                if(isWrong)
+                if(columnMapField.getTableColumnName().equals("number") || columnMapField.getTableColumnName().equals("secret_number")){
+                    if(primaryList.indexOf(cellValue.toString()) != -1){
+                        dynamicUpdateParam.setPrimaryKey(cellValue.toString());
+                        hasExist = true;
+                    }
+                }
+                if(isWrong){
+                    errorColumn = columnMapField.getColumnName();
                     break;
+                }
                 row.add(cellValue);
             }
             if(isWrong){
-                failRow.add(rowIndex);
+                if(hasExist){
+                    failUpdate ++;
+                    failMessage.add("第" + (rowIndex + 1) + "行更新失败，" + errorColumn + "字典映射不匹配");
+                } else {
+                    failInsert ++;
+                    failMessage.add("第" + (rowIndex + 1) + "行插入失败，" + errorColumn + "字典映射不匹配");
+                }
             }else{
-                data.add(row);
-                successRow++;
+                //判断主键是否重复
+                if(hasExist){
+                    dynamicUpdateParam.setData(row);
+                    dynamicUpdateParam.makeValue();
+                    dynamicUpdateParam.setDate(now);
+                    if(fieldList.indexOf("`number`") != -1){
+                        dynamicUpdateParam.setPrimaryName("`number`");
+                    } else {
+                        dynamicUpdateParam.setPrimaryName("secret_number");
+                    }
+                    if(importDataDao.dynamicUpdate(dynamicUpdateParam) == 1){
+                        successUpdate++;
+                    } else {
+                        failUpdate++;
+                        failMessage.add("第" + (rowIndex + 1) + "插入失败");
+                    }
+                }
+                else {
+                    data.add(row);
+                    successInsert++;
+                }
             }
 
         }//for
         dynamicInsertParam.setData(data);
 
         HashMap<String,Object> status =new HashMap<>();
-        status.put("success",successRow);
-        status.put("failed",failRow);
+        status.put("successInsert",successInsert);
+        status.put("successUpdate",successUpdate);
+        status.put("failInsert",failInsert);
+        status.put("failUpdate",failUpdate);
+        status.put("failMessage", failMessage);
+
         if(data.size() == 0) {
-            status.put("success",0);
-            status.put("failed",0);
             return status;
         }
         // 4.进行插入，并返回是否成功
