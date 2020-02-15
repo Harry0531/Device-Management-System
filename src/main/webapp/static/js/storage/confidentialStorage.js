@@ -60,6 +60,18 @@ let defaultScrapDialog = {
     }
 };
 
+let prevFilter = {
+    scope: '',
+    use_situation: '',
+    usage: '',
+    secret_level: '',
+    type: '',
+    school: '',
+    subject: '',
+    startTime: '',
+    endTime: ''
+};
+
 let app = new Vue({
     el: '#app',
     data: {
@@ -171,9 +183,12 @@ let app = new Vue({
                 });
             })
         },
-        refreshTable: function () {
+        refreshTable: function (usingPrevFilter) {
             let app = this;
             app.table.loading = true;
+            if (usingPrevFilter) {
+                Object.assign(this.filters.condition, prevFilter);
+            }
             let data = {
                 page: app.table.props,
                 scope: this.filters.condition.scope,
@@ -190,6 +205,7 @@ let app = new Vue({
                 app.table.loading = false;
                 app.table.data = result.data.resultList;
                 app.table.props.total = result.data.total;
+                Object.assign(prevFilter, app.filters.condition);
             })
         },
         getDialogList: function () {
@@ -304,7 +320,7 @@ let app = new Vue({
         },
         getList: function () {
             app.table.props.pageIndex = 1;
-            this.refreshTable();
+            this.refreshTable(false);
         },
         updateDialog: function (v) {
             let app = this;
@@ -385,7 +401,7 @@ let app = new Vue({
                         type: "success"
                     });
                     app.table.props.pageIndex = 1;
-                    app.refreshTable();
+                    app.refreshTable(true);
                 })
             }).catch(() => {
                 app.$message({
@@ -399,11 +415,11 @@ let app = new Vue({
         },
         onPageSizeChange: function (newSize) {
             this.table.props.pageSize = newSize;
-            this.refreshTable();
+            this.refreshTable(true);
         },
         onPageIndexChange: function (newIndex) {
             this.table.props.pageIndex = newIndex;
-            this.refreshTable();
+            this.refreshTable(true);
         },
         scrap: function () {
             app.scrapDialog.loading = true;
@@ -426,7 +442,7 @@ let app = new Vue({
                     type: "success"
                 });
                 app.table.props.pageIndex = 1;
-                app.refreshTable();
+                app.refreshTable(true);
                 app.scrapDialog.loading = false;
                 app.scrapDialog.visible = false;
             });
@@ -446,7 +462,7 @@ let app = new Vue({
     },
     mounted: function () {
         this.getSub();
-        this.refreshTable();
+        this.refreshTable(false);
     },
     computed: {
         isInsertStorageDisable: function () {

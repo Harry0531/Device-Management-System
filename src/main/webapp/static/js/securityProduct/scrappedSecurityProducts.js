@@ -62,6 +62,17 @@ let defaultScrapDialog = {
     }
 };
 
+let prevFilter = {
+    use_situation: '',
+    scope: '',
+    secret_level: '',
+    type: '',
+    school: '',
+    subject: '',
+    startTime: '',
+    endTime: ''
+};
+
 let app = new Vue({
     el: '#app',
     data: {
@@ -165,9 +176,12 @@ let app = new Vue({
                 });
             })
         },
-        refreshTable: function () {
+        refreshTable: function (usingPrevFilter) {
             let app = this;
             app.table.loading = true;
+            if (usingPrevFilter) {
+                Object.assign(this.filters.condition, prevFilter);
+            }
             let data = {
                 page: app.table.props,
                 scope: this.filters.condition.scope,
@@ -183,6 +197,7 @@ let app = new Vue({
                 app.table.loading = false;
                 app.table.data = result.data.resultList;
                 app.table.props.total = result.data.total;
+                Object.assign(prevFilter, app.filters.condition);
             })
         },
         getDialogList: function () {
@@ -285,18 +300,18 @@ let app = new Vue({
         },
         getList: function (index) {
             app.table.props.pageIndex = 1;
-            this.refreshTable();
+            this.refreshTable(false);
         },
         onSelectionChange: function (val) {
             this.table.selectionList = val;
         },
         onPageSizeChange: function (newSize) {
             this.table.props.pageSize = newSize;
-            this.refreshTable();
+            this.refreshTable(true);
         },
         onPageIndexChange: function (newIndex) {
             this.table.props.pageIndex = newIndex;
-            this.refreshTable();
+            this.refreshTable(true);
         },
         resetDialogData: function () {
             app.dialog.data.id = '';
@@ -320,7 +335,7 @@ let app = new Vue({
             app.dialog.data.remarks = '';
             app.dialog.data._type = '';
             app.dialog.data._scope = '';
-            app.dialog.data.scrap_time='';
+            app.dialog.data.scrap_time = '';
         },
         deleteByIds: function (list) {
             if (list.length === 0) {
@@ -344,7 +359,7 @@ let app = new Vue({
                         type: "success"
                     });
                     app.table.props.pageIndex = 1;
-                    app.refreshTable();
+                    app.refreshTable(true);
                 })
             }).catch(() => {
                 app.$message({
@@ -381,7 +396,7 @@ let app = new Vue({
                     type: "success"
                 });
                 app.table.props.pageIndex = 1;
-                app.refreshTable();
+                app.refreshTable(true);
                 app.scrapDialog.loading = false;
                 app.scrapDialog.visible = false;
             });
@@ -401,7 +416,7 @@ let app = new Vue({
     },
     mounted: function () {
         this.getSub();
-        this.refreshTable();
+        this.refreshTable(false);
     },
     computed: {
         visitDate: function () {
@@ -411,7 +426,7 @@ let app = new Vue({
             let day = nowDate.getDate();
             return year + "-" + month + "-" + day;
         },
-        isInsertProductDisable:function () {
+        isInsertProductDisable: function () {
             let app = this;
             return !(
                 app.dialog.data.department_name
@@ -443,7 +458,7 @@ function getExportConditions() {
         ID.push(v["id"]);
     });
     let timeList = [];
-    timeList.push(app.filters.condition.startTime,app.filters.condition.endTime);
+    timeList.push(app.filters.condition.startTime, app.filters.condition.endTime);
     let data = {
         fileName: "报废安全保密产品",
         templateId: "f40edb34f32343e5b7488beb5498d8a1",

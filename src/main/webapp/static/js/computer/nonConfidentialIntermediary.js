@@ -59,6 +59,19 @@ let defaultDialog = {
     }
 };
 
+let prevFilter = {
+    use_situation: '',
+    usage: '5d8b70afe7f9447f907671600c9642d6',
+    secret_level: '9d5b8e19427143f59b23f973464468db',
+    type: '',
+    school: '',
+    subject: '',
+    startTime: '',
+    endTime: '',
+    cd_drive: '',
+    os_version: '',
+};
+
 let app = new Vue({
     el: '#app',
     data: {
@@ -162,27 +175,31 @@ let app = new Vue({
                 });
             })
         },
-        refreshTable: function () {
+        refreshTable: function (usingPrevFilter) {
             let app = this;
             app.table.loading = true;
+            if (usingPrevFilter) {
+                Object.assign(this.filters.condition, prevFilter);
+            }
             let data = {
-                page: app.table.props,
-                type: this.filters.condition.type,
-                usage: this.filters.condition.usage,
-                secret_level: this.filters.condition.secret_level,
-                use_situation: this.filters.condition.use_situation,
-                department_code: this.filters.condition.school,
-                subject_code: this.filters.condition.subject,
-                startTime: this.filters.condition.startTime,
-                endTime: this.filters.condition.endTime,
-                os_version: this.filters.condition.os_version,
-                cd_drive: this.filters.condition.cd_drive,
-                searchKey: this.filters.condition.searchKey,
-            };
+                    page: app.table.props,
+                    type: this.filters.condition.type,
+                    usage: this.filters.condition.usage,
+                    secret_level: this.filters.condition.secret_level,
+                    use_situation: this.filters.condition.use_situation,
+                    department_code: this.filters.condition.school,
+                    subject_code: this.filters.condition.subject,
+                    startTime: this.filters.condition.startTime,
+                    endTime: this.filters.condition.endTime,
+                    os_version: this.filters.condition.os_version,
+                    cd_drive: this.filters.condition.cd_drive,
+                    searchKey: this.filters.condition.searchKey,
+                };
             ajaxPostJSON(this.urls.getList, data, function (result) {
                 app.table.loading = false;
                 app.table.data = result.data.resultList;
                 app.table.props.total = result.data.total;
+                Object.assign(prevFilter, app.filters.condition);
             })
         },
         getDialogList: function () {
@@ -300,7 +317,7 @@ let app = new Vue({
         },
         getList: function () {
             app.table.props.pageIndex = 1;
-            this.refreshTable();
+            this.refreshTable(false);
         },
         updateDialog: function (v) {
             let app = this;
@@ -391,7 +408,7 @@ let app = new Vue({
                         type: "success"
                     });
                     app.table.props.pageIndex = 1;
-                    app.refreshTable();
+                    app.refreshTable(true);
                 })
             }).catch(() => {
                 app.$message({
@@ -405,17 +422,17 @@ let app = new Vue({
         },
         onPageSizeChange: function (newSize) {
             this.table.props.pageSize = newSize;
-            this.refreshTable();
+            this.refreshTable(true);
         },
         onPageIndexChange: function (newIndex) {
             this.table.props.pageIndex = newIndex;
-            this.refreshTable();
+            this.refreshTable(true);
         },
 
     },
     mounted: function () {
         this.getSub();
-        this.refreshTable();
+        this.refreshTable(false);
     },
     computed: {
         isInsertStorageDisable: function () {

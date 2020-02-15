@@ -27,8 +27,8 @@ let defaultDialog = {
         model: '',
         device_number: '',
         disk_number: '',
-        secret_level:'c60de690d93c4e18b369e1adff7dcb84',
-        usage:'51cbcfd540e847e2b2e35b5cdbbeaa22',
+        secret_level: 'c60de690d93c4e18b369e1adff7dcb84',
+        usage: '51cbcfd540e847e2b2e35b5cdbbeaa22',
         place_location: '',
         enablation_time: '',
         use_situation: '',
@@ -43,9 +43,19 @@ let defaultDialog = {
         use_situation: [],
         subject: [],
         department: [],
-        secret_level:[{value:'c60de690d93c4e18b369e1adff7dcb84',label:'非密'}],
-        usage:[{value:'51cbcfd540e847e2b2e35b5cdbbeaa22',label:'办公/科研'}]
+        secret_level: [{value: 'c60de690d93c4e18b369e1adff7dcb84', label: '非密'}],
+        usage: [{value: '51cbcfd540e847e2b2e35b5cdbbeaa22', label: '办公/科研'}]
     }
+};
+
+let prevFilter = {
+    use_situation: '',
+    type: '',
+    device_name: '',
+    school: '',
+    subject: '',
+    startTime: '',
+    endTime: ''
 };
 
 let app = new Vue({
@@ -143,9 +153,12 @@ let app = new Vue({
                 });
             })
         },
-        refreshTable: function () {
+        refreshTable: function (usingPrevFilter) {
             let app = this;
             app.table.loading = true;
+            if (usingPrevFilter) {
+                Object.assign(this.filters.condition, prevFilter);
+            }
             let data = {
                 page: app.table.props,
                 device_name: this.filters.condition.device_name,
@@ -160,6 +173,7 @@ let app = new Vue({
                 app.table.loading = false;
                 app.table.data = result.data.resultList;
                 app.table.props.total = result.data.total;
+                Object.assign(prevFilter, app.filters.condition);
             })
         },
         getDialogList: function () {
@@ -259,7 +273,7 @@ let app = new Vue({
         },
         getList: function () {
             app.table.props.pageIndex = 1;
-            this.refreshTable();
+            this.refreshTable(false);
         },
         updateDialog: function (v) {
             let app = this;
@@ -345,7 +359,7 @@ let app = new Vue({
                         type: "success"
                     });
                     app.table.props.pageIndex = 1;
-                    app.refreshTable();
+                    app.refreshTable(true);
                 })
             }).catch(() => {
                 app.$message({
@@ -359,16 +373,16 @@ let app = new Vue({
         },
         onPageSizeChange: function (newSize) {
             this.table.props.pageSize = newSize;
-            this.refreshTable();
+            this.refreshTable(true);
         },
         onPageIndexChange: function (newIndex) {
             this.table.props.pageIndex = newIndex;
-            this.refreshTable();
+            this.refreshTable(true);
         },
     },
     mounted: function () {
         this.getSub();
-        this.refreshTable();
+        this.refreshTable(false);
     },
     computed: {
         isInsertInfoDisable: function () {

@@ -64,6 +64,19 @@ let defaultScrapDialog = {
     visible: false,
 };
 
+let prevFilter = {
+    use_situation: '',
+    usage: '',
+    secret_level: '',
+    type: '',
+    school: '',
+    subject: '',
+    startTime: '',
+    endTime: '',
+    cd_drive: '',
+    os_version: '',
+};
+
 let app = new Vue({
     el: '#app',
     data: {
@@ -182,9 +195,14 @@ let app = new Vue({
                 });
             })
         },
-        refreshTable: function () {
+        refreshTable: function (usingPrevFilter) {
             let app = this;
             app.table.loading = true;
+            if (usingPrevFilter) {
+                // this.filters.condition = prevFilter;
+                Object.assign(this.filters.condition, prevFilter);
+                // console.log(this.filters.condition);
+            }
             let data = {
                 page: app.table.props,
                 type: this.filters.condition.type,
@@ -200,11 +218,11 @@ let app = new Vue({
                 searchKey: this.filters.condition.searchKey
             };
             ajaxPostJSON(this.urls.getList, data, function (result) {
-                console.log(result)
                 app.table.loading = false;
                 app.table.data = result.data.resultList;
                 app.table.props.total = result.data.total;
-            })
+                Object.assign(prevFilter, app.filters.condition);
+            });
         },
         getDialogList: function () {
             ajaxPost(this.urls.getSub, {param: "类型"}, function (result) {
@@ -272,7 +290,6 @@ let app = new Vue({
         handleSchoolChange: function (v) {
             app.dialog.data.department_name = v.dept_name;
             app.dialog.data.department = v.id;
-            console.log("data", app.dialog.data);
             ajaxPost(this.urls.getDeptSub, {id: v.id}, function (result) {
                 app.dialog.selectionList.subject = [];
                 result.forEach(function (r) {
@@ -311,7 +328,6 @@ let app = new Vue({
                 mac_address: app.dialog.data.mac_address,
                 cd_drive: app.dialog.data.cd_drive
             };
-            console.log("insert", data);
             ajaxPostJSON(this.urls.insertOrUpdateComputer, data, function (d) {
                 app.dialog.loading = false;
                 app.dialog.visible = false;
@@ -333,7 +349,7 @@ let app = new Vue({
         },
         getList: function () {
             app.table.props.pageIndex = 1;
-            this.refreshTable();
+            this.refreshTable(false);
         },
         updateDialog: function (v) {
             let app = this;
@@ -426,7 +442,7 @@ let app = new Vue({
                         type: "success"
                     });
                     app.table.props.pageIndex = 1;
-                    app.refreshTable();
+                    app.refreshTable(true);
                 })
             }).catch(() => {
                 app.$message({
@@ -440,11 +456,11 @@ let app = new Vue({
         },
         onPageSizeChange: function (newSize) {
             this.table.props.pageSize = newSize;
-            this.refreshTable();
+            this.refreshTable(true);
         },
         onPageIndexChange: function (newIndex) {
             this.table.props.pageIndex = newIndex;
-            this.refreshTable();
+            this.refreshTable(true);
         },
         showDialog: function (v) {
             let app = this;
@@ -480,10 +496,10 @@ let app = new Vue({
         },
         scrap: function () {
             app.scrapDialog.loading = true;
-            if( app.dialog.data.scrap_time === ""|| app.dialog.data.scrap_time == null){
+            if (app.dialog.data.scrap_time === "" || app.dialog.data.scrap_time == null) {
                 app.$message({
-                    type:"error",
-                    message:"未选择报废时间"
+                    type: "error",
+                    message: "未选择报废时间"
                 });
                 app.scrapDialog.loading = false;
                 return;
@@ -530,7 +546,7 @@ let app = new Vue({
     },
     mounted: function () {
         this.getSub();
-        this.refreshTable();
+        this.refreshTable(false);
     },
     computed: {
         isInsertStorageDisable: function () {

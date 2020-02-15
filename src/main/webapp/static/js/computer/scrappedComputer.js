@@ -11,6 +11,19 @@ let defaultFiltersCondition = {
     os_version: '',
 };
 
+let prevFilter = {
+    use_situation: 'f84169416c2f43de9ca5f17e90396379',
+    usage: '',
+    secret_level: '',
+    type: '',
+    school: '',
+    subject: '',
+    startTime: '',
+    endTime: '',
+    cd_drive: '',
+    os_version: '',
+};
+
 let defaultDialog = {
     visible: false,
     loading: false,
@@ -185,9 +198,12 @@ let app = new Vue({
                 });
             })
         },
-        refreshTable: function () {
+        refreshTable: function (usingPrevFilter) {
             let app = this;
             app.table.loading = true;
+            if (usingPrevFilter) {
+                Object.assign(this.filters.condition, prevFilter);
+            }
             let data = {
                 page: app.table.props,
                 type: this.filters.condition.type,
@@ -206,6 +222,7 @@ let app = new Vue({
                 app.table.loading = false;
                 app.table.data = result.data.resultList;
                 app.table.props.total = result.data.total;
+                Object.assign(prevFilter, app.filters.condition);
             })
         },
         getDialogList: function () {
@@ -309,7 +326,6 @@ let app = new Vue({
                 cd_drive: app.dialog.data.cd_drive,
                 scrap_time: app.dialog.data.scrap_time
             };
-            console.log("insert", data);
             ajaxPostJSON(this.urls.insertOrUpdateComputer, data, function (d) {
                 app.dialog.loading = false;
                 app.dialog.visible = false;
@@ -331,7 +347,7 @@ let app = new Vue({
         },
         getList: function () {
             app.table.props.pageIndex = 1;
-            this.refreshTable();
+            this.refreshTable(false);
         },
         updateDialog: function (v) {
             let app = this;
@@ -390,7 +406,7 @@ let app = new Vue({
                         type: "success"
                     });
                     app.table.props.pageIndex = 1;
-                    app.refreshTable();
+                    app.refreshTable(true);
                 })
             }).catch(() => {
                 app.$message({
@@ -404,18 +420,18 @@ let app = new Vue({
         },
         onPageSizeChange: function (newSize) {
             this.table.props.pageSize = newSize;
-            this.refreshTable();
+            this.refreshTable(true);
         },
         onPageIndexChange: function (newIndex) {
             this.table.props.pageIndex = newIndex;
-            this.refreshTable();
+            this.refreshTable(true);
         },
         resetScrapDialog: function () {
             this.updateItemDialog.data.id = '';
             this.updateItemDialog.data.remarks = '';
             this.updateItemDialog.data.scrap_time = '';
         },
-        scrap:function () {
+        scrap: function () {
             app.updateItemDialog.loading = true;
             if (app.updateItemDialog.data.scrap_time === "" || app.updateItemDialog.data.scrap_time == null) {
                 app.$message({
@@ -436,7 +452,7 @@ let app = new Vue({
                     type: "success"
                 });
                 app.table.props.pageIndex = 1;
-                app.refreshTable();
+                app.refreshTable(true);
                 app.updateItemDialog.loading = false;
                 app.updateItemDialog.visible = false;
             });
@@ -444,7 +460,7 @@ let app = new Vue({
     },
     mounted: function () {
         this.getSub();
-        this.refreshTable();
+        this.refreshTable(false);
     },
     computed: {
         isInsertStorageDisable: function () {
@@ -480,7 +496,7 @@ function getExportConditions() {
         ID.push(v["id"]);
     });
     let timeList = [];
-    timeList.push(app.filters.condition.startTime,app.filters.condition.endTime);
+    timeList.push(app.filters.condition.startTime, app.filters.condition.endTime);
     let data = {
         fileName: "报废计算机",
         templateId: "e5aba220d7e54016bb82d901ba6be78d",
