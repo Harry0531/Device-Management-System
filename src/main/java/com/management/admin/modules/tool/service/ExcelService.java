@@ -50,7 +50,13 @@ public class ExcelService {
     public boolean insert(ExcelTemplate excelTemplate) {
         // 1st step: copy the file in temp dir to excelTemplate dir
         File srcFile = new File(SystemPath.getRootPath() + SystemPath.getTemporaryPath() + excelTemplate.getFilePath());
+        if (!srcFile.exists()) {
+            srcFile.mkdirs();
+        }
         File targetDir = new File(SystemPath.getRootPath() + SystemPath.getExcelTemplatePath());
+        if (!targetDir.exists()) {
+            targetDir.mkdirs();
+        }
         try {
             FileUtils.copyFileToDirectory(srcFile, targetDir);
         } catch (IOException e) {
@@ -97,7 +103,11 @@ public class ExcelService {
         String fileName=SystemPath.getRootPath()+SystemPath.getTemporaryPath()+ExcelName;
         Sheet sheet = null;
         try {
-            sheet = ExcelUtils.getSheet(new File(fileName),0);
+            File file = new File(fileName);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            sheet = ExcelUtils.getSheet(file,0);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -122,7 +132,7 @@ public class ExcelService {
         isScrapped=false;
         //数据excel名字
         String dataExcelPath=SystemPath.getRootPath()+SystemPath.getTemporaryPath()+ importExcel.getExcelDataName();
-
+        System.out.println("这是系统读取的相对路径"+dataExcelPath);
         //获得模版信息
         ExcelTemplate excelTemplate = excelTemplateDao.selectById(importExcel.getId());
 
@@ -138,7 +148,11 @@ public class ExcelService {
 //        1.准备数据，来自excel表格之外
         List<List<Object>> data = new ArrayList<>();
 
-        Sheet sheet = ExcelUtils.getSheet(new File(dataExcelPath),0);//获取excel表格
+        File file = new File(dataExcelPath);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        Sheet sheet = ExcelUtils.getSheet(file,0);//获取excel表格
         Date now = new Date();//当前时间
 
 //            2.获取数据库字段信息
