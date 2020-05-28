@@ -94,5 +94,6 @@ var getCookie = function (name) {
  * @param name cookie的名称
  */
 var delCookie = function (name) {
-    setCookie(name, '', -1);
+    // setCookie(name, '', -1);
+    window.sessionStorage.removeItem(name)
 };
