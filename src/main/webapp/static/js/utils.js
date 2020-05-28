@@ -65,9 +65,10 @@ function ajaxPostJSON(url, data, successCallback, errorCallback, async = true) {
  */
 var setCookie = function (name, value, day) {
     if(day !== 0){     //当设置的时间等于0时，不设置expires属性，cookie在浏览器关闭后删除
-        var expires = day * 24 * 60 * 60 * 1000;
-        var date = new Date(+new Date()+expires);
-        document.cookie = name + "=" + escape(value) + ";expires=" + date.toUTCString() + ";path=/";
+        // var expires = day * 24 * 60 * 60 * 1000;
+        // var date = new Date(+new Date()+expires);
+        // document.cookie = name + "=" + escape(value) + ";expires=" + date.toUTCString() + ";path=/";
+        sessionStorage.setItem('name', name);
     }else{
         document.cookie = name + "=" + escape(value);
     }
@@ -79,12 +80,13 @@ var setCookie = function (name, value, day) {
  * @returns {null} 不存在时，返回null
  */
 var getCookie = function (name) {
-    var arr;
-    var reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
-    if (arr = document.cookie.match(reg))
-        return unescape(arr[2]);
-    else
-        return null;
+    // var arr;
+    // var reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+    // if (arr = document.cookie.match(reg))
+    //     return unescape(arr[2]);
+    // else
+    //     return null;
+    return sessionStorage.getItem('name');
 };
 
 /**
