@@ -80,8 +80,8 @@ let app = new Vue({
             //标签页已被打开，则不再添加新的标签页，而是设置目标标签页为active
             if (exist === true) {
                 this.activeTabName = this.tabList[index].name;
-                this.tabList[index].loading = true; // tab页进入加载状态
-                this.refreshTab(this.activeTabName, url);
+                //this.tabList[index].loading = true; // tab页进入加载状态
+                //this.refreshTab(this.activeTabName, url);
             } else {
                 let newTabName = 'tab' + this.tabNameCount;
                 this.tabNameCount += 1;
