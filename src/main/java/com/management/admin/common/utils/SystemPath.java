@@ -14,6 +14,7 @@ public class SystemPath {
     public static String getRootPath() {
         String root = Thread.currentThread().getContextClassLoader().getResource("").toString();
         String substring = root.substring(6, root.length() - 16);
+        System.out.println("路径获取："+substring);
 //        substring = java.net.URLDecoder.decode(substring, "UTF-8");
         int firstIndex = substring.lastIndexOf(System.getProperty("path.separator")) + 1;
         int lastIndex = substring.lastIndexOf(File.separator) + 1;

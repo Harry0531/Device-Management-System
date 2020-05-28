@@ -89,9 +89,6 @@ public class ExcelController extends BaseApi {
             @RequestParam("downloadName") String downloadName,
             HttpServletResponse response) throws IOException {
         File excelTemplate = new File(SystemPath.getRootPath() + SystemPath.getExcelTemplatePath() + excelName);
-        if (!excelTemplate.exists()) {
-            excelTemplate.mkdirs();
-        }
         downloadName = new String((downloadName + "." + FilenameUtils.getExtension(excelName)).
                 getBytes("UTF-8"), "iso-8859-1");
         HttpHeaders headers = new HttpHeaders();

@@ -104,9 +104,6 @@ public class ExcelService {
         Sheet sheet = null;
         try {
             File file = new File(fileName);
-            if (!file.exists()) {
-                file.mkdirs();
-            }
             sheet = ExcelUtils.getSheet(file,0);
         } catch (IOException e) {
             e.printStackTrace();
@@ -149,9 +146,7 @@ public class ExcelService {
         List<List<Object>> data = new ArrayList<>();
 
         File file = new File(dataExcelPath);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
+
         Sheet sheet = ExcelUtils.getSheet(file,0);//获取excel表格
         Date now = new Date();//当前时间
 

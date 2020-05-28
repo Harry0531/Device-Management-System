@@ -163,9 +163,7 @@ public class BackUpService {
                 Hsql+=")values(";
 
                 File file = new File(dataExcelPath);
-                if (!file.exists()) {
-                    file.mkdirs();
-                }
+
                 Sheet sheet = ExcelUtils.getSheet(file,i);//获取excel表格
                 String sheetSql="";
                 for(int rowIndex = 1; rowIndex <=sheet.getLastRowNum();rowIndex++) { //忽略第一行
